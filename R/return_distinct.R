@@ -1,3 +1,33 @@
+#' Return number of unique values mid-dplyr chain
+#'
+#' This function is designed to be inserted into a dplyr chain
+#' when you want to return a count of unique values for a given
+#' variable to the global environment without breaking the chain.
+#' There are options to append the count to a list in the global
+#' environment, or to add a new object to the global environment
+#' which contains the count.
+#'
+#' @param data A data frame or tibble
+#' @param x The variable from \code{data} that requires a count of unique
+#' values.
+#' @param append_to The name of a list in the global environment
+#' to which the count will be appended. If a list named \code{append_to}
+#' does not exist in the global environment, one is created.
+#' @param name_to_append The name of the list item which is appended to
+#' \code{append_to}
+#' @param global_obj The name of a global object to return the count to.
+#' If \code{global_obj} is used, \code{append_to} and \code{name_to_append}
+#' are ignored.
+#'
+#' @return Returns the left-hand side of the pipe to the current
+#' dplyr chain, while also returning counts to the global environment
+#' @export
+#'
+#' @examples
+#' palmerpenguins::penguins %>%
+#'   return_distinct(species, counts, "species_overall") %>%
+#'   dplyr::filter(island == "Biscoe") %>%
+#'   return_distinct(species, counts, "species_biscoe")
 return_distinct <- function(
   data, x, append_to = NULL, name_to_append = NULL, global_obj = NULL
 ) {
@@ -17,8 +47,8 @@ return_distinct <- function(
     }
 
     out <- data %>%
-      summarise(n_distinct({{ x }})) %>%
-      pull %>%
+      dplyr::summarise(dplyr::n_distinct({{ x }})) %>%
+      dplyr::pull() %>%
       append(append_to, .)
 
     if (!append_name_flag) {
@@ -35,8 +65,8 @@ return_distinct <- function(
     assign(
       obj_name,
       data %>%
-        summarise(n_distinct({{ x }})) %>%
-        pull,
+        dplyr::summarise(dplyr::n_distinct({{ x }})) %>%
+        dplyr::pull(),
       envir = .GlobalEnv
     )
   }
