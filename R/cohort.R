@@ -86,10 +86,17 @@ print.ggconsort_cohort <- function(x, ...) {
   counts <- cohort_count(x)
   count_full <- dplyr::filter(counts, .data$cohort == ".full")$count
   n_cohorts <- nrow(counts) - 1
-  t_cohort <- ngettext(n_cohorts, "cohort", "cohorts")
-  t_cohort <- paste0(t_cohort, if (n_cohorts == 0) ".\n" else ":")
 
-  cat("A ggconsort cohort of", count_full, "observations with", n_cohorts, t_cohort)
+  desc_obs <- ngettext(
+    count_full,
+    "A ggconsort cohort of %d observation",
+    "A ggconsort cohort of %d observations"
+  )
+  desc_cohorts <- ngettext(n_cohorts, "with %d cohort", "with %d cohorts")
+  description <- sprintf(paste(desc_obs, desc_cohorts), count_full, n_cohorts)
+  description <- paste0(description, if (n_cohorts == 0) ".\n" else ":")
+
+  cat(description)
   if (n_cohorts < 1) {
     return()
   }
