@@ -18,3 +18,8 @@ assert_named <- function(x, arg_name = NULL) {
     stop("All items in `", arg_name, "` must be named.")
   }
 }
+
+to_snake_case <- function(x) {
+  x <- strsplit(x, "[^[:alnum:]]")
+  vapply(x, paste, collapse = "_", character(1))
+}
