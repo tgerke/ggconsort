@@ -125,8 +125,13 @@ print.ggconsort_cohort <- function(x, ...) {
     return()
   }
 
-  for (i in seq_len(nrow(counts))[-1]) {
+  for (i in seq_len(min(n_cohorts, 8)) + 1) {
+    # first cohort is the ".full" cohort
     cat("\n  - ", counts$cohort[[i]], " (", counts$count[[i]], ")", sep = "")
+  }
+
+  if (n_cohorts > 8) {
+    cat("\n  ...and", n_cohorts - 8, "more.")
   }
 
   invisible(x)
