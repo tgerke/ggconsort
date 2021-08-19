@@ -9,7 +9,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  fig.retina = 3
 )
 ```
 
@@ -34,7 +35,7 @@ devtools::install_github("tgerke/ggconsort")
 
 In the following, we filter the `penguins` data to only those from Biscoe island. In the same `dplyr` chain, we collect the number of distinct species overall (i.e. before the filter to Biscoe) and the number of distinct species on Biscoe into a list called `counts`. In the next step, we will use `counts` to construct a basic data flow diagram.
 
-```{r example}
+```{r example-cohort}
 library(dplyr)
 library(ggconsort)
 library(palmerpenguins)
@@ -60,3 +61,77 @@ penguin_cohorts <-
   )
 ```
 
+```{r example-consort}
+library(ggplot2)
+
+  
+ggplot(data = NULL) + 
+  geom_consort_arrow(
+    x = 0, xend = 0, y = 50, yend = 30 
+  ) + 
+  geom_consort_arrow(
+    x = 0, xend = 20, y = 40, yend = 40
+  ) + 
+  geom_consort_box(
+    x = 0, y = 50, vjust = 0,
+    label = glue::glue(
+      'All penguins (n = {
+      penguin_cohorts %>% 
+        summary() %>% 
+        filter(cohort == ".full") %>% 
+        pull(count)
+      })'
+    )
+  ) + 
+  geom_consort_box(
+    x = 20, y = 40, hjust = 0,
+    label = glue::glue(
+      'Excluded (n = {
+        summary(penguin_cohorts) %>%
+          filter(cohort == ".full") %>% 
+          pull(count) - 
+        summary(penguin_cohorts) %>% 
+          filter(cohort == "biscoe_adelie_male") %>% 
+          pull(count)
+      })<br>
+      • Not male (n = {
+        summary(penguin_cohorts) %>% 
+          filter(cohort == ".full") %>% 
+          pull(count) - 
+        summary(penguin_cohorts) %>% 
+          filter(cohort == "adelie_male") %>% 
+          pull(count)
+      })<br>
+      • Not on Biscoe island (n = {
+        summary(penguin_cohorts) %>% 
+          filter(cohort == ".full") %>% 
+          pull(count) - 
+        summary(penguin_cohorts) %>% 
+          filter(cohort == "biscoe") %>% 
+          pull(count)
+      })
+      '###FIXME: the last count is not correct right now
+    )
+  ) +
+  geom_consort_box(
+    x = 0, y = 30, vjust = 1,
+    label = glue::glue(
+      '{
+      penguin_cohorts %>% 
+        summary() %>% 
+        filter(cohort == "biscoe_adelie_male") %>% 
+      pull(label)
+      } (n = {
+      penguin_cohorts %>% 
+        summary() %>% 
+        filter(cohort == "biscoe_adelie_male") %>% 
+      pull(count)
+      })'
+    ), 
+  ) +
+  xlim(-50, 75) + 
+  ylim(20, 60) + 
+  theme_void()
+  #theme_linedraw() #a temporary theme while in progress
+
+```

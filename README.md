@@ -61,3 +61,82 @@ penguin_cohorts <-
     biscoe_adelie_male = "Male Adelie penguins on Biscoe island"
   )
 ```
+
+``` r
+library(ggplot2)
+
+  
+ggplot(data = NULL) + 
+  geom_consort_arrow(
+    x = 0, xend = 0, y = 50, yend = 30 
+  ) + 
+  geom_consort_arrow(
+    x = 0, xend = 20, y = 40, yend = 40
+  ) + 
+  geom_consort_box(
+    x = 0, y = 50, vjust = 0,
+    label = glue::glue(
+      'All penguins (n = {
+      penguin_cohorts %>% 
+        summary() %>% 
+        filter(cohort == ".full") %>% 
+        pull(count)
+      })'
+    )
+  ) + 
+  geom_consort_box(
+    x = 20, y = 40, hjust = 0,
+    label = glue::glue(
+      'Excluded (n = {
+        summary(penguin_cohorts) %>%
+          filter(cohort == ".full") %>% 
+          pull(count) - 
+        summary(penguin_cohorts) %>% 
+          filter(cohort == "biscoe_adelie_male") %>% 
+          pull(count)
+      })<br>
+      • Not male (n = {
+        summary(penguin_cohorts) %>% 
+          filter(cohort == ".full") %>% 
+          pull(count) - 
+        summary(penguin_cohorts) %>% 
+          filter(cohort == "adelie_male") %>% 
+          pull(count)
+      })<br>
+      • Not on Biscoe island (n = {
+        summary(penguin_cohorts) %>% 
+          filter(cohort == ".full") %>% 
+          pull(count) - 
+        summary(penguin_cohorts) %>% 
+          filter(cohort == "biscoe") %>% 
+          pull(count)
+      })
+      '###FIXME: the last count is not correct right now
+    )
+  ) +
+  geom_consort_box(
+    x = 0, y = 30, vjust = 1,
+    label = glue::glue(
+      '{
+      penguin_cohorts %>% 
+        summary() %>% 
+        filter(cohort == "biscoe_adelie_male") %>% 
+      pull(label)
+      } (n = {
+      penguin_cohorts %>% 
+        summary() %>% 
+        filter(cohort == "biscoe_adelie_male") %>% 
+      pull(count)
+      })'
+    ), 
+  ) +
+  xlim(-50, 75) + 
+  ylim(20, 60) + 
+  theme_void()
+```
+
+<img src="man/figures/README-example-consort-1.png" width="100%" />
+
+``` r
+  #theme_linedraw() #a temporary theme while in progress
+```
