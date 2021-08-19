@@ -2,7 +2,7 @@ Package: ggconsort
 Type: Package
 Title: Create CONSORT Diagrams
 Version: 0.1.0
-Author: Travis Gerke
+Author: Travis Gerke, Garrick Aden-Buie
 Maintainer: Travis Gerke <tgerke@mail.harvard.edu>
 Description: This package provides convenience functions for constructing CONSORT diagrams with ggplot2.
 License: MIT + file LICENSE
