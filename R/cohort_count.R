@@ -6,7 +6,10 @@
 #' @export
 #'
 ### FIXME: to add @examples
+### FIXME: add option to return distinct counts of a given variable
 cohort_count <- function(.data) {
+  assert_cohort(.data)
+
   labels <- if (length(.data$labels)) {
     list(
       cohort = names(.data$labels),
