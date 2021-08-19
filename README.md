@@ -20,6 +20,8 @@ devtools::install_github("tgerke/ggconsort")
 
 ## Example
 
+**This paragraph needs to be modified**
+
 In the following, we filter the `penguins` data to only those from
 Biscoe island. In the same `dplyr` chain, we collect the number of
 distinct species overall (i.e. before the filter to Biscoe) and the
@@ -27,24 +29,35 @@ number of distinct species on Biscoe into a list called `counts`. In the
 next step, we will use `counts` to construct a basic data flow diagram.
 
 ``` r
-library(ggconsort)
-
-biscoe_penguins <- palmerpenguins::penguins %>%
-  return_distinct(species, counts, "species_overall") %>%
-  dplyr::filter(island == "Biscoe") %>%
-  return_distinct(species, counts, "species_biscoe")
-
-# the number of penguins in our data before the filter
-nrow(palmerpenguins::penguins)
-#> [1] 344
-# the number of penguins in our data after the filter
-nrow(biscoe_penguins)
-#> [1] 168
-# the numbers of unique penguin species before and after the filter
-counts
-#> $species_overall
-#> [1] 3
+library(dplyr)
 #> 
-#> $species_biscoe
-#> [1] 2
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+library(ggconsort)
+library(palmerpenguins)
+
+penguin_cohorts <- 
+  penguins %>%
+  mutate(.id = row_number()) %>%
+  cohort_start("Penguins observerd by Palmer Station LTER") %>%
+  # Define cohorts using named expressions --------------------
+  # Notice that you can use previously defined cohorts in subsequent steps
+  cohort_define(
+    adelie = .full %>% filter(species == "Adelie"),
+    adelie_male = adelie %>% filter(sex == "male"),
+    biscoe = .full %>% filter(island == "Biscoe"),
+    biscoe_adelie_male = biscoe %>% semi_join(adelie_male, by = ".id")
+  ) %>%
+  # Provide text labels for cohorts ---------------------------
+  cohort_label(
+    adelie = "Adelie penguins",
+    adelie_male = "Adelie male penguins",
+    biscoe = "Penguins on Biscoe island",
+    biscoe_adelie_male = "Male Adelie penguins on Biscoe island"
+  )
 ```
