@@ -4,13 +4,17 @@
 \alias{cohort_count}
 \title{Count the number of rows in each ggconsort cohort}
 \usage{
-cohort_count(.data)
+cohort_count(.data, cohort = NULL)
 }
 \arguments{
 \item{.data}{A \code{ggconsort_cohort} object}
+
+\item{cohort}{An optional string that defines a cohort
+within `.data` to count}
 }
 \value{
-A \code{tibble} with cohort name, row number total, and label
+A \code{tibble} with cohort name, row number total, and label;
+or, when `cohort` is provided, an integer count for that specific cohort.
 }
 \description{
 Count the number of rows in each ggconsort cohort

@@ -50,14 +50,12 @@ penguin_cohorts <-
   cohort_define(
     adelie = .full %>% filter(species == "Adelie"),
     adelie_male = adelie %>% filter(sex == "male"),
-    biscoe = .full %>% filter(island == "Biscoe"),
-    biscoe_adelie_male = biscoe %>% semi_join(adelie_male, by = ".id")
+    biscoe_adelie_male = adelie_male %>% filter(island == "Biscoe")
   ) %>%
   # Provide text labels for cohorts ---------------------------
   cohort_label(
     adelie = "Adelie penguins",
     adelie_male = "Adelie male penguins",
-    biscoe = "Penguins on Biscoe island",
     biscoe_adelie_male = "Male Adelie penguins on Biscoe island"
   )
 ```
@@ -65,7 +63,6 @@ penguin_cohorts <-
 ``` r
 library(ggplot2)
 
-  
 ggplot(data = NULL) + 
   geom_consort_arrow(
     x = 0, xend = 0, y = 50, yend = 30 
@@ -76,11 +73,12 @@ ggplot(data = NULL) +
   geom_consort_box(
     x = 0, y = 50, vjust = 0,
     label = glue::glue(
-      'All penguins (n = {
-      penguin_cohorts %>% 
-        summary() %>% 
+      '{
+      cohort_count(penguin_cohorts) %>% 
         filter(cohort == ".full") %>% 
-        pull(count)
+        pull(label)
+      } (n = {
+        cohort_count(penguin_cohorts, ".full")
       })'
     )
   ) + 
@@ -88,30 +86,22 @@ ggplot(data = NULL) +
     x = 20, y = 40, hjust = 0,
     label = glue::glue(
       'Excluded (n = {
-        summary(penguin_cohorts) %>%
-          filter(cohort == ".full") %>% 
-          pull(count) - 
-        summary(penguin_cohorts) %>% 
-          filter(cohort == "biscoe_adelie_male") %>% 
-          pull(count)
+        cohort_count(penguin_cohorts, ".full") - 
+          cohort_count(penguin_cohorts, "biscoe_adelie_male")
+      })<br>
+      • Not Adelie (n = {
+        cohort_count(penguin_cohorts, ".full") - 
+          cohort_count(penguin_cohorts, "adelie")
       })<br>
       • Not male (n = {
-        summary(penguin_cohorts) %>% 
-          filter(cohort == ".full") %>% 
-          pull(count) - 
-        summary(penguin_cohorts) %>% 
-          filter(cohort == "adelie_male") %>% 
-          pull(count)
+        cohort_count(penguin_cohorts, "adelie") - 
+          cohort_count(penguin_cohorts, "adelie_male")
       })<br>
       • Not on Biscoe island (n = {
-        summary(penguin_cohorts) %>% 
-          filter(cohort == ".full") %>% 
-          pull(count) - 
-        summary(penguin_cohorts) %>% 
-          filter(cohort == "biscoe") %>% 
-          pull(count)
+        cohort_count(penguin_cohorts, "adelie_male") - 
+          cohort_count(penguin_cohorts, "biscoe_adelie_male")
       })
-      '###FIXME: the last count is not correct right now
+      '
     )
   ) +
   geom_consort_box(
