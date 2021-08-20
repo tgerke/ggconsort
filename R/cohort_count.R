@@ -53,18 +53,33 @@ cohort_count_int <- function(.data, ...) {
   rlang::set_names(counts$count, counts$cohort)
 }
 
-#' @describeIn label_fn Returns a cohort count in "{label} (n = {count})" format
-label_fn <- function(.data, ...) {
-  counts <- cohort_count(.data, ...)
-
-  purrr::map2_chr(
-    .x = counts$label, .y = counts$count,
-    ~ glue::glue('{.x} (n = {.y})')
-  )
+default_label_count <- function(...) {
+  glue::glue("{label} (n = {count})", ..., .envir = parent.frame())
 }
 
-#' @describeIn cohort_count_adorn Returns a cohort count in "(n = )" format
+#' @describeIn cohort_count Returns a cohort count in "(n = )" format
 #' @export
-cohort_count_adorn <- function(.data, ..., .label_fn = label_fn) {
-  label_fn(.data, ...)
+cohort_count_adorn <- function(.data, ..., .label_fn = NULL) {
+  counts <- cohort_count(.data, ...)
+  counts$label <- counts$label %||% ""
+  # reorder so that `.x` is label and `.y` is count
+  counts <- counts %>%
+    dplyr::select(.data$label, .data$count, dplyr::everything())
+
+  .label_fn <- .label_fn %||% default_label_count
+  purrr::pmap_chr(counts, .label_fn)
 }
+# to add to docs: here's a good example of a custom label_fn
+# penguin_cohorts %>%
+#   cohort_count_adorn(
+#     starts_with("adelie"),
+#     .label_fn = ~ sprintf("%s (%s)", .x, .y)
+#   )
+# --or--
+# penguin_cohorts %>%
+#   cohort_count_adorn(
+#     starts_with("adelie"),
+#     .label_fn = function(cohort, label, count, ...) {
+#       glue::glue("{cohort} - {label} - {count}")
+#     }
+#   )

@@ -3,11 +3,14 @@
 \name{cohort_count}
 \alias{cohort_count}
 \alias{cohort_count_int}
+\alias{cohort_count_adorn}
 \title{Count the number of rows in each ggconsort cohort}
 \usage{
 cohort_count(.data, ...)
 
 cohort_count_int(.data, ...)
+
+cohort_count_adorn(.data, ..., .label_fn = NULL)
 }
 \arguments{
 \item{.data}{A \code{ggconsort_cohort} object}
@@ -28,5 +31,7 @@ Count the number of rows in each ggconsort cohort
 and label.
 
 \item \code{cohort_count_int}: Returns a named vector with cohort counts.
+
+\item \code{cohort_count_adorn}: Returns a cohort count in "(n = )" format
 }}
 
