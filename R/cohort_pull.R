@@ -7,7 +7,7 @@ cohort_pull <- function(.data, ...) {
   )
 
   if (rlang::has_length(cohort, n = 1)) {
-    return(.data$data[cohort])
+    return(.data$data[[cohort]])
   }
 
   .data$data[cohort]
