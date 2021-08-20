@@ -52,3 +52,19 @@ cohort_count_int <- function(.data, ...) {
 
   rlang::set_names(counts$count, counts$cohort)
 }
+
+#' @describeIn label_fn Returns a cohort count in "{label} (n = {count})" format
+label_fn <- function(.data, ...) {
+  counts <- cohort_count(.data, ...)
+
+  purrr::map2_chr(
+    .x = counts$label, .y = counts$count,
+    ~ glue::glue('{.x} (n = {.y})')
+  )
+}
+
+#' @describeIn cohort_count_adorn Returns a cohort count in "(n = )" format
+#' @export
+cohort_count_adorn <- function(.data, ..., .label_fn = label_fn) {
+  label_fn(.data, ...)
+}
