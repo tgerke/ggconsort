@@ -52,18 +52,22 @@ penguin_cohorts <-
     adelie_male = adelie %>% filter(sex == "male"),
     biscoe_adelie_male = adelie_male %>% filter(island == "Biscoe"),
     # for counting exclusions
-    not_adelie = .full %>% filter(species != "Adelie"),
-    not_adelie_male = adelie %>% filter(sex != "male" | is.na(sex)),
-    not_adelie_male_biscoe = adelie_male %>% filter(island != "Biscoe")
+    excluded = anti_join(.full, biscoe_adelie_male, by = ".id"),
+    excluded_not_adelie = anti_join(.full, adelie, by = ".id"),
+    excluded_not_adelie_male = anti_join(adelie, adelie_male, by = ".id"),
+    excluded_not_adelie_male_biscoe = anti_join(
+      adelie_male, biscoe_adelie_male, by = ".id"
+    )
   ) %>%
   # Provide text labels for cohorts ---------------------------
   cohort_label(
     adelie = "Adelie penguins",
     adelie_male = "Adelie male penguins",
     biscoe_adelie_male = "Male Adelie penguins on Biscoe island",
-    not_adelie = "Not Adelie",
-    not_adelie_male = "Not male",
-    not_adelie_male_biscoe = "Not on Biscoe island"
+    excluded = "Excluded",
+    excluded_not_adelie = "Not Adelie",
+    excluded_not_adelie_male = "Not male",
+    excluded_not_adelie_male_biscoe = "Not on Biscoe island"
   )
 ```
 
@@ -84,13 +88,10 @@ ggplot(data = NULL) +
   geom_consort_box(
     x = 20, y = 40, hjust = 0,
     label = glue::glue(
-      'Excluded (n = {
-        cohort_count_int(penguin_cohorts, ".full") - 
-          cohort_count_int(penguin_cohorts, "biscoe_adelie_male")
-      })<br>
-      • {cohort_count_adorn(penguin_cohorts, not_adelie)}<br>
-      • {cohort_count_adorn(penguin_cohorts, not_adelie_male)}<br>
-      • {cohort_count_adorn(penguin_cohorts, not_adelie_male_biscoe)}
+      '{cohort_count_adorn(penguin_cohorts, excluded)}<br>
+      • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie)}<br>
+      • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male)}<br>
+      • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male_biscoe)}
       '
     )
   ) +
