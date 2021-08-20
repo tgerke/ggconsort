@@ -50,13 +50,20 @@ penguin_cohorts <-
   cohort_define(
     adelie = .full %>% filter(species == "Adelie"),
     adelie_male = adelie %>% filter(sex == "male"),
-    biscoe_adelie_male = adelie_male %>% filter(island == "Biscoe")
+    biscoe_adelie_male = adelie_male %>% filter(island == "Biscoe"),
+    # for counting exclusions
+    not_adelie = .full %>% filter(species != "Adelie"),
+    not_adelie_male = adelie %>% filter(sex != "male" | is.na(sex)),
+    not_adelie_male_biscoe = adelie_male %>% filter(island != "Biscoe")
   ) %>%
   # Provide text labels for cohorts ---------------------------
   cohort_label(
     adelie = "Adelie penguins",
     adelie_male = "Adelie male penguins",
-    biscoe_adelie_male = "Male Adelie penguins on Biscoe island"
+    biscoe_adelie_male = "Male Adelie penguins on Biscoe island",
+    not_adelie = "Not Adelie",
+    not_adelie_male = "Not male",
+    not_adelie_male_biscoe = "Not on Biscoe island"
   )
 ```
 
@@ -72,53 +79,24 @@ ggplot(data = NULL) +
   ) + 
   geom_consort_box(
     x = 0, y = 50, vjust = 0,
-    label = glue::glue(
-      '{
-      cohort_count(penguin_cohorts) %>% 
-        filter(cohort == ".full") %>% 
-        pull(label)
-      } (n = {
-        cohort_count(penguin_cohorts, ".full")
-      })'
-    )
+    label = cohort_count_adorn(penguin_cohorts, .full)
   ) + 
   geom_consort_box(
     x = 20, y = 40, hjust = 0,
     label = glue::glue(
       'Excluded (n = {
-        cohort_count(penguin_cohorts, ".full") - 
-          cohort_count(penguin_cohorts, "biscoe_adelie_male")
+        cohort_count_int(penguin_cohorts, ".full") - 
+          cohort_count_int(penguin_cohorts, "biscoe_adelie_male")
       })<br>
-      • Not Adelie (n = {
-        cohort_count(penguin_cohorts, ".full") - 
-          cohort_count(penguin_cohorts, "adelie")
-      })<br>
-      • Not male (n = {
-        cohort_count(penguin_cohorts, "adelie") - 
-          cohort_count(penguin_cohorts, "adelie_male")
-      })<br>
-      • Not on Biscoe island (n = {
-        cohort_count(penguin_cohorts, "adelie_male") - 
-          cohort_count(penguin_cohorts, "biscoe_adelie_male")
-      })
+      • {cohort_count_adorn(penguin_cohorts, not_adelie)}<br>
+      • {cohort_count_adorn(penguin_cohorts, not_adelie_male)}<br>
+      • {cohort_count_adorn(penguin_cohorts, not_adelie_male_biscoe)}
       '
     )
   ) +
   geom_consort_box(
     x = 0, y = 30, vjust = 1,
-    label = glue::glue(
-      '{
-      penguin_cohorts %>% 
-        summary() %>% 
-        filter(cohort == "biscoe_adelie_male") %>% 
-      pull(label)
-      } (n = {
-      penguin_cohorts %>% 
-        summary() %>% 
-        filter(cohort == "biscoe_adelie_male") %>% 
-      pull(count)
-      })'
-    ), 
+    label = cohort_count_adorn(penguin_cohorts, biscoe_adelie_male)
   ) +
   xlim(-50, 75) + 
   ylim(20, 60) + 
