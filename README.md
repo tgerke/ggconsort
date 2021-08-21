@@ -74,19 +74,25 @@ penguin_cohorts <-
 ``` r
 library(ggplot2)
 
+x_mid <- 0
+y_top <- 50
+box2_left <- 20
+box2_y <- 40
+box3_top <- 30
+
 ggplot(data = NULL) + 
   geom_consort_arrow(
-    x = 0, xend = 0, y = 50, yend = 30 
+    x = x_mid, xend = x_mid, y = y_top, yend = box3_top
   ) + 
   geom_consort_arrow(
-    x = 0, xend = 20, y = 40, yend = 40
+    x = x_mid, xend = box2_left, y = box2_y, yend = box2_y
   ) + 
   geom_consort_box(
-    x = 0, y = 50, vjust = 0,
+    x = x_mid, y = y_top,
     label = cohort_count_adorn(penguin_cohorts, .full)
   ) + 
   geom_consort_box(
-    x = 20, y = 40, hjust = 0,
+    x = box2_left, y = box2_y, arrow_in = "left",
     label = glue::glue(
       '{cohort_count_adorn(penguin_cohorts, excluded)}<br>
       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie)}<br>
@@ -96,7 +102,7 @@ ggplot(data = NULL) +
     )
   ) +
   geom_consort_box(
-    x = 0, y = 30, vjust = 1,
+    x = x_mid, y = box3_top, arrow_in = "top",
     label = cohort_count_adorn(penguin_cohorts, biscoe_adelie_male)
   ) +
   xlim(-50, 75) + 

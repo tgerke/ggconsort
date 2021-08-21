@@ -3,22 +3,39 @@
 # creates a box with squared edges, with label args
 # that get passed to geom_richtext
 
-# FIXME: hjust and vjust need to be adjusted according to whether
-# arrows will be coming in from the left/right or center. This
-# should be changed to more intuitive arguments like
-# arrow_in = "top", arrow_in = c("top", "left") etc
+# note that can take vectors like arrow_in = c("top", "left")
 
 geom_consort_box <- function(
-  x, y, label, label_color = "black",
-  label_size = "8pt", label_height = 1, ...
+  x, y, label,
+  arrow_in = "none",
+  label_color = "black", label_size = "8pt", label_height = 1,
+  ...
 ) {
+  if ("top" %in% arrow_in) {
+    vjust = 1
+  } else {
+    vjust = .5
+  }
+
+  if ("left" %in% arrow_in) {
+    hjust = 0
+  } else if ("right" %in% arrow_in) {
+    hjust = 1
+  } else {
+    hjust = .5
+  }
+
   label <- glue::glue(
     '<span style="color:{label_color}; font-size:{label_size};">
     {label}
     </span>'
   )
   ggtext::geom_richtext(
-    aes(x = x, y = y, label = label, lineheight = label_height, ...),
+    aes(
+      x = x, y = y, label = label,
+      lineheight = label_height,
+      vjust = vjust, hjust = hjust, ...
+    ),
     label.r = unit(0, units = "npc")
   )
 }
