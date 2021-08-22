@@ -73,39 +73,61 @@ penguin_cohorts <-
 ```{r example-consort}
 library(ggplot2)
 
-x_mid <- 0
-y_top <- 50
-box2_left <- 20
-box2_y <- 40
-box3_top <- 30
-
-ggplot(data = NULL) + 
-  geom_consort_arrow(
-    x = x_mid, xend = x_mid, y = y_top, yend = box3_top
-  ) + 
-  geom_consort_arrow(
-    x = x_mid, xend = box2_left, y = box2_y, yend = box2_y
-  ) + 
-  geom_consort_box(
-    x = x_mid, y = y_top,
-    label = cohort_count_adorn(penguin_cohorts, .full)
-  ) + 
-  geom_consort_box(
-    x = box2_left, y = box2_y, arrow_in = "left",
-    label = glue::glue(
+# arrow_in describes which side(s) of the box receive arrows
+consort_boxes <- tribble(
+  ~x, ~y, ~label, ~arrow_in,
+  0, 50, cohort_count_adorn(penguin_cohorts, .full), "none",
+  20, 40, glue::glue(
       '{cohort_count_adorn(penguin_cohorts, excluded)}<br>
       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie)}<br>
       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male)}<br>
       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male_biscoe)}
-      '
-    )
-  ) +
-  geom_consort_box(
-    x = x_mid, y = box3_top, arrow_in = "top",
-    label = cohort_count_adorn(penguin_cohorts, biscoe_adelie_male)
-  ) +
+      '), "left",
+  0, 30, cohort_count_adorn(penguin_cohorts, biscoe_adelie_male), "top"
+)
+
+consort_arrows <- tribble(
+  ~x, ~xend, ~y, ~yend,
+  0, 0, 50, 30,
+  0, 20, 40, 40
+)
+
+ggplot() + 
+  geom_consort_arrow(data = consort_arrows) + 
+  geom_consort_box(data = consort_boxes) + 
   xlim(-50, 75) + 
   ylim(20, 60) + 
   theme_void()
-  #theme_linedraw() #a temporary theme while in progress
+
+###
+# doing it the old way
+# x_mid <- 0
+# y_top <- 50
+# box2_left <- 20
+# box2_y <- 40
+# box3_top <- 30
+# 
+# ggplot(data = consort_arrows) + 
+#   geom_consort_arrow() + 
+#   geom_consort_box(
+#     x = x_mid, y = y_top,
+#     label = cohort_count_adorn(penguin_cohorts, .full)
+#   ) + 
+#   geom_consort_box(
+#     x = box2_left, y = box2_y, arrow_in = "left",
+#     label = glue::glue(
+#       '{cohort_count_adorn(penguin_cohorts, excluded)}<br>
+#       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie)}<br>
+#       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male)}<br>
+#       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male_biscoe)}
+#       '
+#     )
+#   ) +
+#   geom_consort_box(
+#     x = x_mid, y = box3_top, arrow_in = "top",
+#     label = cohort_count_adorn(penguin_cohorts, biscoe_adelie_male)
+#   ) +
+#   xlim(-50, 75) + 
+#   ylim(20, 60) + 
+#   theme_void()
 ```
