@@ -77,7 +77,6 @@ penguin_cohorts <-
 ```{r example-consort}
 library(ggplot2)
 
-# arrow_in describes which side(s) of the box receive arrows
 consort_boxes <- tribble(
   ~name, ~x, ~y, ~label, 
   "full", 0, 50, cohort_count_adorn(penguin_cohorts, .full),
