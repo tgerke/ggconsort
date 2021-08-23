@@ -34,7 +34,12 @@ create_consort_data <- function(consort_boxes, consort_arrows) {
         select(-label) %>%
         rename(xend = x, yend = y),
       by = c("end" = "name")
-    )
+    ) %>%
+    mutate(
+      x = if_else(is.na(start_manual_x), x, as.numeric(start_manual_x)),
+      y = if_else(is.na(start_manual_y), y, as.numeric(start_manual_y))
+    ) %>% ##FIXME: also permit end_manual
+    select(-starts_with("start_manual"))
 
   return(list(boxes = boxes, arrows = arrows))
 }

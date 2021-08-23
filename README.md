@@ -30,14 +30,6 @@ next step, we will use `counts` to construct a basic data flow diagram.
 
 ``` r
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 library(ggconsort)
 library(palmerpenguins)
 
@@ -88,9 +80,9 @@ consort_boxes <- tribble(
 )
 
 consort_arrows <- tribble(
-   ~start, ~start_side,         ~end, ~end_side,
-    "full",   "bottom", "exclusions",    "left",
-    "full",   "bottom",      "final",     "top"
+   ~start, ~start_side,         ~end, ~end_side, ~start_manual_x, ~start_manual_y,
+    "full",   "bottom", "exclusions",    "left", 0, 40,
+    "full",   "bottom",      "final",     "top", NA, NA
 )
 
 consort_data <-  
@@ -105,12 +97,3 @@ ggplot() +
 ```
 
 <img src="man/figures/README-example-consort-1.png" width="100%" />
-
-``` r
-# needed consort_arrows to look like this
-# consort_arrows <- tribble(
-#   ~x, ~xend, ~y, ~yend,
-#   0, 0, 50, 30,
-#   0, 20, 40, 40
-# )
-```

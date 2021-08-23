@@ -35,7 +35,7 @@ devtools::install_github("tgerke/ggconsort")
 
 In the following, we filter the `penguins` data to only those from Biscoe island. In the same `dplyr` chain, we collect the number of distinct species overall (i.e. before the filter to Biscoe) and the number of distinct species on Biscoe into a list called `counts`. In the next step, we will use `counts` to construct a basic data flow diagram.
 
-```{r example-cohort}
+```{r example-cohort, message=FALSE}
 library(dplyr)
 library(ggconsort)
 library(palmerpenguins)
@@ -87,9 +87,9 @@ consort_boxes <- tribble(
 )
 
 consort_arrows <- tribble(
-   ~start, ~start_side,         ~end, ~end_side,
-    "full",   "bottom", "exclusions",    "left",
-    "full",   "bottom",      "final",     "top"
+   ~start, ~start_side,         ~end, ~end_side, ~start_manual_x, ~start_manual_y,
+    "full",   "bottom", "exclusions",    "left", 0, 40,
+    "full",   "bottom",      "final",     "top", NA, NA
 )
 
 consort_data <-  
@@ -101,11 +101,4 @@ ggplot() +
   xlim(-50, 75) + 
   ylim(20, 60) + 
   theme_void()
-
-# needed consort_arrows to look like this
-# consort_arrows <- tribble(
-#   ~x, ~xend, ~y, ~yend,
-#   0, 0, 50, 30,
-#   0, 20, 40, 40
-# )
 ```
