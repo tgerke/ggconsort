@@ -75,59 +75,37 @@ library(ggplot2)
 
 # arrow_in describes which side(s) of the box receive arrows
 consort_boxes <- tribble(
-  ~x, ~y, ~label, ~arrow_in,
-  0, 50, cohort_count_adorn(penguin_cohorts, .full), "none",
-  20, 40, glue::glue(
+  ~name, ~x, ~y, ~label, 
+  "full", 0, 50, cohort_count_adorn(penguin_cohorts, .full),
+  "exclusions", 20, 40, glue::glue(
       '{cohort_count_adorn(penguin_cohorts, excluded)}<br>
       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie)}<br>
       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male)}<br>
       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male_biscoe)}
-      '), "left",
-  0, 30, cohort_count_adorn(penguin_cohorts, biscoe_adelie_male), "top"
+      '), 
+  "final", 0, 30, cohort_count_adorn(penguin_cohorts, biscoe_adelie_male),
 )
 
 consort_arrows <- tribble(
-  ~x, ~xend, ~y, ~yend,
-  0, 0, 50, 30,
-  0, 20, 40, 40
+   ~start, ~start_side,         ~end, ~end_side,
+    "full",   "bottom", "exclusions",    "left",
+    "full",   "bottom",      "final",     "top"
 )
 
+consort_data <-  
+  create_consort_data(consort_boxes, consort_arrows)
+
 ggplot() + 
-  geom_consort_arrow(data = consort_arrows) + 
-  geom_consort_box(data = consort_boxes) + 
+  geom_consort_arrow(data = consort_data$arrows) + 
+  geom_consort_box(data = consort_data$boxes) + 
   xlim(-50, 75) + 
   ylim(20, 60) + 
   theme_void()
 
-###
-# doing it the old way
-# x_mid <- 0
-# y_top <- 50
-# box2_left <- 20
-# box2_y <- 40
-# box3_top <- 30
-# 
-# ggplot(data = consort_arrows) + 
-#   geom_consort_arrow() + 
-#   geom_consort_box(
-#     x = x_mid, y = y_top,
-#     label = cohort_count_adorn(penguin_cohorts, .full)
-#   ) + 
-#   geom_consort_box(
-#     x = box2_left, y = box2_y, arrow_in = "left",
-#     label = glue::glue(
-#       '{cohort_count_adorn(penguin_cohorts, excluded)}<br>
-#       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie)}<br>
-#       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male)}<br>
-#       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male_biscoe)}
-#       '
-#     )
-#   ) +
-#   geom_consort_box(
-#     x = x_mid, y = box3_top, arrow_in = "top",
-#     label = cohort_count_adorn(penguin_cohorts, biscoe_adelie_male)
-#   ) +
-#   xlim(-50, 75) + 
-#   ylim(20, 60) + 
-#   theme_void()
+# needed consort_arrows to look like this
+# consort_arrows <- tribble(
+#   ~x, ~xend, ~y, ~yend,
+#   0, 0, 50, 30,
+#   0, 20, 40, 40
+# )
 ```
