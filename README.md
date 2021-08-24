@@ -72,28 +72,26 @@ library(ggplot2)
 
 consort_boxes <- tribble(
   ~name, ~x, ~y, ~label, 
-  "full", 0, 50, cohort_count_adorn(penguin_cohorts, .full),
+  "full",        0, 50, cohort_count_adorn(penguin_cohorts, .full),
   "exclusions", 20, 40, glue::glue(
       '{cohort_count_adorn(penguin_cohorts, excluded)}<br>
       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie)}<br>
       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male)}<br>
       • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male_biscoe)}
       '), 
-  "final", 0, 30, cohort_count_adorn(penguin_cohorts, biscoe_adelie_male),
-  "high_bmi", -30, 10, cohort_count_adorn(penguin_cohorts, high_bmi),
-  "low_bmi", 30, 10, cohort_count_adorn(penguin_cohorts, low_bmi)
+  "final",       0, 30, cohort_count_adorn(penguin_cohorts, biscoe_adelie_male),
+  "high_bmi",  -30, 10, cohort_count_adorn(penguin_cohorts, high_bmi),
+  "low_bmi",    30, 10, cohort_count_adorn(penguin_cohorts, low_bmi)
 )
 
 consort_arrows <- tribble(
-   ~start, ~start_side,         ~end, ~end_side, 
-   ~start_manual_x, ~start_manual_y,
-   ~end_manual_x, ~end_manual_y,
-    "full",   "bottom", "exclusions",    "left", 0, 40, NA, NA,
-    "full",   "bottom",      "final",     "top", NA, NA, NA, NA,
-    "arrow",   "arrow",     "arrow",     "arrow", 0, 30, 0, 20,
-    "line",   "line",     "line",     "line", -30, 20, 30, 20,
-    "arrow",   "arrow",     "high_bmi",     "top", -30, 20, -30, NA,
-   "arrow",   "arrow",     "low_bmi",     "top", 30, 20, 30, NA
+   ~start, ~start_side, ~end, ~end_side, ~start_x, ~start_y, ~end_x, ~end_y,
+   "full",    "bottom", "exclusions",  "left",   0, 40,  NA, NA,
+   "full",    "bottom",      "final",   "top",  NA, NA,  NA, NA,
+  "arrow",     "arrow",      "arrow", "arrow",   0, 30,   0, 20,
+   "line",      "line",       "line",  "line", -30, 20,  30, 20,
+  "arrow",     "arrow",   "high_bmi",   "top", -30, 20, -30, NA,
+  "arrow",     "arrow",    "low_bmi",   "top",  30, 20,  30, NA
 )
 
 consort_data <-  

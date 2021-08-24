@@ -36,10 +36,10 @@ create_consort_data <- function(consort_boxes, consort_arrows) {
       by = c("end" = "name")
     ) %>%
     mutate(
-      x = if_else(is.na(start_manual_x), x, as.numeric(start_manual_x)),
-      y = if_else(is.na(start_manual_y), y, as.numeric(start_manual_y)),
-      xend = if_else(is.na(end_manual_x), xend, as.numeric(end_manual_x)),
-      yend = if_else(is.na(end_manual_y), yend, as.numeric(end_manual_y))
+      x = if_else(is.na(start_x), x, as.numeric(start_x)),
+      y = if_else(is.na(start_y), y, as.numeric(start_y)),
+      xend = if_else(is.na(end_x), xend, as.numeric(end_x)),
+      yend = if_else(is.na(end_y), yend, as.numeric(end_y))
     ) %>%
     select(-starts_with("start_manual"))
 
