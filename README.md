@@ -99,12 +99,11 @@ consort_data <-
 
 consort_data %>% 
   ggplot() + 
-  #geom_consort_arrow() + 
+  geom_consort_arrow() + 
   geom_consort_box() + 
   xlim(-50, 65) + 
   ylim(5, 60) + 
   theme_void()
-#> Warning: Removed 6 rows containing missing values (geom_rich_text).
 ```
 
 <img src="man/figures/README-example-consort-1.png" width="100%" />
