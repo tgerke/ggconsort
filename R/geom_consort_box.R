@@ -17,7 +17,7 @@ geom_consort_box <- function(
       lineheight = label_height,
       vjust = vjust, hjust = hjust, ...
     ),
-    data = . %>% filter(type == "box"),
+    data = function(d) filter(d, type == "box"),
     label.r = unit(0, units = "npc")
   )
 }
