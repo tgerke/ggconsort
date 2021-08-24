@@ -2,16 +2,36 @@
 % Please edit documentation in R/cohort_count.R
 \name{cohort_count}
 \alias{cohort_count}
+\alias{cohort_count_int}
+\alias{cohort_count_adorn}
 \title{Count the number of rows in each ggconsort cohort}
 \usage{
-cohort_count(.data)
+cohort_count(.data, ...)
+
+cohort_count_int(.data, ...)
+
+cohort_count_adorn(.data, ..., .label_fn = NULL)
 }
 \arguments{
 \item{.data}{A \code{ggconsort_cohort} object}
+
+\item{...}{Cohorts to include in the output, can be quoted or unquoted
+cohort names, or \pkg{tidyselect} helpers such as
+[tidyselect::starts_with()].}
 }
 \value{
-A \code{tibble} with cohort name, row number total, and label
+A \code{tibble} with cohort name, row number total, and label.
 }
 \description{
 Count the number of rows in each ggconsort cohort
 }
+\section{Functions}{
+\itemize{
+\item \code{cohort_count}: Returns a tibble with cohort name, row number total
+and label.
+
+\item \code{cohort_count_int}: Returns a named vector with cohort counts.
+
+\item \code{cohort_count_adorn}: Returns a cohort count in "(n = )" format
+}}
+

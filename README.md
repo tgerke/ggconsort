@@ -30,14 +30,6 @@ next step, we will use `counts` to construct a basic data flow diagram.
 
 ``` r
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 library(ggconsort)
 library(palmerpenguins)
 
@@ -50,14 +42,69 @@ penguin_cohorts <-
   cohort_define(
     adelie = .full %>% filter(species == "Adelie"),
     adelie_male = adelie %>% filter(sex == "male"),
-    biscoe = .full %>% filter(island == "Biscoe"),
-    biscoe_adelie_male = biscoe %>% semi_join(adelie_male, by = ".id")
+    biscoe_adelie_male = adelie_male %>% filter(island == "Biscoe"),
+    high_bmi = biscoe_adelie_male %>% filter(body_mass_g > 4000),
+    low_bmi = biscoe_adelie_male %>% filter(body_mass_g <= 4000),
+    # for counting exclusions
+    excluded = anti_join(.full, biscoe_adelie_male, by = ".id"),
+    excluded_not_adelie = anti_join(.full, adelie, by = ".id"),
+    excluded_not_adelie_male = anti_join(adelie, adelie_male, by = ".id"),
+    excluded_not_adelie_male_biscoe = anti_join(
+      adelie_male, biscoe_adelie_male, by = ".id"
+    )
   ) %>%
   # Provide text labels for cohorts ---------------------------
   cohort_label(
     adelie = "Adelie penguins",
     adelie_male = "Adelie male penguins",
-    biscoe = "Penguins on Biscoe island",
-    biscoe_adelie_male = "Male Adelie penguins on Biscoe island"
+    biscoe_adelie_male = "Male Adelie penguins on Biscoe island",
+    high_bmi = "Body mass > 4000g",
+    low_bmi = "Body mass ≤ 4000g",
+    excluded = "Excluded",
+    excluded_not_adelie = "Not Adelie",
+    excluded_not_adelie_male = "Not male",
+    excluded_not_adelie_male_biscoe = "Not on Biscoe island"
   )
 ```
+
+``` r
+library(ggplot2)
+
+consort_boxes <- tribble(
+  ~name, ~x, ~y, ~label, 
+  "full", 0, 50, cohort_count_adorn(penguin_cohorts, .full),
+  "exclusions", 20, 40, glue::glue(
+      '{cohort_count_adorn(penguin_cohorts, excluded)}<br>
+      • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie)}<br>
+      • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male)}<br>
+      • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male_biscoe)}
+      '), 
+  "final", 0, 30, cohort_count_adorn(penguin_cohorts, biscoe_adelie_male),
+  "high_bmi", -30, 10, cohort_count_adorn(penguin_cohorts, high_bmi),
+  "low_bmi", 30, 10, cohort_count_adorn(penguin_cohorts, low_bmi)
+)
+
+consort_arrows <- tribble(
+   ~start, ~start_side,         ~end, ~end_side, 
+   ~start_manual_x, ~start_manual_y,
+   ~end_manual_x, ~end_manual_y,
+    "full",   "bottom", "exclusions",    "left", 0, 40, NA, NA,
+    "full",   "bottom",      "final",     "top", NA, NA, NA, NA,
+    "arrow",   "arrow",     "arrow",     "arrow", 0, 30, 0, 20,
+    "line",   "line",     "line",     "line", -30, 20, 30, 20,
+    "arrow",   "arrow",     "high_bmi",     "top", -30, 20, -30, NA,
+   "arrow",   "arrow",     "low_bmi",     "top", 30, 20, 30, NA
+)
+
+consort_data <-  
+  create_consort_data(consort_boxes, consort_arrows)
+
+ggplot() + 
+  geom_consort_arrow(data = consort_data$arrows) + 
+  geom_consort_box(data = consort_data$boxes) + 
+  xlim(-50, 65) + 
+  ylim(5, 60) + 
+  theme_void()
+```
+
+<img src="man/figures/README-example-consort-1.png" width="100%" />
