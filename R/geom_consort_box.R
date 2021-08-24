@@ -13,7 +13,7 @@ geom_consort_box <- function(
 
   ggtext::geom_richtext(
     aes(
-      x = x, y = y, label = label,
+      x = box_x, y = box_y, label = label,
       lineheight = label_height,
       vjust = vjust, hjust = hjust, ...
     ),
