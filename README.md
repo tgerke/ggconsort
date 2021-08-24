@@ -99,8 +99,7 @@ consort_data <-
 
 consort_data %>% 
   ggplot() + 
-  geom_consort_arrow() + 
-  geom_consort_box() + 
+  geom_consort() + 
   xlim(-50, 65) + 
   ylim(5, 60) + 
   theme_void()
