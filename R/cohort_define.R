@@ -26,18 +26,14 @@ cohort_define <- function(.data, ...) {
     if (dplyr::is.grouped_df(cohort)) {
       # if the cohort is grouped, we add new cohorts for each group level,
       # separated by `.` and prefixed with the `cohort_name`
-      groups <-
-        cohort %>%
-        dplyr::group_keys() %>%
-        dplyr::mutate(
-          .key = apply(., 1, function(x) paste(to_snake_case(x), collapse = ".")),
-          .key = paste0(cohort_name, ".", .key)
-        )
+      groups <- cohort %>% dplyr::group_keys()
+      groups$.key <- apply(groups, 1, function(x) paste(to_snake_case(x), collapse = "."))
+      groups$.key <- paste0(groups$cohort_name, ".", groups$.key)
 
       cohort <-
         cohort %>%
-        dplyr::left_join(groups, by = head(names(groups), -1)) %>%
-        dplyr::group_by(.key) %>%
+        dplyr::left_join(groups, by = names(groups)[-length(groups)]) %>%
+        dplyr::group_by(.data$.key) %>%
         dplyr::group_nest()
 
       for (i in seq_len(nrow(cohort))) {

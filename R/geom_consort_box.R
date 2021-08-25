@@ -13,11 +13,11 @@ geom_consort_box <- function(
 
   ggtext::geom_richtext(
     ggplot2::aes(
-      x = box_x, y = box_y, label = label,
-      lineheight = label_height,
-      vjust = vjust, hjust = hjust, ...
+      x = .data$box_x, y = .data$box_y, label = .data$label,
+      lineheight = .data$label_height,
+      vjust = .data$vjust, hjust = .data$hjust, ...
     ),
-    data = function(d) dplyr::filter(d, type == "box"),
+    data = function(d) dplyr::filter(d, .data$type == "box"),
     label.r = ggplot2::unit(0, units = "npc")
   )
 }
