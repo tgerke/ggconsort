@@ -20,7 +20,10 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     dplyr,
+    ggtext,
+    glue,
     magrittr,
+    purrr,
     rlang,
     tidyselect
 RoxygenNote: 7.1.1
