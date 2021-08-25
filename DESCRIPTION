@@ -20,6 +20,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     dplyr,
+    ggplot2,
     ggtext,
     glue,
     magrittr,

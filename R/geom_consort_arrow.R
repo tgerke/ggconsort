@@ -4,15 +4,15 @@
 
 geom_consort_arrow <- function(x, xend, y, yend, data = NULL, ...) {
   list(
-    geom_segment(
-      aes(x = x, xend = xend, y= y, yend = yend),
-      data = function(d) filter(d, type == "arrow"),
+    ggplot2::geom_segment(
+      ggplot2::aes(x = x, xend = xend, y= y, yend = yend),
+      data = function(d) dplyr::filter(d, type == "arrow"),
       size = 0.15, linejoin = "mitre", lineend = "butt",
-      arrow = arrow(length = unit(2, "mm"), type = "closed")
+      arrow = ggplot2::arrow(length = ggplot2::unit(2, "mm"), type = "closed")
     ),
-    geom_segment(
-      aes(x = x, xend = xend, y= y, yend = yend),
-      data = function(d) filter(d, type == "line"),
+    ggplot2::geom_segment(
+      ggplot2::aes(x = x, xend = xend, y= y, yend = yend),
+      data = function(d) dplyr::filter(d, type == "line"),
       size = 0.15
     )
   )

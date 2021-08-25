@@ -12,12 +12,12 @@ geom_consort_box <- function(
 ) {
 
   ggtext::geom_richtext(
-    aes(
+    ggplot2::aes(
       x = box_x, y = box_y, label = label,
       lineheight = label_height,
       vjust = vjust, hjust = hjust, ...
     ),
-    data = function(d) filter(d, type == "box"),
-    label.r = unit(0, units = "npc")
+    data = function(d) dplyr::filter(d, type == "box"),
+    label.r = ggplot2::unit(0, units = "npc")
   )
 }
