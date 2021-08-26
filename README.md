@@ -12,11 +12,11 @@ The goal of ggconsort is to provide convenience functions for creating
 [CONSORT
 diagrams](http://www.consort-statement.org/consort-statement/flow-diagram)
 with ggplot2. ggconsort segments CONSORT creation into two stages: (1)
-CONSORT annotation capture at the time of data wrangling, and (2)
-diagram layout. With the introduction of a `ggconsort_cohort` class,
-stage (1) can be accomplished within dplyr chains. Specifically, the
-following functions are implemented inside a dplyr chain to define a
-`ggconsort_cohort`:
+counting and annotation at the time of data wrangling, and (2) diagram
+layout and aesthetic design. With the introduction of a
+`ggconsort_cohort` class, stage (1) can be accomplished within dplyr
+chains. Specifically, the following functions are implemented inside a
+dplyr chain to define a `ggconsort_cohort`:
 
 -   `cohort_start()` initializes a `ggconsort_cohort` object which
     contains a labeled copy of the source data
@@ -25,14 +25,14 @@ following functions are implemented inside a dplyr chain to define a
 -   `cohort_label()` adds labels to each named cohort within the
     `ggconsort_cohort` object
 
-Diagram layout in stage 2 is streamlined by ggconsort geoms:
+Stage 2 makes use of three ggconsort `consort_` verbs which equip the
+`ggconsort_cohort` object with `ggconsort` properties. The `ggconsort`
+object can be viewed directly with `ggplot()`.
 
--   `geom_consort()` plots a CONSORT diagram from a data frame
-    constructed with `create_consort_data()`
--   Internally, `geom_consort()` is a wrapper for 3 geoms which form the
-    basis for CONSORT plotting; these may be used for finer control:
-    `geom_consort_box()`, `geom_consort_arrow`, and
-    `geom_consort_line()`
+-   `consort_box_add` adds a text box to the CONSORT diagram
+-   `consort_arrow_add` adds an arrow to the CONSORT diagram
+-   `consort_line_add` adds a line (without an arrow head) the CONSORT
+    diagram
 
 ## Installation
 
@@ -46,87 +46,134 @@ devtools::install_github("tgerke/ggconsort")
 
 ## Usage
 
-Suppose that we would like to study male penguins on Biscoe island from
-the `palmerpenguins::penguins` dataset. Specifically, we want to compare
-features in male Biscoe penguins who have body mass &gt; 4000g to those
-with body mass ≤ 4000g. To arrive at our analytic data, we need to
-perform filtering operations, and we would like to represent that
-process in a CONSORT diagram.
+To demonstrate usage, we use a simulated dataset within ggconsort called
+`trial_data`, which contains 1200 patients who were approached to
+participate in a randomized trial comparing Drug A to Drug B.
 
-We first define the `ggconsort_cohort` object (`penguin_cohorts`) in the
+``` r
+library(ggconsort)
+
+head(trial_data)
+#> # A tibble: 6 x 5
+#>      id declined prior_chemo bone_mets treatment
+#>   <int>    <int>       <int>     <int> <chr>    
+#> 1 65464        0           0         0 Drug A   
+#> 2 48228        0           0         0 Drug B   
+#> 3 92586        0           0         0 Drug A   
+#> 4 70176        0           0         0 Drug B   
+#> 5 89052        0           0         0 Drug A   
+#> 6 97333        0           0         0 Drug B
+```
+
+Of the 1200 approached patients, only a subset were ultimately
+randomized: some declined to participate or were ineligible (due to
+prior chemotherapy or bone metastasis). We will use ggconsort verbs and
+geoms to count the patient flow and represent the process in a CONSORT
+diagram.
+
+We first define the `ggconsort_cohort` object (`study_cohorts`) in the
 following dplyr chain.
 
 ``` r
 library(dplyr)
-library(ggplot2)
-library(ggconsort)
-library(palmerpenguins)
 
-penguin_cohorts <- 
-  penguins %>%
-  mutate(.id = row_number()) %>% # a unique ID for joins
-  cohort_start("Penguins observerd by Palmer Station LTER") %>%
+study_cohorts <- 
+  trial_data %>%
+  cohort_start("Assessed for eligibility") %>%
   # Define cohorts using named expressions --------------------
   # Notice that you can use previously defined cohorts in subsequent steps
   cohort_define(
-    adelie = .full %>% filter(species == "Adelie"),
-    adelie_male = adelie %>% filter(sex == "male"),
-    biscoe_adelie_male = adelie_male %>% filter(island == "Biscoe"),
-    high_bm = biscoe_adelie_male %>% filter(body_mass_g > 4000),
-    low_bm = biscoe_adelie_male %>% filter(body_mass_g <= 4000),
-    # anti_join is useful for counting exclusions
-    excluded = anti_join(.full, biscoe_adelie_male, by = ".id"),
-    excluded_not_adelie = anti_join(.full, adelie, by = ".id"),
-    excluded_not_adelie_male = anti_join(adelie, adelie_male, by = ".id"),
-    excluded_not_adelie_male_biscoe = anti_join(
-      adelie_male, biscoe_adelie_male, by = ".id"
-    )
+    consented = .full %>% filter(declined != 1),
+    consented_chemonaive = consented %>% filter(prior_chemo != 1),
+    randomized = consented_chemonaive %>% filter(bone_mets != 1),
+    treatment_a = randomized %>% filter(treatment == "Drug A"),
+    treatment_b = randomized %>% filter(treatment == "Drug B"),
+    # anti_join is useful for counting exclusions -------------
+    excluded = anti_join(.full, randomized, by = "id"),
+    excluded_declined = anti_join(.full, consented, by = "id"),
+    excluded_chemo = anti_join(consented, consented_chemonaive, by = "id"),
+    excluded_mets = anti_join(consented_chemonaive, randomized, by = "id")
   ) %>%
   # Provide text labels for cohorts ---------------------------
   cohort_label(
-    adelie = "Adelie penguins",
-    adelie_male = "Adelie male penguins",
-    biscoe_adelie_male = "Male Adelie penguins on Biscoe island",
-    high_bm = "Body mass > 4000g",
-    low_bm = "Body mass ≤ 4000g",
+    consented = "Consented",
+    consented_chemonaive = "Chemotherapy naive",
+    randomized = "Randomized",
+    treatment_a = "Allocated to arm A",
+    treatment_b = "Allocated to arm B",
     excluded = "Excluded",
-    excluded_not_adelie = "Not Adelie",
-    excluded_not_adelie_male = "Not male",
-    excluded_not_adelie_male_biscoe = "Not on Biscoe island"
+    excluded_declined = "Declined to participate",
+    excluded_chemo = "Prior chemotherapy",
+    excluded_mets = "Bone metastasis"
   )
 ```
 
-Next, we define data frames for the CONSORT “boxes” and “arrows”,
-combine these data frames with `create_consort_data`, and plot with
-`geom_consort`.
+We can have a look at the `study_cohorts` object with its print and
+summary methods:
 
 ``` r
-penguin_cohorts <- penguin_cohorts %>%
+study_cohorts
+#> A ggconsort cohort of 1200 observations with 9 cohorts:
+#>   - consented (1141)
+#>   - consented_chemonaive (1028)
+#>   - randomized (938)
+#>   - treatment_a (469)
+#>   - treatment_b (469)
+#>   - excluded (262)
+#>   - excluded_declined (59)
+#>   - excluded_chemo (113)
+#>   ...and 1 more.
+
+summary(study_cohorts)
+#> # A tibble: 10 x 3
+#>    cohort               count label                   
+#>    <chr>                <int> <chr>                   
+#>  1 .full                 1200 Assessed for eligibility
+#>  2 consented             1141 Consented               
+#>  3 consented_chemonaive  1028 Chemotherapy naive      
+#>  4 randomized             938 Randomized              
+#>  5 treatment_a            469 Allocated to arm A      
+#>  6 treatment_b            469 Allocated to arm B      
+#>  7 excluded               262 Excluded                
+#>  8 excluded_declined       59 Declined to participate 
+#>  9 excluded_chemo         113 Prior chemotherapy      
+#> 10 excluded_mets           90 Bone metastasis
+```
+
+Next, we add CONSORT “boxes” and “arrows” with appropriate ggconsort
+verbs, and plot with the CONSORT diagram `ggplot`. Note the use of
+`cohort_count_adorn()`, which is a convenience function that glues
+cohort counts to their labels.
+
+``` r
+library(ggplot2)
+
+study_cohorts <- study_cohorts %>%
   consort_box_add(
-    "full", 0, 50, cohort_count_adorn(penguin_cohorts, .full)
+    "full", 0, 50, cohort_count_adorn(study_cohorts, .full)
   ) %>%
   consort_box_add(
     "exclusions", 20, 40, glue::glue(
-      '{cohort_count_adorn(penguin_cohorts, excluded)}<br>
-      • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie)}<br>
-      • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male)}<br>
-      • {cohort_count_adorn(penguin_cohorts, excluded_not_adelie_male_biscoe)}
+      '{cohort_count_adorn(study_cohorts, excluded)}<br>
+      • {cohort_count_adorn(study_cohorts, excluded_declined)}<br>
+      • {cohort_count_adorn(study_cohorts, excluded_chemo)}<br>
+      • {cohort_count_adorn(study_cohorts, excluded_mets)}
       ')
   ) %>%
   consort_box_add(
-    "final", 0, 30, cohort_count_adorn(penguin_cohorts, biscoe_adelie_male)
+    "randomized", 0, 30, cohort_count_adorn(study_cohorts, randomized)
   ) %>%
   consort_box_add(
-    "high_bm", -30, 10, cohort_count_adorn(penguin_cohorts, high_bm)
+    "arm_a", -30, 10, cohort_count_adorn(study_cohorts, treatment_a)
   ) %>%
   consort_box_add(
-    "low_bm", 30, 10, cohort_count_adorn(penguin_cohorts, low_bm)
+    "arm_b", 30, 10, cohort_count_adorn(study_cohorts, treatment_b)
   ) %>%
   consort_arrow_add(
     end = "exclusions", end_side = "left", start_x = 0, start_y = 40
   ) %>%
   consort_arrow_add(
-    "full", "bottom", "final", "top"
+    "full", "bottom", "randomized", "top"
   ) %>% 
   consort_arrow_add(
     start_x = 0, start_y = 30, end_x = 0, end_y = 20,
@@ -135,15 +182,15 @@ penguin_cohorts <- penguin_cohorts %>%
     start_x = -30, start_y = 20, end_x = 30, end_y = 20,
   ) %>% 
   consort_arrow_add(
-    end = "high_bm", end_side = "top", start_x = -30, start_y = 20
+    end = "arm_a", end_side = "top", start_x = -30, start_y = 20
   ) %>%
   consort_arrow_add(
-    end = "low_bm", end_side = "top", start_x = 30, start_y = 20
+    end = "arm_b", end_side = "top", start_x = 30, start_y = 20
   )
 
-penguin_cohorts %>%
+study_cohorts %>%
   ggplot() + 
-  # you can include other ggplot geoms, as needed
+  # you can include other ggplot geoms, as needed -------------
   ggtext::geom_richtext(
     aes(x = 0, y = 10, label = "Allocation"),
     fill = "#9bc0fc"
@@ -155,23 +202,23 @@ penguin_cohorts %>%
 <img src="man/figures/README-example-consort-1.png" width="100%" />
 
 At this point, we are ready for analysis. The following retrieves the
-desired data frame:
+desired data frame of randomized subjects:
 
 ``` r
-penguin_cohorts %>%
-  cohort_pull(biscoe_adelie_male)
-#> # A tibble: 22 x 9
-#>    species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
-#>    <fct>   <fct>           <dbl>         <dbl>             <int>       <int>
-#>  1 Adelie  Biscoe           37.7          18.7               180        3600
-#>  2 Adelie  Biscoe           38.2          18.1               185        3950
-#>  3 Adelie  Biscoe           38.8          17.2               180        3800
-#>  4 Adelie  Biscoe           40.6          18.6               183        3550
-#>  5 Adelie  Biscoe           40.5          18.9               180        3950
-#>  6 Adelie  Biscoe           40.1          18.9               188        4300
-#>  7 Adelie  Biscoe           42            19.5               200        4050
-#>  8 Adelie  Biscoe           41.4          18.6               191        3700
-#>  9 Adelie  Biscoe           40.6          18.8               193        3800
-#> 10 Adelie  Biscoe           37.6          19.1               194        3750
-#> # … with 12 more rows, and 3 more variables: sex <fct>, year <int>, .id <int>
+study_cohorts %>%
+  cohort_pull(randomized)
+#> # A tibble: 938 x 5
+#>       id declined prior_chemo bone_mets treatment
+#>    <int>    <int>       <int>     <int> <chr>    
+#>  1 65464        0           0         0 Drug A   
+#>  2 48228        0           0         0 Drug B   
+#>  3 92586        0           0         0 Drug A   
+#>  4 70176        0           0         0 Drug B   
+#>  5 89052        0           0         0 Drug A   
+#>  6 97333        0           0         0 Drug B   
+#>  7 80724        0           0         0 Drug A   
+#>  8 65186        0           0         0 Drug B   
+#>  9 48837        0           0         0 Drug A   
+#> 10 99005        0           0         0 Drug B   
+#> # … with 928 more rows
 ```
