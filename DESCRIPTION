@@ -30,3 +30,5 @@ Imports:
 RoxygenNote: 7.1.1
 Suggests: 
     palmerpenguins
+Depends: 
+    R (>= 2.10)

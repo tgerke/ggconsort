@@ -6,3 +6,4 @@
 ^dev/ggconsort-hex\.png$
 ^dev/ggconsort-hex\.svg$
 ^dev/ggconsort\.fig$
+^dev/sim-data\.R$
