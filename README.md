@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ggconsort
+# ggconsort <a href='https://github.com/tgerke/ggconsort'><img src='dev/ggconsort-hex.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 <!-- badges: end -->
