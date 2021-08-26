@@ -27,11 +27,11 @@ The goal of ggconsort is to provide convenience functions for creating [CONSORT 
 * `cohort_define()` constructs cohorts that are variations of the source data or other cohorts
 * `cohort_label()` adds labels to each named cohort within the `ggconsort_cohort` object
 
-Stage 2 makes use of three ggconsort `consort_` verbs which equip the `ggconsort_cohort` object with `ggconsort` properties. The `ggconsort` object can be viewed directly with `ggplot()`. 
+Stage 2 makes use of three ggconsort `consort_` verbs which equip the `ggconsort_cohort` object with `ggconsort` properties. The `ggconsort` object can be viewed with ggplot via `geom_consort() + theme_consort()`. `plot` and `print` methods are also available for the `ggconsort` object for visually iterative development.
 
-* `consort_box_add` adds a text box to the CONSORT diagram
-* `consort_arrow_add` adds an arrow to the CONSORT diagram
-* `consort_line_add` adds a line (without an arrow head) the CONSORT diagram
+* `consort_box_add()` adds a text box to the CONSORT diagram
+* `consort_arrow_add()` adds an arrow to the CONSORT diagram
+* `consort_line_add()` adds a line (without an arrow head) the CONSORT diagram
 
 ## Installation
 

@@ -27,11 +27,13 @@ dplyr chain to define a `ggconsort_cohort`:
 
 Stage 2 makes use of three ggconsort `consort_` verbs which equip the
 `ggconsort_cohort` object with `ggconsort` properties. The `ggconsort`
-object can be viewed directly with `ggplot()`.
+object can be viewed with ggplot via `geom_consort() + theme_consort()`.
+`plot` and `print` methods are also available for the `ggconsort` object
+for visually iterative development.
 
--   `consort_box_add` adds a text box to the CONSORT diagram
--   `consort_arrow_add` adds an arrow to the CONSORT diagram
--   `consort_line_add` adds a line (without an arrow head) the CONSORT
+-   `consort_box_add()` adds a text box to the CONSORT diagram
+-   `consort_arrow_add()` adds an arrow to the CONSORT diagram
+-   `consort_line_add()` adds a line (without an arrow head) the CONSORT
     diagram
 
 ## Installation
