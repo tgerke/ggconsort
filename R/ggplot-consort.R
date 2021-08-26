@@ -1,23 +1,23 @@
 #' @export
-ggplot.ggconsort_cohort <- function(
-  data = NULL, mapping = ggplot2::aes(), ..., environment = parent.frame()
-) {
-  data %>%
-    create_consort_data() %>%
-    ggplot2::ggplot(mapping = mapping, environment = environment, ...)
+ggplot.ggconsort_cohort <- function(data = NULL, ...) {
+  stop("make a consort")
 }
 
+#' @importFrom ggplot2 ggplot
 #' @export
-ggplot.ggconsort <- function(data, ...) {
+ggplot.ggconsort <-function(
+  data = NULL, mapping = ggplot2::aes(),
+  margin_h = 0, margin_v = 0, ...,
+  environment = parent.frame()
+) {
   data %>%
     create_consort_data() %>%
     ggplot2::ggplot() +
     geom_consort() +
-    ggplot2::theme_void()
+    theme_void() +
+    coord_cartesian(clip = "off") +
+    theme(plot.margin = margin(
+      margin_v, margin_h, margin_v, margin_h,
+      "line"
+    ))
 }
-
-# plot.ggconsort <- function(x, ...) {
-#   ggplot(x) + geom_consort_stuff() + theme_void()
-# }
-#
-# print.ggconsort <- plot.ggconsort

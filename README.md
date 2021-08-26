@@ -141,12 +141,10 @@ penguin_cohorts <- penguin_cohorts %>%
     end = "low_bm", end_side = "top", start_x = 30, start_y = 20
   )
 
-create_consort_data(penguin_cohorts) %>%
+penguin_cohorts %>%
   ggplot() + 
-  geom_consort() + 
-  xlim(-50, 65) + 
-  ylim(5, 60) + 
-  theme_void()
+  xlim(-50, 60) + 
+  ylim(5, 55) 
 ```
 
 <img src="man/figures/README-example-consort-1.png" width="100%" />
