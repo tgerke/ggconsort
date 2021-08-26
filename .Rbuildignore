@@ -7,3 +7,6 @@
 ^dev/ggconsort-hex\.svg$
 ^dev/ggconsort\.fig$
 ^dev/sim-data\.R$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
