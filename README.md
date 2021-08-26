@@ -190,13 +190,13 @@ study_cohorts <- study_cohorts %>%
 
 study_cohorts %>%
   ggplot() + 
+  geom_consort() +
+  theme_consort(margin_h = 8, margin_v = 1) +
   # you can include other ggplot geoms, as needed -------------
   ggtext::geom_richtext(
     aes(x = 0, y = 10, label = "Allocation"),
     fill = "#9bc0fc"
-  ) + 
-  xlim(-50, 60) + 
-  ylim(5, 55) 
+  )
 ```
 
 <img src="man/figures/README-example-consort-1.png" width="100%" />
