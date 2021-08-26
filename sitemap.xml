@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://tgerke.github.io/ggconsort/index.html</loc>
+  </url>
+  <url>
+    <loc>https://tgerke.github.io/ggconsort/reference/cohort_count.html</loc>
+  </url>
+  <url>
+    <loc>https://tgerke.github.io/ggconsort/reference/cohort_define.html</loc>
+  </url>
+  <url>
+    <loc>https://tgerke.github.io/ggconsort/reference/cohort_label.html</loc>
+  </url>
+  <url>
+    <loc>https://tgerke.github.io/ggconsort/reference/cohort_start.html</loc>
+  </url>
+  <url>
+    <loc>https://tgerke.github.io/ggconsort/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>https://tgerke.github.io/ggconsort/reference/trial_data.html</loc>
+  </url>
+</urlset>
