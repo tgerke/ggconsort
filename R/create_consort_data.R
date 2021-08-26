@@ -19,6 +19,16 @@ create_consort_data <- function(.data, ...) {
       start, start_side, end, end_side,
       start_x, start_y, end_x, end_y
     )
+  # if no arrows are set up, allow the joins so the box prints
+  if (nrow(consort_arrows) == 0) {
+    consort_arrows <- bind_rows(
+      consort_arrows,
+      tibble(
+        start = NA, start_side = NA, end = NA, end_side = NA,
+        start_x = NA, start_y = NA, end_x = NA, end_y = NA
+      )
+    )
+  }
 
   consort_lines <- .data$consort %>%
     dplyr::filter(type == "line") %>%
@@ -26,6 +36,16 @@ create_consort_data <- function(.data, ...) {
       start, start_side, end, end_side,
       start_x, start_y, end_x, end_y
     )
+  # if no lines are set up, allow the joins so the box prints
+  if (nrow(consort_lines) == 0) {
+    consort_lines <- bind_rows(
+      consort_lines,
+      tibble(
+        start = NA, start_side = NA, end = NA, end_side = NA,
+        start_x = NA, start_y = NA, end_x = NA, end_y = NA
+      )
+    )
+  }
 
   boxes <- dplyr::left_join(
     consort_boxes,
@@ -95,5 +115,8 @@ create_consort_data <- function(.data, ...) {
     boxes,
     bind_rows(arrows, lines),
     by = "type"
-  )
+  ) %>%
+    dplyr::filter(
+      rowSums(is.na(.)) != (ncol(.) - 1)
+    )
 }

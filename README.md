@@ -150,7 +150,7 @@ cohort counts to their labels.
 ``` r
 library(ggplot2)
 
-study_cohorts <- study_cohorts %>%
+study_consort <- study_cohorts %>%
   consort_box_add(
     "full", 0, 50, cohort_count_adorn(study_cohorts, .full)
   ) %>%
@@ -190,7 +190,7 @@ study_cohorts <- study_cohorts %>%
     end = "arm_b", end_side = "top", start_x = 30, start_y = 20
   )
 
-study_cohorts %>%
+study_consort %>%
   ggplot() + 
   geom_consort() +
   theme_consort(margin_h = 8, margin_v = 1) +
