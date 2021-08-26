@@ -101,7 +101,7 @@ combine these data frames with `create_consort_data`, and plot with
 `geom_consort`.
 
 ``` r
-penguin_consort <- penguin_cohorts %>%
+penguin_cohorts <- penguin_cohorts %>%
   consort_box_add(
     "full", 0, 50, cohort_count_adorn(penguin_cohorts, .full)
   ) %>%
@@ -123,7 +123,7 @@ penguin_consort <- penguin_cohorts %>%
     "low_bm", 30, 10, cohort_count_adorn(penguin_cohorts, low_bm)
   ) %>%
   consort_arrow_add(
-    "full", "bottom", "exclusions", "left", 0, 40
+    end = "exclusions", end_side = "left", start_x = 0, start_y = 40
   ) %>%
   consort_arrow_add(
     "full", "bottom", "final", "top"
@@ -141,7 +141,7 @@ penguin_consort <- penguin_cohorts %>%
     end = "low_bm", end_side = "top", start_x = 30, start_y = 20
   )
 
-create_consort_data(penguin_consort) %>%
+create_consort_data(penguin_cohorts) %>%
   ggplot() + 
   geom_consort() + 
   xlim(-50, 65) + 
