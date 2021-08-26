@@ -143,6 +143,11 @@ penguin_cohorts <- penguin_cohorts %>%
 
 penguin_cohorts %>%
   ggplot() + 
+  # you can include other ggplot geoms, as needed
+  ggtext::geom_richtext(
+    aes(x = 0, y = 10, label = "Allocation"),
+    fill = "#9bc0fc"
+  ) + 
   xlim(-50, 60) + 
   ylim(5, 55) 
 ```
