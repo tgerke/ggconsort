@@ -14,7 +14,14 @@ create_consort_data <- function(.data, ...) {
     dplyr::select(name, box_x, box_y, label)
 
   consort_arrows <- .data$consort %>%
-    dplyr::filter(type %in% c("arrow", "line")) %>%
+    dplyr::filter(type == "arrow") %>%
+    dplyr::select(
+      start, start_side, end, end_side,
+      start_x, start_y, end_x, end_y
+    )
+
+  consort_lines <- .data$consort %>%
+    dplyr::filter(type == "line") %>%
     dplyr::select(
       start, start_side, end, end_side,
       start_x, start_y, end_x, end_y
@@ -42,13 +49,37 @@ create_consort_data <- function(.data, ...) {
 
   arrows <- dplyr::left_join(
     consort_arrows,
-    consort_boxes %>% dplyr::select(-label),
+    consort_boxes %>%
+      dplyr::select(-label) %>%
+      dplyr::rename(x = box_x, y = box_y),
     by = c("start" = "name")
   ) %>%
     dplyr::left_join(
       consort_boxes %>%
         dplyr::select(-label) %>%
-        dplyr::rename(xend = x, yend = y),
+        dplyr::rename(xend = box_x, yend = box_y),
+      by = c("end" = "name")
+    ) %>%
+    dplyr::mutate(
+      x = dplyr::if_else(!is.na(start_x), as.numeric(start_x), x),
+      y = dplyr::if_else(!is.na(start_y), as.numeric(start_y), y),
+      xend = dplyr::if_else(!is.na(end_x), as.numeric(end_x), xend),
+      yend = dplyr::if_else(!is.na(end_y), as.numeric(end_y), yend),
+      type = "arrow"
+    ) %>%
+    dplyr::select(-dplyr::starts_with("start_"), -dplyr::starts_with("end_"))
+
+  lines <- dplyr::left_join(
+    consort_lines,
+    consort_boxes %>%
+      dplyr::select(-label) %>%
+      dplyr::rename(x = box_x, y = box_y),
+    by = c("start" = "name")
+  ) %>%
+    dplyr::left_join(
+      consort_boxes %>%
+        dplyr::select(-label) %>%
+        dplyr::rename(xend = box_x, yend = box_y),
       by = c("end" = "name")
     ) %>%
     dplyr::mutate(
@@ -56,9 +87,13 @@ create_consort_data <- function(.data, ...) {
       y = dplyr::if_else(is.na(start_y), y, as.numeric(start_y)),
       xend = dplyr::if_else(is.na(end_x), xend, as.numeric(end_x)),
       yend = dplyr::if_else(is.na(end_y), yend, as.numeric(end_y)),
-      type = dplyr::if_else(start == "line", "line", "arrow")
+      type = "line"
     ) %>%
     dplyr::select(-dplyr::starts_with("start_"), -dplyr::starts_with("end_"))
 
-  dplyr::full_join(boxes, arrows, by = "type")
+  dplyr::full_join(
+    boxes,
+    bind_rows(arrows, lines),
+    by = "type"
+  )
 }
