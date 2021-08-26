@@ -185,7 +185,7 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 
-<span class="va">study_cohorts</span> <span class="op">&lt;-</span> <span class="va">study_cohorts</span> <span class="op">%&gt;%</span>
+<span class="va">study_consort</span> <span class="op">&lt;-</span> <span class="va">study_cohorts</span> <span class="op">%&gt;%</span>
   <span class="fu">consort_box_add</span><span class="op">(</span>
     <span class="st">"full"</span>, <span class="fl">0</span>, <span class="fl">50</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">.full</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">%&gt;%</span>
@@ -225,7 +225,7 @@
     end <span class="op">=</span> <span class="st">"arm_b"</span>, end_side <span class="op">=</span> <span class="st">"top"</span>, start_x <span class="op">=</span> <span class="fl">30</span>, start_y <span class="op">=</span> <span class="fl">20</span>
   <span class="op">)</span>
 
-<span class="va">study_cohorts</span> <span class="op">%&gt;%</span>
+<span class="va">study_consort</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">geom_consort</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">theme_consort</span><span class="op">(</span>margin_h <span class="op">=</span> <span class="fl">8</span>, margin_v <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
