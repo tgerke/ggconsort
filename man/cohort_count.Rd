@@ -18,6 +18,8 @@ cohort_count_adorn(.data, ..., .label_fn = NULL)
 \item{...}{Cohorts to include in the output, can be quoted or unquoted
 cohort names, or \pkg{tidyselect} helpers such as
 [tidyselect::starts_with()].}
+
+\item{.label_fn}{An optional custom function for formatting cohort counts}
 }
 \value{
 A \code{tibble} with cohort name, row number total, and label.
@@ -32,6 +34,33 @@ and label.
 
 \item \code{cohort_count_int}: Returns a named vector with cohort counts.
 
-\item \code{cohort_count_adorn}: Returns a cohort count in "(n = )" format
+\item \code{cohort_count_adorn}: Returns a cohort count in "(n = )" or
+other custom format
 }}
 
+\examples{
+cohorts <- trial_data \%>\%
+  cohort_start("Assessed for eligibility") \%>\%
+    cohort_define(
+      consented = .full \%>\% dplyr::filter(declined != 1),
+      consented_chemonaive = consented \%>\% dplyr::filter(prior_chemo != 1)
+    ) \%>\%
+    cohort_label(
+      consented = "Consented",
+      consented_chemonaive = "Chemotherapy naive"
+    )
+
+cohorts \%>\%
+  cohort_count()
+
+cohorts \%>\%
+  cohort_count_adorn()
+
+cohorts \%>\%
+  cohort_count_adorn(
+    starts_with("consented"),
+    .label_fn = function(cohort, label, count, ...) {
+      glue::glue("{count} {label} ({cohort})")
+    }
+  )
+}

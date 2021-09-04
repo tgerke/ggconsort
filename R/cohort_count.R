@@ -11,8 +11,7 @@
 #'   and label.
 #' @export
 #'
-### FIXME: to add @examples
-### FIXME: add option to return distinct counts of a given variable
+
 cohort_count <- function(.data, ...) {
   assert_cohort(.data)
 
@@ -46,6 +45,7 @@ cohort_count <- function(.data, ...) {
 }
 
 #' @describeIn cohort_count Returns a named vector with cohort counts.
+#'
 #' @export
 cohort_count_int <- function(.data, ...) {
   counts <- cohort_count(.data, ...)
@@ -57,8 +57,37 @@ default_label_count <- function(...) {
   glue::glue("{label} (n = {count})", ..., .envir = parent.frame())
 }
 
-#' @describeIn cohort_count Returns a cohort count in "(n = )" format
+#' @describeIn cohort_count Returns a cohort count in "(n = )" or
+#'   other custom format
+#'
+#' @param .label_fn An optional custom function for formatting cohort counts
+#'
 #' @export
+#' @examples
+#' cohorts <- trial_data %>%
+#'   cohort_start("Assessed for eligibility") %>%
+#'     cohort_define(
+#'       consented = .full %>% dplyr::filter(declined != 1),
+#'       consented_chemonaive = consented %>% dplyr::filter(prior_chemo != 1)
+#'     ) %>%
+#'     cohort_label(
+#'       consented = "Consented",
+#'       consented_chemonaive = "Chemotherapy naive"
+#'     )
+#'
+#' cohorts %>%
+#'   cohort_count()
+#'
+#' cohorts %>%
+#'   cohort_count_adorn()
+#'
+#' cohorts %>%
+#'   cohort_count_adorn(
+#'     starts_with("consented"),
+#'     .label_fn = function(cohort, label, count, ...) {
+#'       glue::glue("{count} {label} ({cohort})")
+#'     }
+#'   )
 cohort_count_adorn <- function(.data, ..., .label_fn = NULL) {
   counts <- cohort_count(.data, ...)
   counts$label <- counts$label %||% ""
@@ -69,17 +98,3 @@ cohort_count_adorn <- function(.data, ..., .label_fn = NULL) {
   .label_fn <- .label_fn %||% default_label_count
   purrr::pmap_chr(counts, .label_fn)
 }
-# to add to docs: here's a good example of a custom label_fn
-# penguin_cohorts %>%
-#   cohort_count_adorn(
-#     starts_with("adelie"),
-#     .label_fn = ~ sprintf("%s (%s)", .x, .y)
-#   )
-# --or--
-# penguin_cohorts %>%
-#   cohort_count_adorn(
-#     starts_with("adelie"),
-#     .label_fn = function(cohort, label, count, ...) {
-#       glue::glue("{cohort} - {label} - {count}")
-#     }
-#   )
