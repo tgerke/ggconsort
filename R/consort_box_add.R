@@ -3,9 +3,9 @@
 consort_box_add <- function(.data, name, x, y, label) {
   .data <- consort_start(.data)
 
-  .data$consort <- bind_rows(
+  .data$consort <- dplyr::bind_rows(
     .data$consort,
-    tibble(
+    dplyr::tibble(
       name = name, box_x = x, box_y = y, label = label,
       type = "box",
       start = NA, start_side = NA, end = NA, end_side = NA,

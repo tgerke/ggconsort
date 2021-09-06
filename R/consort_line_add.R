@@ -6,9 +6,9 @@ consort_line_add <- function(
 ) {
   .data <- consort_start(.data)
 
-  .data$consort <- bind_rows(
+  .data$consort <- dplyr::bind_rows(
     .data$consort,
-    tibble(
+    dplyr::tibble(
       name = NA, box_x = NA, box_y = NA, label = NA,
       type = "line",
       start = start, start_side = start_side, end = end, end_side = end_side,
