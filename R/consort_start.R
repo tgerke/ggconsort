@@ -1,4 +1,6 @@
-#' @export
+#' Initialize a ggconsort object for plotting. Used internally.
+#' @param .data A \code{ggconsort_cohort} object
+#' @keywords Internal
 
 consort_start <- function(.data) {
   if (inherits(.data, "ggconsort")) {
