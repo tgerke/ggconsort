@@ -1,5 +1,9 @@
 url: https://tgerke.github.io/ggconsort
 
+template:
+  params:
+    bootswatch: simplex
+
 navbar:
   type: default
   right:

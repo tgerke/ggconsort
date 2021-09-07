@@ -1,0 +1,31 @@
+.navbar {
+  background-color: #57786f;
+  border-color: #735058;
+  color: #ffffff;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: #ffffff;
+}
+.navbar-default .navbar-nav > li > a:hover {
+  color: #735058;
+}
+
+.navbar-default .navbar-link {
+  color: #ffffff;
+}
+.navbar-default .navbar-link:hover {
+  color: #ffffff;
+}
+
+.fas {
+  color: #ffffff;
+}
+
+a {
+  color: #57786f;
+}
+
+a:hover {
+  color: #735058;
+}
