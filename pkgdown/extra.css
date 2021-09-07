@@ -1,31 +1,45 @@
+:root {
+  --primary: #57786f;
+  --secondary: #735058;
+}
+
 .navbar {
-  background-color: #57786f;
-  border-color: #735058;
+  background-color: var(--primary);
+  border-color: var(--secondary);
+}
+
+.navbar-default .navbar-link,
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:focus {
   color: #ffffff;
 }
 
-.navbar-default .navbar-nav > li > a {
-  color: #ffffff;
-}
-.navbar-default .navbar-nav > li > a:hover {
-  color: #735058;
-}
-
-.navbar-default .navbar-link {
-  color: #ffffff;
-}
-.navbar-default .navbar-link:hover {
-  color: #ffffff;
+a:hover,
+.fas:hover,
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-link:hover,
+.navbar-default .navbar-nav > .active > a:hover {
+  color: var(--secondary);
 }
 
 .fas {
   color: #ffffff;
 }
 
-a {
-  color: #57786f;
+a, code a, pre a {
+  color: var(--primary);
 }
 
-a:hover {
-  color: #735058;
+.label-default {
+  background-color: var(--secondary);
+}
+
+.btn-primary, .btn-primary:hover {
+    background-image: linear-gradient(var(--secondary), var(--secondary) 6%, var(--secondary));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffe72510', endColorstr='#ffcb210e', GradientType=0);
+    background-repeat: no-repeat;
+    -webkit-filter: none;
+    filter: none;
+    border: 1px solid var(--secondary);
 }

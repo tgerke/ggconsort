@@ -4,6 +4,12 @@ template:
   params:
     bootswatch: simplex
 
+authors:
+  Travis Gerke:
+    href: "https://travisgerke.com/"
+  Garrick Aden-Buie:
+    href: "https://www.garrickadenbuie.com/"
+
 navbar:
   type: default
   right:
