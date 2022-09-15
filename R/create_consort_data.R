@@ -21,7 +21,7 @@ create_consort_data <- function(.data, ...) {
     )
   # if no arrows are set up, allow the joins so the box prints
   if (nrow(consort_arrows) == 0) {
-    consort_arrows <- bind_rows(
+    consort_arrows <- dplyr::bind_rows(
       consort_arrows,
       tibble(
         start = NA, start_side = NA, end = NA, end_side = NA,
@@ -38,7 +38,7 @@ create_consort_data <- function(.data, ...) {
     )
   # if no lines are set up, allow the joins so the box prints
   if (nrow(consort_lines) == 0) {
-    consort_lines <- bind_rows(
+    consort_lines <- dplyr::bind_rows(
       consort_lines,
       tibble(
         start = NA, start_side = NA, end = NA, end_side = NA,
@@ -113,7 +113,7 @@ create_consort_data <- function(.data, ...) {
 
   dplyr::full_join(
     boxes,
-    bind_rows(arrows, lines),
+    dplyr::bind_rows(arrows, lines),
     by = "type"
   ) %>%
     dplyr::filter(
