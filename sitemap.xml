@@ -1,33 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://tgerke.github.io/ggconsort/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tgerke.github.io/ggconsort/reference/cohort_count.html</loc>
-  </url>
-  <url>
-    <loc>https://tgerke.github.io/ggconsort/reference/cohort_define.html</loc>
-  </url>
-  <url>
-    <loc>https://tgerke.github.io/ggconsort/reference/cohort_label.html</loc>
-  </url>
-  <url>
-    <loc>https://tgerke.github.io/ggconsort/reference/cohort_pull.html</loc>
-  </url>
-  <url>
-    <loc>https://tgerke.github.io/ggconsort/reference/cohort_select.html</loc>
-  </url>
-  <url>
-    <loc>https://tgerke.github.io/ggconsort/reference/cohort_start.html</loc>
-  </url>
-  <url>
-    <loc>https://tgerke.github.io/ggconsort/reference/consort_start.html</loc>
-  </url>
-  <url>
-    <loc>https://tgerke.github.io/ggconsort/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://tgerke.github.io/ggconsort/reference/trial_data.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://tgerke.github.io/ggconsort/404.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/LICENSE-text.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/LICENSE.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/articles/index.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/articles/prisma.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/authors.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/index.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/news/index.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/cohort_count.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/cohort_define.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/cohort_label.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/cohort_pull.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/cohort_select.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/cohort_start.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/consort_box_add.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/consort_start.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/create_consort_data.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/geom_consort.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/index.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/pipe.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/theme_consort.html</loc></url>
+<url><loc>https://tgerke.github.io/ggconsort/reference/trial_data.html</loc></url>
 </urlset>
+

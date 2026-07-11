@@ -6,13 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Create CONSORT Diagrams • ggconsort</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/simplex/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/simplex/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -27,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -39,27 +40,36 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ggconsort</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
+  <a href="reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+
+    <span class="caret"></span>
   </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/prisma.html">PRISMA flow diagrams with ggconsort</a>
+    </li>
+  </ul>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/tgerke/ggconsort">
+  <a href="https://github.com/tgerke/ggconsort" class="external-link">
     <span class="fa fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -70,20 +80,19 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="ggconsort-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#ggconsort-" class="anchor"></a>ggconsort <img src="reference/figures/logo.png" align="right" height="139">
+<div class="section level1">
+<div class="page-header"><h1 id="ggconsort-">ggconsort <img src="reference/figures/logo.png" align="right" height="139"><a class="anchor" aria-label="anchor" href="#ggconsort-"></a>
 </h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
-<p>The goal of ggconsort is to provide convenience functions for creating <a href="http://www.consort-statement.org/consort-statement/flow-diagram">CONSORT diagrams</a> with ggplot2. ggconsort segments CONSORT creation into two stages: (1) counting and annotation at the time of data wrangling, and (2) diagram layout and aesthetic design. With the introduction of a <code>ggconsort_cohort</code> class, stage (1) can be accomplished within dplyr chains. Specifically, the following functions are implemented inside a dplyr chain to define a <code>ggconsort_cohort</code>:</p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>The goal of ggconsort is to provide convenience functions for creating <a href="http://www.consort-statement.org/consort-statement/flow-diagram" class="external-link">CONSORT diagrams</a> with ggplot2. ggconsort segments CONSORT creation into two stages: (1) counting and annotation at the time of data wrangling, and (2) diagram layout and aesthetic design. With the introduction of a <code>ggconsort_cohort</code> class, stage (1) can be accomplished within dplyr chains. Specifically, the following functions are implemented inside a dplyr chain to define a <code>ggconsort_cohort</code>:</p>
 <ul>
 <li>
 <code><a href="reference/cohort_start.html">cohort_start()</a></code> initializes a <code>ggconsort_cohort</code> object which contains a labeled copy of the source data</li>
@@ -95,210 +104,242 @@
 <p>Stage 2 makes use of three ggconsort <code>consort_</code> verbs which equip the <code>ggconsort_cohort</code> object with <code>ggconsort</code> properties. The <code>ggconsort</code> object can be viewed with ggplot via <code>geom_consort() + theme_consort()</code>. <code>plot</code> and <code>print</code> methods are also available for the <code>ggconsort</code> object for visually iterative development.</p>
 <ul>
 <li>
-<code>consort_box_add()</code> adds a text box to the CONSORT diagram</li>
+<code><a href="reference/consort_box_add.html">consort_box_add()</a></code> adds a text box to the CONSORT diagram</li>
 <li>
-<code>consort_arrow_add()</code> adds an arrow to the CONSORT diagram</li>
+<code><a href="reference/consort_box_add.html">consort_arrow_add()</a></code> adds an arrow to the CONSORT diagram</li>
 <li>
-<code>consort_line_add()</code> adds a line (without an arrow head) the CONSORT diagram</li>
+<code><a href="reference/consort_box_add.html">consort_line_add()</a></code> adds a line (without an arrow head) the CONSORT diagram</li>
 </ul>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of ggconsort from <a href="https://github.com/tgerke/ggconsort">GitHub</a> with:</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the released version of ggconsort from <a href="https://github.com/tgerke/ggconsort" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"tgerke/ggconsort"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"tgerke/ggconsort"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="usage" class="section level2">
-<h2 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h2>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
 <p>To demonstrate usage, we use a simulated dataset within ggconsort called <code>trial_data</code>, which contains 1200 patients who were approached to participate in a randomized trial comparing Drug A to Drug B.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tgerke.github.io/ggconsort">ggconsort</a></span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">trial_data</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 6 x 5</span>
-<span class="co">#&gt;      id declined prior_chemo bone_mets treatment</span>
-<span class="co">#&gt;   &lt;int&gt;    &lt;int&gt;       &lt;int&gt;     &lt;int&gt; &lt;chr&gt;    </span>
-<span class="co">#&gt; 1 65464        0           0         0 Drug A   </span>
-<span class="co">#&gt; 2 48228        0           0         0 Drug B   </span>
-<span class="co">#&gt; 3 92586        0           0         0 Drug A   </span>
-<span class="co">#&gt; 4 70176        0           0         0 Drug B   </span>
-<span class="co">#&gt; 5 89052        0           0         0 Drug A   </span>
-<span class="co">#&gt; 6 97333        0           0         0 Drug B</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tgerke.github.io/ggconsort">ggconsort</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">trial_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 5</span></span>
+<span><span class="co">#&gt;      id declined prior_chemo bone_mets treatment</span></span>
+<span><span class="co">#&gt;   &lt;int&gt;    &lt;int&gt;       &lt;int&gt;     &lt;int&gt; &lt;chr&gt;    </span></span>
+<span><span class="co">#&gt; 1 65464        0           0         0 Drug A   </span></span>
+<span><span class="co">#&gt; 2 48228        0           0         0 Drug B   </span></span>
+<span><span class="co">#&gt; 3 92586        0           0         0 Drug A   </span></span>
+<span><span class="co">#&gt; 4 70176        0           0         0 Drug B   </span></span>
+<span><span class="co">#&gt; 5 89052        0           0         0 Drug A   </span></span>
+<span><span class="co">#&gt; 6 97333        0           0         0 Drug B</span></span></code></pre></div>
 <p>Of the 1200 approached patients, only a subset were ultimately randomized: some declined to participate or were ineligible (due to prior chemotherapy or bone metastasis). We will use ggconsort verbs and geoms to count the patient flow and represent the process in a CONSORT diagram.</p>
 <p>We first define the <code>ggconsort_cohort</code> object (<code>study_cohorts</code>) in the following dplyr chain.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
-
-<span class="va">study_cohorts</span> <span class="op">&lt;-</span> 
-  <span class="va">trial_data</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/cohort_start.html">cohort_start</a></span><span class="op">(</span><span class="st">"Assessed for eligibility"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="co"># Define cohorts using named expressions --------------------</span>
-  <span class="co"># Notice that you can use previously defined cohorts in subsequent steps</span>
-  <span class="fu"><a href="reference/cohort_define.html">cohort_define</a></span><span class="op">(</span>
-    consented <span class="op">=</span> <span class="va">.full</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">declined</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span>,
-    consented_chemonaive <span class="op">=</span> <span class="va">consented</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">prior_chemo</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span>,
-    randomized <span class="op">=</span> <span class="va">consented_chemonaive</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">bone_mets</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span>,
-    treatment_a <span class="op">=</span> <span class="va">randomized</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Drug A"</span><span class="op">)</span>,
-    treatment_b <span class="op">=</span> <span class="va">randomized</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Drug B"</span><span class="op">)</span>,
-    <span class="co"># anti_join is useful for counting exclusions -------------</span>
-    excluded <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html">anti_join</a></span><span class="op">(</span><span class="va">.full</span>, <span class="va">randomized</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>,
-    excluded_declined <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html">anti_join</a></span><span class="op">(</span><span class="va">.full</span>, <span class="va">consented</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>,
-    excluded_chemo <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html">anti_join</a></span><span class="op">(</span><span class="va">consented</span>, <span class="va">consented_chemonaive</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>,
-    excluded_mets <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html">anti_join</a></span><span class="op">(</span><span class="va">consented_chemonaive</span>, <span class="va">randomized</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="co"># Provide text labels for cohorts ---------------------------</span>
-  <span class="fu"><a href="reference/cohort_label.html">cohort_label</a></span><span class="op">(</span>
-    consented <span class="op">=</span> <span class="st">"Consented"</span>,
-    consented_chemonaive <span class="op">=</span> <span class="st">"Chemotherapy naive"</span>,
-    randomized <span class="op">=</span> <span class="st">"Randomized"</span>,
-    treatment_a <span class="op">=</span> <span class="st">"Allocated to arm A"</span>,
-    treatment_b <span class="op">=</span> <span class="st">"Allocated to arm B"</span>,
-    excluded <span class="op">=</span> <span class="st">"Excluded"</span>,
-    excluded_declined <span class="op">=</span> <span class="st">"Declined to participate"</span>,
-    excluded_chemo <span class="op">=</span> <span class="st">"Prior chemotherapy"</span>,
-    excluded_mets <span class="op">=</span> <span class="st">"Bone metastasis"</span>
-  <span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">study_cohorts</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">trial_data</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/cohort_start.html">cohort_start</a></span><span class="op">(</span><span class="st">"Assessed for eligibility"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="co"># Define cohorts using named expressions --------------------</span></span>
+<span>  <span class="co"># Notice that you can use previously defined cohorts in subsequent steps</span></span>
+<span>  <span class="fu"><a href="reference/cohort_define.html">cohort_define</a></span><span class="op">(</span></span>
+<span>    consented <span class="op">=</span> <span class="va">.full</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">declined</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    consented_chemonaive <span class="op">=</span> <span class="va">consented</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">prior_chemo</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    randomized <span class="op">=</span> <span class="va">consented_chemonaive</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bone_mets</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    treatment_a <span class="op">=</span> <span class="va">randomized</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Drug A"</span><span class="op">)</span>,</span>
+<span>    treatment_b <span class="op">=</span> <span class="va">randomized</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Drug B"</span><span class="op">)</span>,</span>
+<span>    <span class="co"># anti_join is useful for counting exclusions -------------</span></span>
+<span>    excluded <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">.full</span>, <span class="va">randomized</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>,</span>
+<span>    excluded_declined <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">.full</span>, <span class="va">consented</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>,</span>
+<span>    excluded_chemo <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">consented</span>, <span class="va">consented_chemonaive</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>,</span>
+<span>    excluded_mets <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">consented_chemonaive</span>, <span class="va">randomized</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="co"># Provide text labels for cohorts ---------------------------</span></span>
+<span>  <span class="fu"><a href="reference/cohort_label.html">cohort_label</a></span><span class="op">(</span></span>
+<span>    consented <span class="op">=</span> <span class="st">"Consented"</span>,</span>
+<span>    consented_chemonaive <span class="op">=</span> <span class="st">"Chemotherapy naive"</span>,</span>
+<span>    randomized <span class="op">=</span> <span class="st">"Randomized"</span>,</span>
+<span>    treatment_a <span class="op">=</span> <span class="st">"Allocated to arm A"</span>,</span>
+<span>    treatment_b <span class="op">=</span> <span class="st">"Allocated to arm B"</span>,</span>
+<span>    excluded <span class="op">=</span> <span class="st">"Excluded"</span>,</span>
+<span>    excluded_declined <span class="op">=</span> <span class="st">"Declined to participate"</span>,</span>
+<span>    excluded_chemo <span class="op">=</span> <span class="st">"Prior chemotherapy"</span>,</span>
+<span>    excluded_mets <span class="op">=</span> <span class="st">"Bone metastasis"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p>We can have a look at the <code>study_cohorts</code> object with its print and summary methods:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">study_cohorts</span>
-<span class="co">#&gt; A ggconsort cohort of 1200 observations with 9 cohorts:</span>
-<span class="co">#&gt;   - consented (1141)</span>
-<span class="co">#&gt;   - consented_chemonaive (1028)</span>
-<span class="co">#&gt;   - randomized (938)</span>
-<span class="co">#&gt;   - treatment_a (469)</span>
-<span class="co">#&gt;   - treatment_b (469)</span>
-<span class="co">#&gt;   - excluded (262)</span>
-<span class="co">#&gt;   - excluded_declined (59)</span>
-<span class="co">#&gt;   - excluded_chemo (113)</span>
-<span class="co">#&gt;   ...and 1 more.</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">study_cohorts</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 10 x 3</span>
-<span class="co">#&gt;    cohort               count label                   </span>
-<span class="co">#&gt;    &lt;chr&gt;                &lt;int&gt; &lt;chr&gt;                   </span>
-<span class="co">#&gt;  1 .full                 1200 Assessed for eligibility</span>
-<span class="co">#&gt;  2 consented             1141 Consented               </span>
-<span class="co">#&gt;  3 consented_chemonaive  1028 Chemotherapy naive      </span>
-<span class="co">#&gt;  4 randomized             938 Randomized              </span>
-<span class="co">#&gt;  5 treatment_a            469 Allocated to arm A      </span>
-<span class="co">#&gt;  6 treatment_b            469 Allocated to arm B      </span>
-<span class="co">#&gt;  7 excluded               262 Excluded                </span>
-<span class="co">#&gt;  8 excluded_declined       59 Declined to participate </span>
-<span class="co">#&gt;  9 excluded_chemo         113 Prior chemotherapy      </span>
-<span class="co">#&gt; 10 excluded_mets           90 Bone metastasis</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">study_cohorts</span></span>
+<span><span class="co">#&gt; A ggconsort cohort of 1200 observations with 9 cohorts:</span></span>
+<span><span class="co">#&gt;   - consented (1141)</span></span>
+<span><span class="co">#&gt;   - consented_chemonaive (1028)</span></span>
+<span><span class="co">#&gt;   - randomized (938)</span></span>
+<span><span class="co">#&gt;   - treatment_a (469)</span></span>
+<span><span class="co">#&gt;   - treatment_b (469)</span></span>
+<span><span class="co">#&gt;   - excluded (262)</span></span>
+<span><span class="co">#&gt;   - excluded_declined (59)</span></span>
+<span><span class="co">#&gt;   - excluded_chemo (113)</span></span>
+<span><span class="co">#&gt;   ...and 1 more.</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">study_cohorts</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 10 × 3</span></span>
+<span><span class="co">#&gt;    cohort               count label                   </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                &lt;int&gt; &lt;chr&gt;                   </span></span>
+<span><span class="co">#&gt;  1 .full                 1200 Assessed for eligibility</span></span>
+<span><span class="co">#&gt;  2 consented             1141 Consented               </span></span>
+<span><span class="co">#&gt;  3 consented_chemonaive  1028 Chemotherapy naive      </span></span>
+<span><span class="co">#&gt;  4 randomized             938 Randomized              </span></span>
+<span><span class="co">#&gt;  5 treatment_a            469 Allocated to arm A      </span></span>
+<span><span class="co">#&gt;  6 treatment_b            469 Allocated to arm B      </span></span>
+<span><span class="co">#&gt;  7 excluded               262 Excluded                </span></span>
+<span><span class="co">#&gt;  8 excluded_declined       59 Declined to participate </span></span>
+<span><span class="co">#&gt;  9 excluded_chemo         113 Prior chemotherapy      </span></span>
+<span><span class="co">#&gt; 10 excluded_mets           90 Bone metastasis</span></span></code></pre></div>
 <p>Next, we add CONSORT “boxes” and “arrows” with appropriate ggconsort verbs, and plot with the CONSORT diagram <code>ggplot</code>. Note the use of <code><a href="reference/cohort_count.html">cohort_count_adorn()</a></code>, which is a convenience function that glues cohort counts to their labels.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
-
-<span class="va">study_consort</span> <span class="op">&lt;-</span> <span class="va">study_cohorts</span> <span class="op">%&gt;%</span>
-  <span class="fu">consort_box_add</span><span class="op">(</span>
-    <span class="st">"full"</span>, <span class="fl">0</span>, <span class="fl">50</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">.full</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">consort_box_add</span><span class="op">(</span>
-    <span class="st">"exclusions"</span>, <span class="fl">20</span>, <span class="fl">40</span>, <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span>
-      <span class="st">'{cohort_count_adorn(study_cohorts, excluded)}&lt;br&gt;
-      • {cohort_count_adorn(study_cohorts, excluded_declined)}&lt;br&gt;
-      • {cohort_count_adorn(study_cohorts, excluded_chemo)}&lt;br&gt;
-      • {cohort_count_adorn(study_cohorts, excluded_mets)}
-      '</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">consort_box_add</span><span class="op">(</span>
-    <span class="st">"randomized"</span>, <span class="fl">0</span>, <span class="fl">30</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">randomized</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">consort_box_add</span><span class="op">(</span>
-    <span class="st">"arm_a"</span>, <span class="op">-</span><span class="fl">30</span>, <span class="fl">10</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">treatment_a</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">consort_box_add</span><span class="op">(</span>
-    <span class="st">"arm_b"</span>, <span class="fl">30</span>, <span class="fl">10</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">treatment_b</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">consort_arrow_add</span><span class="op">(</span>
-    end <span class="op">=</span> <span class="st">"exclusions"</span>, end_side <span class="op">=</span> <span class="st">"left"</span>, start_x <span class="op">=</span> <span class="fl">0</span>, start_y <span class="op">=</span> <span class="fl">40</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">consort_arrow_add</span><span class="op">(</span>
-    <span class="st">"full"</span>, <span class="st">"bottom"</span>, <span class="st">"randomized"</span>, <span class="st">"top"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">consort_arrow_add</span><span class="op">(</span>
-    start_x <span class="op">=</span> <span class="fl">0</span>, start_y <span class="op">=</span> <span class="fl">30</span>, end_x <span class="op">=</span> <span class="fl">0</span>, end_y <span class="op">=</span> <span class="fl">20</span>,
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">consort_line_add</span><span class="op">(</span>
-    start_x <span class="op">=</span> <span class="op">-</span><span class="fl">30</span>, start_y <span class="op">=</span> <span class="fl">20</span>, end_x <span class="op">=</span> <span class="fl">30</span>, end_y <span class="op">=</span> <span class="fl">20</span>,
-  <span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">consort_arrow_add</span><span class="op">(</span>
-    end <span class="op">=</span> <span class="st">"arm_a"</span>, end_side <span class="op">=</span> <span class="st">"top"</span>, start_x <span class="op">=</span> <span class="op">-</span><span class="fl">30</span>, start_y <span class="op">=</span> <span class="fl">20</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">consort_arrow_add</span><span class="op">(</span>
-    end <span class="op">=</span> <span class="st">"arm_b"</span>, end_side <span class="op">=</span> <span class="st">"top"</span>, start_x <span class="op">=</span> <span class="fl">30</span>, start_y <span class="op">=</span> <span class="fl">20</span>
-  <span class="op">)</span>
-
-<span class="va">study_consort</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">geom_consort</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">theme_consort</span><span class="op">(</span>margin_h <span class="op">=</span> <span class="fl">8</span>, margin_v <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
-  <span class="co"># you can include other ggplot geoms, as needed -------------</span>
-  <span class="fu">ggtext</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/ggtext/reference/geom_richtext.html">geom_richtext</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">10</span>, label <span class="op">=</span> <span class="st">"Allocation"</span><span class="op">)</span>,
-    fill <span class="op">=</span> <span class="st">"#9bc0fc"</span>
-  <span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">study_consort</span> <span class="op">&lt;-</span> <span class="va">study_cohorts</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
+<span>    <span class="st">"full"</span>, <span class="fl">0</span>, <span class="fl">50</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">.full</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
+<span>    <span class="st">"exclusions"</span>, <span class="fl">20</span>, <span class="fl">40</span>, <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
+<span>      <span class="st">'{cohort_count_adorn(study_cohorts, excluded)}&lt;br&gt;</span></span>
+<span><span class="st">      • {cohort_count_adorn(study_cohorts, excluded_declined)}&lt;br&gt;</span></span>
+<span><span class="st">      • {cohort_count_adorn(study_cohorts, excluded_chemo)}&lt;br&gt;</span></span>
+<span><span class="st">      • {cohort_count_adorn(study_cohorts, excluded_mets)}</span></span>
+<span><span class="st">      '</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
+<span>    <span class="st">"randomized"</span>, <span class="fl">0</span>, <span class="fl">30</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">randomized</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
+<span>    <span class="st">"arm_a"</span>, <span class="op">-</span><span class="fl">30</span>, <span class="fl">10</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">treatment_a</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
+<span>    <span class="st">"arm_b"</span>, <span class="fl">30</span>, <span class="fl">10</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">treatment_b</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
+<span>    start_x <span class="op">=</span> <span class="fl">0</span>, start_y <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>    end <span class="op">=</span> <span class="st">"exclusions"</span>, end_side <span class="op">=</span> <span class="st">"left"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
+<span>    start <span class="op">=</span> <span class="st">"full"</span>, start_side <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>    end <span class="op">=</span> <span class="st">"randomized"</span>, end_side <span class="op">=</span> <span class="st">"top"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
+<span>    start_x <span class="op">=</span> <span class="fl">0</span>, start_y <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>    end_x <span class="op">=</span> <span class="fl">0</span>, end_y <span class="op">=</span> <span class="fl">20</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_line_add</a></span><span class="op">(</span></span>
+<span>    start_x <span class="op">=</span> <span class="op">-</span><span class="fl">30</span>, start_y <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>    end_x <span class="op">=</span> <span class="fl">30</span>, end_y <span class="op">=</span> <span class="fl">20</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
+<span>    start_x <span class="op">=</span> <span class="op">-</span><span class="fl">30</span>, start_y <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>    end <span class="op">=</span> <span class="st">"arm_a"</span>, end_side <span class="op">=</span> <span class="st">"top"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
+<span>    start_x <span class="op">=</span> <span class="fl">30</span>, start_y <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>    end <span class="op">=</span> <span class="st">"arm_b"</span>, end_side <span class="op">=</span> <span class="st">"top"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">study_consort</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="reference/geom_consort.html">geom_consort</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/theme_consort.html">theme_consort</a></span><span class="op">(</span>margin_h <span class="op">=</span> <span class="fl">8</span>, margin_v <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># you can include other ggplot geoms, as needed -------------</span></span>
+<span>  <span class="fu">ggtext</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/ggtext/reference/geom_richtext.html" class="external-link">geom_richtext</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">10</span>, label <span class="op">=</span> <span class="st">"Allocation"</span><span class="op">)</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"#9bc0fc"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in ggtext::geom_richtext(aes(x = 0, y = 10, label = "Allocation"), : All aesthetics have length 1, but the data has 11 rows.</span></span>
+<span><span class="co">#&gt; ℹ Please consider using `annotate()` or provide this layer with data containing</span></span>
+<span><span class="co">#&gt;   a single row.</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-consort-1.png" width="100%"></p>
 <p>At this point, we are ready for analysis. The following retrieves the desired data frame of randomized subjects:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">study_cohorts</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/cohort_pull.html">cohort_pull</a></span><span class="op">(</span><span class="va">randomized</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 938 x 5</span>
-<span class="co">#&gt;       id declined prior_chemo bone_mets treatment</span>
-<span class="co">#&gt;    &lt;int&gt;    &lt;int&gt;       &lt;int&gt;     &lt;int&gt; &lt;chr&gt;    </span>
-<span class="co">#&gt;  1 65464        0           0         0 Drug A   </span>
-<span class="co">#&gt;  2 48228        0           0         0 Drug B   </span>
-<span class="co">#&gt;  3 92586        0           0         0 Drug A   </span>
-<span class="co">#&gt;  4 70176        0           0         0 Drug B   </span>
-<span class="co">#&gt;  5 89052        0           0         0 Drug A   </span>
-<span class="co">#&gt;  6 97333        0           0         0 Drug B   </span>
-<span class="co">#&gt;  7 80724        0           0         0 Drug A   </span>
-<span class="co">#&gt;  8 65186        0           0         0 Drug B   </span>
-<span class="co">#&gt;  9 48837        0           0         0 Drug A   </span>
-<span class="co">#&gt; 10 99005        0           0         0 Drug B   </span>
-<span class="co">#&gt; # … with 928 more rows</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">study_cohorts</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/cohort_pull.html">cohort_pull</a></span><span class="op">(</span><span class="va">randomized</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 938 × 5</span></span>
+<span><span class="co">#&gt;       id declined prior_chemo bone_mets treatment</span></span>
+<span><span class="co">#&gt;    &lt;int&gt;    &lt;int&gt;       &lt;int&gt;     &lt;int&gt; &lt;chr&gt;    </span></span>
+<span><span class="co">#&gt;  1 65464        0           0         0 Drug A   </span></span>
+<span><span class="co">#&gt;  2 48228        0           0         0 Drug B   </span></span>
+<span><span class="co">#&gt;  3 92586        0           0         0 Drug A   </span></span>
+<span><span class="co">#&gt;  4 70176        0           0         0 Drug B   </span></span>
+<span><span class="co">#&gt;  5 89052        0           0         0 Drug A   </span></span>
+<span><span class="co">#&gt;  6 97333        0           0         0 Drug B   </span></span>
+<span><span class="co">#&gt;  7 80724        0           0         0 Drug A   </span></span>
+<span><span class="co">#&gt;  8 65186        0           0         0 Drug B   </span></span>
+<span><span class="co">#&gt;  9 48837        0           0         0 Drug A   </span></span>
+<span><span class="co">#&gt; 10 99005        0           0         0 Drug B   </span></span>
+<span><span class="co">#&gt; # ℹ 928 more rows</span></span></code></pre></div>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="license">
-<h2>License</h2>
+    <div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/tgerke/ggconsort/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/tgerke/ggconsort/issues" class="external-link">Report a bug</a></li>
+</ul>
+</div>
+
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing ggconsort</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://travisgerke.com/">Travis Gerke</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-9500-8907" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<a href="https://travisgerke.com/" class="external-link">Travis Gerke</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-9500-8907" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>
-<a href="https://www.garrickadenbuie.com/">Garrick Aden-Buie</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-7111-0077" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<a href="https://www.garrickadenbuie.com/" class="external-link">Garrick Aden-Buie</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-7111-0077" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
+
+
 
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="https://travisgerke.com/">Travis Gerke</a>, <a href="https://www.garrickadenbuie.com/">Garrick Aden-Buie</a>.</p>
+  <p></p>
+<p>Developed by <a href="https://travisgerke.com/" class="external-link">Travis Gerke</a>, <a href="https://www.garrickadenbuie.com/" class="external-link">Garrick Aden-Buie</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer>
 </div>
 
-  
+
+
+
 
 
   </body>
