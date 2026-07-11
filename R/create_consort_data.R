@@ -1,17 +1,36 @@
+#' Build the plotting data for a ggconsort diagram
+#'
+#' Combines the boxes, arrows, and lines of a \code{ggconsort} object into a
+#' single tibble in the format expected by the [geom_consort()] geoms. Called
+#' internally by \code{ggplot.ggconsort()}; you should rarely need to call it
+#' directly.
+#'
+#' @param .data A \code{ggconsort} object built with [consort_box_add()] and
+#'   friends.
+#' @param ... Unused; reserved for future use.
+#'
+#' @return A tibble with one row per box, arrow, and line.
+#'
+#' @keywords internal
 #' @export
-
-# combines tibbles like consort_boxes and consort_arrows into a
-# usable form for ggconsort geoms
-# consort_boxes and consort_arrows are expected to have certain formats
-# FIXME: to describe and check for those formats
-
 create_consort_data <- function(.data, ...) {
   # FIXME: account for 2+ arrows coming in by summarizing those rows
   # FIXME: need to assert that we've got a cohort with consort data
 
   consort_boxes <- .data$consort %>%
-    dplyr::filter(type == "box") %>%
-    dplyr::select(name, box_x, box_y, label)
+    dplyr::filter(type == "box")
+  # consorts built without boxes never gain hjust/vjust columns
+  if (!"hjust" %in% names(consort_boxes)) consort_boxes$hjust <- NA_real_
+  if (!"vjust" %in% names(consort_boxes)) consort_boxes$vjust <- NA_real_
+  consort_boxes <- consort_boxes %>%
+    dplyr::select(
+      "name", "box_x", "box_y", "label",
+      hjust_user = "hjust", vjust_user = "vjust"
+    )
+
+  # box coordinates for connecting arrows and lines by box name
+  box_anchors <- consort_boxes %>%
+    dplyr::select("name", "box_x", "box_y")
 
   consort_arrows <- .data$consort %>%
     dplyr::filter(type == "arrow") %>%
@@ -53,30 +72,36 @@ create_consort_data <- function(.data, ...) {
     by = c("name" = "end")
   ) %>%
     dplyr::mutate(
-      vjust = dplyr::if_else(
-        end_side == "top", 1, .5, missing = .5
+      # user-supplied justification wins over arrow-based inference (#24)
+      vjust = dplyr::coalesce(
+        vjust_user,
+        dplyr::if_else(
+          end_side == "top", 1, .5, missing = .5
+        )
       ),
-      hjust = dplyr::case_when(
-        end_side == "left" ~ 0,
-        end_side == "right" ~ 1,
-        TRUE ~ .5
+      hjust = dplyr::coalesce(
+        hjust_user,
+        dplyr::case_when(
+          end_side == "left" ~ 0,
+          end_side == "right" ~ 1,
+          TRUE ~ .5
+        )
       ),
       type = "box"
     ) %>%
+    dplyr::select(-"hjust_user", -"vjust_user") %>%
     dplyr::rename(
       arrow_in = end_side
     )
 
   arrows <- dplyr::left_join(
     consort_arrows,
-    consort_boxes %>%
-      dplyr::select(-label) %>%
+    box_anchors %>%
       dplyr::rename(x = box_x, y = box_y),
     by = c("start" = "name")
   ) %>%
     dplyr::left_join(
-      consort_boxes %>%
-        dplyr::select(-label) %>%
+      box_anchors %>%
         dplyr::rename(xend = box_x, yend = box_y),
       by = c("end" = "name")
     ) %>%
@@ -91,14 +116,12 @@ create_consort_data <- function(.data, ...) {
 
   lines <- dplyr::left_join(
     consort_lines,
-    consort_boxes %>%
-      dplyr::select(-label) %>%
+    box_anchors %>%
       dplyr::rename(x = box_x, y = box_y),
     by = c("start" = "name")
   ) %>%
     dplyr::left_join(
-      consort_boxes %>%
-        dplyr::select(-label) %>%
+      box_anchors %>%
         dplyr::rename(xend = box_x, yend = box_y),
       by = c("end" = "name")
     ) %>%

@@ -1,5 +1,5 @@
+#' @rdname consort_box_add
 #' @export
-
 consort_line_add <- function(
   .data, start = NA, start_side = NA, end = NA, end_side = NA,
   start_x = NA, start_y = NA, end_x = NA, end_y = NA
