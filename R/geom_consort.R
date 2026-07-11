@@ -32,7 +32,7 @@
 #' library(ggplot2)
 #' ggplot(consort) +
 #'   geom_consort() +
-#'   theme_consort()
+#'   theme_consort(margin_h = 22, margin_v = 7)
 #' @export
 geom_consort <- function(...) {
   list(

@@ -7,7 +7,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 9,
-  fig.height = 8,
+  fig.height = 6.5,
   out.width = "100%",
   fig.retina = 3
 )
@@ -199,7 +199,8 @@ review_prisma %>%
   ggtext::geom_richtext(
     aes(x = -28, y = y, label = label),
     data = tibble(
-      y = c(50, 35, 10),
+      # "Included" sits at 9, not 10: the included box hangs below its anchor
+      y = c(50, 35, 9),
       label = c("Identification", "Screening", "Included")
     ),
     fill = "#9bc0fc", angle = 90

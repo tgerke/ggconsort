@@ -53,7 +53,10 @@
 #'   consort_arrow_add(start = "full", start_side = "bottom", end = "randomized", end_side = "top") %>%
 #'   consort_arrow_add(start_x = 0, start_y = 10, end = "exclusions", end_side = "left")
 #'
-#' consort
+#' library(ggplot2)
+#' ggplot(consort) +
+#'   geom_consort() +
+#'   theme_consort(margin_h = 12, margin_v = 1)
 #' @export
 consort_box_add <- function(.data, name, x, y, label, hjust = NULL, vjust = NULL) {
   .data <- consort_start(.data)
