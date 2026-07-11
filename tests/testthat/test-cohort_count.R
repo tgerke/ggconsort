@@ -56,3 +56,17 @@ test_that("cohort_count_adorn() accepts a custom .label_fn", {
 
   expect_equal(as.character(out), "7 Consented (consented)")
 })
+
+test_that("cohort_count_bullets() builds a header line with bullets", {
+  cohorts <- test_cohort()
+
+  expect_equal(
+    cohort_count_bullets(cohorts, excluded, consented),
+    "Declined to participate (n = 3)<br>\u2022 Consented (n = 7)"
+  )
+
+  expect_error(
+    cohort_count_bullets(cohorts, excluded),
+    "at least two"
+  )
+})

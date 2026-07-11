@@ -7,15 +7,18 @@ GeomConsortDiagram <- ggplot2::ggproto("GeomConsortDiagram", ggplot2::Geom,
   optional_aes = c(
     "xend", "yend", "label", "type", "name",
     "start", "end", "start_side", "end_side", "hjust", "vjust",
-    "layout_row", "layout_row2", "layout_col",
-    "stage_fill", "angle", "tee_group"
+    "layout_row", "layout_row2", "layout_col", "layout_col2",
+    "stage_fill", "angle", "tee_group",
+    "box_fill", "border_colour", "text_colour"
   ),
   draw_key = ggplot2::draw_key_blank,
   draw_panel = function(
     data, panel_params, coord,
     # ggplot2 standardizes user-facing *_color params to *_colour
     label_colour = "black", label_size = 11, label_height = 1,
-    fill = "white", box_colour = "black"
+    family = "", fill = "white", box_colour = "black",
+    linewidth = 0.25, box_r = 0, box_padding = 0.25, arrow_length = 2,
+    row_gap = NULL, equal_columns = FALSE
   ) {
     coords <- coord$transform(data, panel_params)
     grid::gTree(
@@ -23,8 +26,15 @@ GeomConsortDiagram <- ggplot2::ggproto("GeomConsortDiagram", ggplot2::Geom,
       label_colour = label_colour,
       label_size = label_size,
       label_height = label_height,
+      family = family,
       fill = fill,
       box_colour = box_colour,
+      linewidth = linewidth,
+      box_r = box_r,
+      box_padding = box_padding,
+      arrow_length = arrow_length,
+      row_gap = row_gap,
+      equal_columns = equal_columns,
       cl = "consort_diagram_grob"
     )
   }
@@ -45,9 +55,12 @@ makeContent.consort_diagram_grob <- function(x) {
   }
 }
 
-# one box or stage badge, centered at (cx, cy) npc unless justified
-consort_element_grob <- function(x, el, cx, cy, hjust = 0.5, vjust = 0.5) {
+# one box or stage badge, centered at (cx, cy) npc unless justified;
+# extra_w (lines) widens the box symmetrically, for equalized column widths
+consort_element_grob <- function(x, el, cx, cy, hjust = 0.5, vjust = 0.5,
+                                 extra_w = 0) {
   is_stage <- identical(el$type, "stage")
+  pad <- x$box_padding
   gridtext::richtext_grob(
     text = el$label,
     x = grid::unit(cx, "npc"),
@@ -59,17 +72,20 @@ consort_element_grob <- function(x, el, cx, cy, hjust = 0.5, vjust = 0.5) {
     halign = if (grepl("<br", el$label, fixed = TRUE)) 0 else 0.5,
     rot = if (is_stage) el$angle %|NA|% 0 else 0,
     gp = grid::gpar(
-      col = x$label_colour,
+      col = if (is_stage) x$label_colour else el$text_colour %|NA|% x$label_colour,
       fontsize = x$label_size,
+      fontfamily = x$family,
       lineheight = x$label_height
     ),
     box_gp = grid::gpar(
-      col = x$box_colour,
-      fill = if (is_stage) el$stage_fill else x$fill,
-      lwd = 0.25 * ggplot2::.pt
+      col = if (is_stage) x$box_colour else el$border_colour %|NA|% x$box_colour,
+      fill = if (is_stage) el$stage_fill else el$box_fill %|NA|% x$fill,
+      lwd = x$linewidth * ggplot2::.pt
     ),
-    r = grid::unit(if (is_stage) 0.15 else 0, "lines"),
-    padding = grid::unit(c(0.25, 0.25, 0.25, 0.25), "lines"),
+    r = grid::unit(if (is_stage) 0.15 else x$box_r, "lines"),
+    padding = grid::unit(
+      c(pad, pad + extra_w / 2, pad, pad + extra_w / 2), "lines"
+    ),
     margin = grid::unit(c(0, 0, 0, 0), "pt")
   )
 }
@@ -93,9 +109,10 @@ npc_line <- function(fun) {
   )
 }
 
-consort_edge_grobs <- function(starts, ends, is_arrow) {
+consort_edge_grobs <- function(x, starts, ends, is_arrow) {
   gp <- grid::gpar(
-    col = "black", lwd = 0.15 * ggplot2::.pt,
+    # edges stay a bit lighter than box borders (0.15 at the default 0.25)
+    col = "black", lwd = 0.6 * x$linewidth * ggplot2::.pt,
     lineend = "butt", linejoin = "mitre", fill = "black"
   )
   out <- list()
@@ -104,7 +121,9 @@ consort_edge_grobs <- function(starts, ends, is_arrow) {
       x0 = starts[is_arrow, 1], y0 = starts[is_arrow, 2],
       x1 = ends[is_arrow, 1], y1 = ends[is_arrow, 2],
       default.units = "npc", gp = gp,
-      arrow = grid::arrow(length = grid::unit(2, "mm"), type = "closed")
+      arrow = grid::arrow(
+        length = grid::unit(x$arrow_length, "mm"), type = "closed"
+      )
     )))
   }
   if (any(!is_arrow)) {
@@ -193,7 +212,7 @@ consort_content_coord <- function(x) {
         edges$xend[i], edges$yend[i], edges$x[i], edges$y[i]
       )
     }
-    edge_grobs <- consort_edge_grobs(starts, ends, edges$type == "arrow")
+    edge_grobs <- consort_edge_grobs(x, starts, ends, edges$type == "arrow")
   }
 
   grid::setChildren(x, do.call(grid::gList, c(edge_grobs, box_grobs)))
@@ -205,6 +224,9 @@ consort_content_grid <- function(x) {
   d <- x$diagram
   els <- d[d$type %in% c("box", "stage"), , drop = FALSE]
   edges <- d[d$type %in% c("arrow", "line"), , drop = FALSE]
+  if (!"layout_col2" %in% names(els)) {
+    els$layout_col2 <- NA_real_
+  }
 
   n <- nrow(els)
   w <- h <- numeric(n)
@@ -214,26 +236,51 @@ consort_content_grid <- function(x) {
     h[i] <- size[2]
   }
 
-  spans <- els$type == "stage" & !is.na(els$layout_row2) &
+  rspans <- els$type == "stage" & !is.na(els$layout_row2) &
     els$layout_row2 > els$layout_row
+  cspans <- els$type == "stage" & !is.na(els$layout_col2) &
+    els$layout_col2 > els$layout_col
+
+  # equalized column widths: pad every box out to the widest box in its
+  # column (official CONSORT/PRISMA templates use uniform-width boxes)
+  line_w <- npc_line(grid::convertWidth)
+  extra_w <- numeric(n)
+  if (isTRUE(x$equal_columns) && line_w > 0) {
+    is_box <- els$type == "box"
+    for (cc in unique(els$layout_col[is_box])) {
+      idx <- which(is_box & els$layout_col == cc)
+      target <- max(w[idx])
+      extra_w[idx] <- (target - w[idx]) / line_w
+      w[idx] <- target
+    }
+  }
 
   # the layout fills the panel minus a small padding so box borders and
   # arrowheads at the extremes are never clipped
   pad_y <- 0.5 * npc_line(grid::convertHeight)
-  pad_x <- 0.5 * npc_line(grid::convertWidth)
+  pad_x <- 0.5 * line_w
 
-  # vertical: stack rows from the top, equalizing the gaps; a row is as tall
-  # as its tallest element (row-spanning stages don't count)
-  rows <- sort(unique(c(els$layout_row, els$layout_row2[spans])))
+  # vertical: stack rows from the top; a row is as tall as its tallest
+  # element (row-spanning stages don't count). Gaps are equalized but capped
+  # (default 2 lines, override via `row_gap`) so a large device yields a
+  # compact, vertically centered diagram instead of a stretched one
+  rows <- sort(unique(c(els$layout_row, els$layout_row2[rspans])))
   row_h <- vapply(
     rows,
-    function(r) max(c(0, h[!spans & els$layout_row == r])),
+    function(r) max(c(0, h[!rspans & els$layout_row == r])),
     numeric(1)
   )
-  min_gap <- npc_line(grid::convertHeight)
+  line_h <- npc_line(grid::convertHeight)
   if (length(rows) > 1) {
-    gap <- max((1 - 2 * pad_y - sum(row_h)) / (length(rows) - 1), min_gap)
-    row_top <- (1 - pad_y) - cumsum(c(0, utils::head(row_h + gap, -1)))
+    avail <- (1 - 2 * pad_y - sum(row_h)) / (length(rows) - 1)
+    gap <- if (!is.null(x$row_gap)) {
+      x$row_gap * line_h
+    } else {
+      min(max(avail, line_h), 2 * line_h)
+    }
+    leftover <- (1 - 2 * pad_y) - sum(row_h) - gap * (length(rows) - 1)
+    top <- (1 - pad_y) - max(leftover, 0) / 2
+    row_top <- top - cumsum(c(0, utils::head(row_h + gap, -1)))
     row_cy <- row_top - row_h / 2
   } else {
     row_cy <- 0.5
@@ -241,14 +288,24 @@ consort_content_grid <- function(x) {
 
   # horizontal: adjacent columns are separated just enough that no two
   # elements sharing a row overlap (a wide box only claims space in its own
-  # rows), then the diagram is stretched to fill the panel
-  cols <- sort(unique(els$layout_col))
-  min_gap_x <- npc_line(grid::convertWidth)
+  # rows; column-spanning stages claim none), then the diagram is stretched
+  # to fill the panel
+  cols <- sort(unique(c(els$layout_col, els$layout_col2[cspans])))
+  min_gap_x <- line_w
   el_row_lo <- els$layout_row
-  el_row_hi <- ifelse(spans, els$layout_row2, els$layout_row)
+  el_row_hi <- ifelse(rspans, els$layout_row2, els$layout_row)
   half_in_row <- function(cc, r) {
-    in_cell <- els$layout_col == cc & el_row_lo <= r & el_row_hi >= r
+    in_cell <- !cspans & els$layout_col == cc & el_row_lo <= r & el_row_hi >= r
     max(c(0, w[in_cell])) / 2
+  }
+  # an element's horizontal center: its column, or the midpoint of the
+  # spanned columns for a column-spanning stage
+  center_of <- function(col_pos) {
+    a <- col_pos[match(els$layout_col, cols)]
+    b <- col_pos[match(
+      ifelse(cspans, els$layout_col2, els$layout_col), cols
+    )]
+    (a + b) / 2
   }
   if (length(cols) > 1) {
     sep <- vapply(
@@ -263,13 +320,13 @@ consort_content_grid <- function(x) {
       numeric(1)
     )
     rel_cx <- cumsum(c(0, sep))
-    rel_at <- rel_cx[match(els$layout_col, cols)]
+    rel_at <- center_of(rel_cx)
     extent <- c(min(rel_at - w / 2), max(rel_at + w / 2))
     slack <- (1 - 2 * pad_x) - diff(extent)
     if (slack > 0) {
       sep <- sep + slack / length(sep)
       rel_cx <- cumsum(c(0, sep))
-      rel_at <- rel_cx[match(els$layout_col, cols)]
+      rel_at <- center_of(rel_cx)
       extent <- c(min(rel_at - w / 2), max(rel_at + w / 2))
     }
     col_cx <- rel_cx + (pad_x - extent[1])
@@ -277,9 +334,9 @@ consort_content_grid <- function(x) {
     col_cx <- 0.5
   }
 
-  cx <- col_cx[match(els$layout_col, cols)]
+  cx <- center_of(col_cx)
   cy <- ifelse(
-    spans,
+    rspans,
     (row_cy[match(els$layout_row, rows)] +
        row_cy[match(els$layout_row2, rows)]) / 2,
     row_cy[match(els$layout_row, rows)]
@@ -295,7 +352,9 @@ consort_content_grid <- function(x) {
 
   el_grobs <- vector("list", n)
   for (i in seq_len(n)) {
-    el_grobs[[i]] <- consort_element_grob(x, els[i, ], cx[i], cy[i])
+    el_grobs[[i]] <- consort_element_grob(
+      x, els[i, ], cx[i], cy[i], extra_w = extra_w[i]
+    )
   }
 
   # route edges between named boxes: vertically within a column, horizontally
@@ -373,7 +432,7 @@ consort_content_grid <- function(x) {
   }
 
   edge_grobs <- if (nrow(starts) > 0) {
-    consort_edge_grobs(starts, ends, is_arrow)
+    consort_edge_grobs(x, starts, ends, is_arrow)
   } else {
     list()
   }

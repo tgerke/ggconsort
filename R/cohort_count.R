@@ -102,3 +102,30 @@ cohort_count_adorn <- function(.data, ..., .label_fn = NULL) {
   .label_fn <- .label_fn %||% default_label_count
   purrr::pmap_chr(counts, .label_fn)
 }
+
+#' @describeIn cohort_count Returns a multi-line box label: the first
+#'   selected cohort becomes the header line and the rest become bullet
+#'   points, e.g. for the "Excluded" box of a CONSORT diagram:
+#'   "Excluded (n = 262)" followed by one bulleted line per reason.
+#'   Each line is formatted as by `cohort_count_adorn()`.
+#'
+#' @export
+#' @examples
+#'
+#' cohorts |>
+#'   cohort_count_bullets(consented, consented_chemonaive)
+cohort_count_bullets <- function(.data, ..., .label_fn = NULL) {
+  labels <- cohort_count_adorn(.data, ..., .label_fn = .label_fn)
+  if (length(labels) < 2) {
+    stop(
+      "`cohort_count_bullets()` needs at least two cohorts: a header ",
+      "followed by one or more bullet points.",
+      call. = FALSE
+    )
+  }
+  # \u2022 is the bullet character (non-ASCII literals fail R CMD check)
+  paste0(
+    labels[1], "<br>",
+    paste0("\u2022 ", labels[-1], collapse = "<br>")
+  )
+}

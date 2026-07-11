@@ -4,6 +4,7 @@
 \alias{cohort_count}
 \alias{cohort_count_int}
 \alias{cohort_count_adorn}
+\alias{cohort_count_bullets}
 \title{Count the number of rows in each ggconsort cohort}
 \usage{
 cohort_count(.data, ...)
@@ -11,6 +12,8 @@ cohort_count(.data, ...)
 cohort_count_int(.data, ...)
 
 cohort_count_adorn(.data, ..., .label_fn = NULL)
+
+cohort_count_bullets(.data, ..., .label_fn = NULL)
 }
 \arguments{
 \item{.data}{A \code{ggconsort_cohort} object}
@@ -40,6 +43,12 @@ and label.
 other custom format. By default, counts are formatted with comma
 separators, e.g. "Randomized (n = 5,932,291)".
 
+\item \code{cohort_count_bullets()}: Returns a multi-line box label: the first
+selected cohort becomes the header line and the rest become bullet
+points, e.g. for the "Excluded" box of a CONSORT diagram:
+"Excluded (n = 262)" followed by one bulleted line per reason.
+Each line is formatted as by \code{cohort_count_adorn()}.
+
 }}
 \examples{
 cohorts <- trial_data |>
@@ -66,4 +75,7 @@ cohorts |>
       glue::glue("{count} {label} ({cohort})")
     }
   )
+
+cohorts |>
+  cohort_count_bullets(consented, consented_chemonaive)
 }

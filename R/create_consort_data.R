@@ -26,8 +26,10 @@ create_consort_data <- function(.data, ...) {
   elements <- .data$consort
   optional_defaults <- list(
     hjust = NA_real_, vjust = NA_real_,
-    row = NA_real_, row2 = NA_real_, col = NA_real_,
-    stage_fill = NA_character_, angle = NA_real_, tee_group = NA_character_
+    row = NA_real_, row2 = NA_real_, col = NA_real_, col2 = NA_real_,
+    stage_fill = NA_character_, angle = NA_real_, tee_group = NA_character_,
+    box_fill = NA_character_, border_color = NA_character_,
+    text_color = NA_character_
   )
   for (nm in names(optional_defaults)) {
     if (!nm %in% names(elements)) elements[[nm]] <- optional_defaults[[nm]]
@@ -64,6 +66,7 @@ create_consort_data <- function(.data, ...) {
     dplyr::filter(.data$type == "box") |>
     dplyr::select(
       "name", "box_x", "box_y", "label", "row", "col",
+      "box_fill", "border_color", "text_color",
       hjust_user = "hjust", vjust_user = "vjust"
     )
 
@@ -183,12 +186,20 @@ create_consort_data <- function(.data, ...) {
     ) |>
     dplyr::select(-"start_x", -"start_y", -"end_x", -"end_y")
 
+  # stage badges at col = "margin" (stored as -Inf) go one column left of
+  # the leftmost box, now that every box position is known
+  margin_col <- suppressWarnings(min(elements$col[is_box], na.rm = TRUE)) - 1
   stages <- elements |>
     dplyr::filter(.data$type == "stage") |>
+    dplyr::mutate(
+      col = dplyr::if_else(is.infinite(.data$col), margin_col, .data$col),
+      col2 = dplyr::coalesce(.data$col2, .data$col),
+      col2 = dplyr::if_else(is.infinite(.data$col2), margin_col, .data$col2)
+    ) |>
     dplyr::transmute(
       .data$label,
-      x = .data$box_x, y = .data$box_y,
-      .data$row, .data$row2, .data$col,
+      x = (.data$col + .data$col2) / 2, y = .data$box_y,
+      .data$row, .data$row2, .data$col, .data$col2,
       .data$stage_fill, .data$angle,
       type = "stage"
     )

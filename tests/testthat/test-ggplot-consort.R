@@ -172,3 +172,92 @@ test_that("row/column layouts route arrows from measured boxes", {
   # every element lies inside the panel
   expect_true(all(c(x0, x1, y0, y1) >= 0 & c(x0, x1, y0, y1) <= 1))
 })
+
+# npc y-extent of the first arrow (full -> consented), which spans the gap
+# between rows 1 and 3 plus the height of the row-2 side box
+arrow_extent <- function(p, height = 10) {
+  path <- tempfile(fileext = ".pdf")
+  on.exit(unlink(path), add = TRUE)
+  grDevices::pdf(path, width = 7, height = height)
+  g <- grid::grid.force(ggplot2::ggplotGrob(p), draw = TRUE)
+  grDevices::dev.off()
+
+  tree <- grid::getGrob(g, "consort_diagram_grob", grep = TRUE)
+  arrows <- grid::getGrob(tree, "segments", grep = TRUE, global = TRUE)[[1]]
+  as.numeric(arrows$y0)[1] - as.numeric(arrows$y1)[1]
+}
+
+test_that("row gaps are capped by default and adjustable via row_gap", {
+  consort <- grid_consort_for_plotting()
+
+  span_default <- arrow_extent(
+    ggplot2::ggplot(consort) + geom_consort() + theme_consort()
+  )
+  span_wide <- arrow_extent(
+    ggplot2::ggplot(consort) + geom_consort(row_gap = 8) + theme_consort()
+  )
+
+  # on a tall device the default stays compact (2 capped gaps plus the side
+  # box are far less than the stretched-to-fill layout would be)
+  expect_lt(span_default, 0.2)
+  expect_gt(span_wide, span_default)
+})
+
+test_that("equal_columns draws every box in a column at the same width", {
+  cohorts <- test_cohort()
+  consort <- cohorts |>
+    consort_box_add("full", row = 1, label = cohort_count_adorn(cohorts, .full)) |>
+    consort_box_add("consented", row = 2, label = "C") |>
+    consort_arrow_add(start = "full", end = "consented")
+
+  box_widths <- function(p) {
+    path <- tempfile(fileext = ".pdf")
+    on.exit(unlink(path), add = TRUE)
+    grDevices::pdf(path, width = 7, height = 5)
+    g <- grid::grid.force(ggplot2::ggplotGrob(p), draw = TRUE)
+    tree <- grid::getGrob(g, "consort_diagram_grob", grep = TRUE)
+    boxes <- grid::getGrob(tree, "richtext", grep = TRUE, global = TRUE)
+    w <- vapply(
+      boxes,
+      function(b) grid::convertWidth(grid::grobWidth(b), "in", valueOnly = TRUE),
+      numeric(1)
+    )
+    grDevices::dev.off()
+    w
+  }
+
+  w_free <- box_widths(
+    ggplot2::ggplot(consort) + geom_consort() + theme_consort()
+  )
+  w_equal <- box_widths(
+    ggplot2::ggplot(consort) + geom_consort(equal_columns = TRUE) + theme_consort()
+  )
+
+  expect_gt(max(w_free) - min(w_free), 0.5)
+  expect_equal(max(w_equal), min(w_equal), tolerance = 1e-6)
+})
+
+test_that("styled consort diagram renders consistently", {
+  skip_if_not_installed("vdiffr")
+
+  cohorts <- test_cohort()
+  consort <- cohorts |>
+    consort_box_add("full", row = 1, label = cohort_count_adorn(cohorts, .full)) |>
+    consort_box_add(
+      "excluded", row = 2, col = "side", fill = "#fde2e2", color = "#8b0000"
+    ) |>
+    consort_box_add("consented", row = 3) |>
+    consort_arrow_add(start = "full", end = "consented") |>
+    consort_arrow_add(start = "full", end = "excluded") |>
+    consort_stage_add("Header", row = 1, col = c("main", "side")) |>
+    consort_stage_add("Enrollment", row = c(2, 3), angle = 90)
+
+  p <- ggplot2::ggplot(consort) +
+    geom_consort(
+      fill = "grey95", box_r = 0.3, linewidth = 0.5, box_padding = 0.4,
+      arrow_length = 3, row_gap = 3, equal_columns = TRUE
+    ) +
+    theme_consort()
+
+  vdiffr::expect_doppelganger("consort-diagram-styled", p)
+})

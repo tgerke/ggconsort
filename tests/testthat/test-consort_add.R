@@ -64,7 +64,9 @@ test_that("consort_stage_add() stores badges and row spans", {
   stage <- consort$consort[consort$consort$type == "stage", ]
   expect_equal(stage$row, 1)
   expect_equal(stage$row2, 3)
-  expect_equal(stage$col, -1)
+  # the default "margin" column is a sentinel resolved by
+  # create_consort_data() once every box position is known
+  expect_equal(stage$col, -Inf)
   expect_equal(stage$angle, 90)
   expect_error(
     test_cohort() |> consort_stage_add("x", row = "one"),
@@ -82,4 +84,56 @@ test_that("a vector `end` marks arrows as a T-split group", {
   arrows <- consort$consort[consort$consort$type == "arrow", ]
   expect_equal(nrow(arrows), 2)
   expect_equal(arrows$tee_group, rep("main-tee", 2))
+})
+
+test_that("consort_box_add() labels boxes automatically from cohort names", {
+  consort <- test_cohort() |>
+    consort_box_add("consented", row = 1)
+
+  box <- consort$consort[consort$consort$type == "box", ]
+  expect_equal(box$label, "Consented (n = 7)")
+
+  expect_error(
+    test_cohort() |> consort_box_add("mystery", row = 1),
+    "not a defined cohort"
+  )
+})
+
+test_that("consort_box_add() stores per-box style overrides", {
+  consort <- test_cohort() |>
+    consort_box_add(
+      "a", row = 1, label = "A",
+      fill = "grey90", color = "red", text_color = "blue"
+    ) |>
+    consort_box_add("b", row = 2, label = "B")
+
+  boxes <- consort$consort[consort$consort$type == "box", ]
+  expect_equal(boxes$box_fill, c("grey90", NA))
+  expect_equal(boxes$border_color, c("red", NA))
+  expect_equal(boxes$text_color, c("blue", NA))
+})
+
+test_that("stage badges span columns and resolve the margin column", {
+  consort <- test_cohort() |>
+    consort_box_add("a", row = 1, col = -1, label = "A") |>
+    consort_box_add("b", row = 1, col = 1, label = "B") |>
+    consort_stage_add("Header", row = 1, col = c(-1, 1)) |>
+    consort_stage_add("Margin", row = 1)
+
+  data <- create_consort_data(consort)
+  stages <- data[data$type == "stage", ]
+
+  # the header spans columns -1..1 and is centered between them
+  expect_equal(stages$col[1], -1)
+  expect_equal(stages$col2[1], 1)
+  expect_equal(stages$x[1], 0)
+
+  # the default "margin" column resolves to one left of the leftmost box
+  expect_equal(stages$col[2], -2)
+  expect_equal(stages$col2[2], -2)
+
+  expect_error(
+    test_cohort() |> consort_stage_add("x", row = 1, col = c(0, 1, 2)),
+    "span columns"
+  )
 })
