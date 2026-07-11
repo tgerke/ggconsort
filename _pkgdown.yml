@@ -1,8 +1,13 @@
 url: https://tgerke.github.io/ggconsort
 
 template:
-  params:
-    bootswatch: simplex
+  bootstrap: 5
+  bootswatch: simplex
+  bslib:
+    primary: "#57786f"
+    secondary: "#735058"
+    link-color: "#57786f"
+    link-hover-color: "#735058"
 
 authors:
   Travis Gerke:
@@ -11,7 +16,4 @@ authors:
     href: "https://www.garrickadenbuie.com/"
 
 navbar:
-  type: default
-  right:
-  - icon: fa-github fa-lg
-    href: https://github.com/tgerke/ggconsort
+  bg: primary
