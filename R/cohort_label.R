@@ -8,7 +8,15 @@
 #' additional \code{$labels} items according to provided label definitions
 #' @export
 #'
-### FIXME: to add @examples
+#' @examples
+#' # labels feed cohort_count_adorn() and the automatic box labels of
+#' # consort_box_add()
+#' trial_data |>
+#'   cohort_start("Assessed for eligibility") |>
+#'   cohort_define(
+#'     consented = .full |> dplyr::filter(declined != 1)
+#'   ) |>
+#'   cohort_label(consented = "Consented")
 cohort_label <- function(.data, ...) {
   assert_cohort(.data)
 

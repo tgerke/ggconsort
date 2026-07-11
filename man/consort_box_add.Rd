@@ -175,7 +175,9 @@ consort <- cohorts |>
   consort_box_add("excluded", row = 2, col = "side") |>
   consort_box_add("randomized", row = 3, col = "main") |>
   consort_arrow_add(start = "full", end = "randomized") |>
-  consort_arrow_add(start = "full", end = "excluded")
+  consort_arrow_add(start = "full", end = "excluded") |>
+  # a stage badge in the margin, spanning rows 1 to 3
+  consort_stage_add("Enrollment", row = c(1, 3))
 
 library(ggplot2)
 ggplot(consort) +

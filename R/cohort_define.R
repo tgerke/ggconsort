@@ -11,7 +11,15 @@
 #' additional \code{$data} items according to provided cohort definitions
 #' @export
 #'
-### FIXME: to add @examples
+#' @examples
+#' # cohorts draw on `.full` (the source data) or any earlier cohort;
+#' # dplyr::anti_join() is a convenient way to count exclusions
+#' trial_data |>
+#'   cohort_start("Assessed for eligibility") |>
+#'   cohort_define(
+#'     consented = .full |> dplyr::filter(declined != 1),
+#'     excluded = dplyr::anti_join(.full, consented, by = "id")
+#'   )
 cohort_define <- function(.data, ...) {
   assert_cohort(.data)
 

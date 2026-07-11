@@ -19,3 +19,13 @@ additional \code{$labels} items according to provided label definitions
 \description{
 Add labels to ggconsort cohorts
 }
+\examples{
+# labels feed cohort_count_adorn() and the automatic box labels of
+# consort_box_add()
+trial_data |>
+  cohort_start("Assessed for eligibility") |>
+  cohort_define(
+    consented = .full |> dplyr::filter(declined != 1)
+  ) |>
+  cohort_label(consented = "Consented")
+}

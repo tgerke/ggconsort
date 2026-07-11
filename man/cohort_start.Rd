@@ -19,3 +19,7 @@ Returns a \code{ggconsort_cohort} object with
 Creates an object with an optional label which stores
 the originating source data for downstream ggconsort cohorts
 }
+\examples{
+trial_data |>
+  cohort_start("Assessed for eligibility")
+}

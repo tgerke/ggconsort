@@ -20,12 +20,25 @@ randomized <- screen_data %>%
     treatment = if_else(row_number() %% 2 == 1, "Drug A", "Drug B")
   )
 
-trial_data <- screen_data %>%
-  select(-excluded) %>%
+trial_data <- screen_data |>
+  select(-excluded) |>
   left_join(
-    randomized %>%
+    randomized |>
       select(id, treatment),
     by = "id"
   )
 
-# usethis::use_data(trial_data)
+# follow-up and analysis outcomes for randomized patients (NA otherwise);
+# drawn after all earlier sampling so the original columns are unchanged
+followup <- randomized |>
+  transmute(
+    id,
+    lost_to_followup = sample(0:1, n(), replace = TRUE, prob = c(.96, .04)),
+    discontinued = sample(0:1, n(), replace = TRUE, prob = c(.95, .05)),
+    not_analyzed = sample(0:1, n(), replace = TRUE, prob = c(.98, .02))
+  )
+
+trial_data <- trial_data |>
+  left_join(followup, by = "id")
+
+# usethis::use_data(trial_data, overwrite = TRUE)

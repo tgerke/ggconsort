@@ -10,7 +10,9 @@
 #' \code{$data} and \code{$labels} items
 #' @export
 #'
-### FIXME: to add @examples
+#' @examples
+#' trial_data |>
+#'   cohort_start("Assessed for eligibility")
 cohort_start <- function(.data, label = NULL) {
   stopifnot(is.data.frame(.data))
   x <- structure(
