@@ -188,7 +188,7 @@ added on top of `geom_consort()`. Because the left-aligned boxes extend to the
 right of their anchor points, we widen the x range with `xlim()` to give them
 room.
 
-```{r prisma-plot}
+```{r prisma-plot, fig.alt = "PRISMA 2020 flow diagram: 500 records identified from databases and registers, 398 screened after removing 102 duplicates, 147 reports sought, 138 assessed for eligibility, and 31 studies included in the review"}
 library(ggplot2)
 
 review_prisma %>%
