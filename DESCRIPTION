@@ -39,3 +39,4 @@ Depends:
 URL: https://tgerke.github.io/ggconsort, https://github.com/tgerke/ggconsort
 BugReports: https://github.com/tgerke/ggconsort/issues
 Config/roxygen2/version: 8.0.0
+Config/Needs/website: rmarkdown
