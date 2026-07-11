@@ -4,6 +4,7 @@
 # ggconsort <img src="man/figures/logo.png" align="right" height="139" />
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 ## Overview
@@ -18,12 +19,12 @@ layout and aesthetic design. With the introduction of a
 chains. Specifically, the following functions are implemented inside a
 dplyr chain to define a `ggconsort_cohort`:
 
--   `cohort_start()` initializes a `ggconsort_cohort` object which
-    contains a labeled copy of the source data
--   `cohort_define()` constructs cohorts that are variations of the
-    source data or other cohorts
--   `cohort_label()` adds labels to each named cohort within the
-    `ggconsort_cohort` object
+- `cohort_start()` initializes a `ggconsort_cohort` object which
+  contains a labeled copy of the source data
+- `cohort_define()` constructs cohorts that are variations of the source
+  data or other cohorts
+- `cohort_label()` adds labels to each named cohort within the
+  `ggconsort_cohort` object
 
 Stage 2 makes use of three ggconsort `consort_` verbs which equip the
 `ggconsort_cohort` object with `ggconsort` properties. The `ggconsort`
@@ -31,10 +32,10 @@ object can be viewed with ggplot via `geom_consort() + theme_consort()`.
 `plot` and `print` methods are also available for the `ggconsort` object
 for visually iterative development.
 
--   `consort_box_add()` adds a text box to the CONSORT diagram
--   `consort_arrow_add()` adds an arrow to the CONSORT diagram
--   `consort_line_add()` adds a line (without an arrow head) the CONSORT
-    diagram
+- `consort_box_add()` adds a text box to the CONSORT diagram
+- `consort_arrow_add()` adds an arrow to the CONSORT diagram
+- `consort_line_add()` adds a line (without an arrow head) the CONSORT
+  diagram
 
 ## Installation
 
@@ -56,7 +57,7 @@ participate in a randomized trial comparing Drug A to Drug B.
 library(ggconsort)
 
 head(trial_data)
-#> # A tibble: 6 x 5
+#> # A tibble: 6 × 5
 #>      id declined prior_chemo bone_mets treatment
 #>   <int>    <int>       <int>     <int> <chr>    
 #> 1 65464        0           0         0 Drug A   
@@ -127,7 +128,7 @@ study_cohorts
 #>   ...and 1 more.
 
 summary(study_cohorts)
-#> # A tibble: 10 x 3
+#> # A tibble: 10 × 3
 #>    cohort               count label                   
 #>    <chr>                <int> <chr>                   
 #>  1 .full                 1200 Assessed for eligibility
@@ -172,22 +173,28 @@ study_consort <- study_cohorts %>%
     "arm_b", 30, 10, cohort_count_adorn(study_cohorts, treatment_b)
   ) %>%
   consort_arrow_add(
-    end = "exclusions", end_side = "left", start_x = 0, start_y = 40
+    start_x = 0, start_y = 40,
+    end = "exclusions", end_side = "left"
   ) %>%
   consort_arrow_add(
-    "full", "bottom", "randomized", "top"
-  ) %>% 
+    start = "full", start_side = "bottom",
+    end = "randomized", end_side = "top"
+  ) %>%
   consort_arrow_add(
-    start_x = 0, start_y = 30, end_x = 0, end_y = 20,
+    start_x = 0, start_y = 30,
+    end_x = 0, end_y = 20
   ) %>%
   consort_line_add(
-    start_x = -30, start_y = 20, end_x = 30, end_y = 20,
-  ) %>% 
-  consort_arrow_add(
-    end = "arm_a", end_side = "top", start_x = -30, start_y = 20
+    start_x = -30, start_y = 20,
+    end_x = 30, end_y = 20
   ) %>%
   consort_arrow_add(
-    end = "arm_b", end_side = "top", start_x = 30, start_y = 20
+    start_x = -30, start_y = 20,
+    end = "arm_a", end_side = "top"
+  ) %>%
+  consort_arrow_add(
+    start_x = 30, start_y = 20,
+    end = "arm_b", end_side = "top"
   )
 
 study_consort %>%
@@ -199,6 +206,9 @@ study_consort %>%
     aes(x = 0, y = 10, label = "Allocation"),
     fill = "#9bc0fc"
   )
+#> Warning in ggtext::geom_richtext(aes(x = 0, y = 10, label = "Allocation"), : All aesthetics have length 1, but the data has 11 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
 ```
 
 <img src="man/figures/README-example-consort-1.png" width="100%" />
@@ -209,7 +219,7 @@ desired data frame of randomized subjects:
 ``` r
 study_cohorts %>%
   cohort_pull(randomized)
-#> # A tibble: 938 x 5
+#> # A tibble: 938 × 5
 #>       id declined prior_chemo bone_mets treatment
 #>    <int>    <int>       <int>     <int> <chr>    
 #>  1 65464        0           0         0 Drug A   
@@ -222,5 +232,5 @@ study_cohorts %>%
 #>  8 65186        0           0         0 Drug B   
 #>  9 48837        0           0         0 Drug A   
 #> 10 99005        0           0         0 Drug B   
-#> # … with 928 more rows
+#> # ℹ 928 more rows
 ```
