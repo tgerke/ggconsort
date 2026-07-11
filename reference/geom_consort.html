@@ -25,7 +25,7 @@ same styling as the diagram lines."><meta property="og:image" content="https://t
 
     <a class="navbar-brand me-2" href="../index.html">ggconsort</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,8 @@ same styling as the diagram lines."><meta property="og:image" content="https://t
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/prisma.html">PRISMA flow diagrams with ggconsort</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/consort.html">A complete CONSORT diagram</a></li>
+    <li><a class="dropdown-item" href="../articles/prisma.html">PRISMA flow diagrams with ggconsort</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -50,7 +51,7 @@ same styling as the diagram lines."><meta property="og:image" content="https://t
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>CONSORT diagram layers for ggplot2</h1>
-      <small class="dont-index">Source: <a href="https://github.com/tgerke/ggconsort/blob/v0.3.0/R/geom_consort.R" class="external-link"><code>R/geom_consort.R</code></a>, <a href="https://github.com/tgerke/ggconsort/blob/v0.3.0/R/geom_consort_arrow.R" class="external-link"><code>R/geom_consort_arrow.R</code></a>, <a href="https://github.com/tgerke/ggconsort/blob/v0.3.0/R/geom_consort_box.R" class="external-link"><code>R/geom_consort_box.R</code></a>, and 2 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/tgerke/ggconsort/blob/main/R/geom_consort.R" class="external-link"><code>R/geom_consort.R</code></a>, <a href="https://github.com/tgerke/ggconsort/blob/main/R/geom_consort_arrow.R" class="external-link"><code>R/geom_consort_arrow.R</code></a>, <a href="https://github.com/tgerke/ggconsort/blob/main/R/geom_consort_box.R" class="external-link"><code>R/geom_consort_box.R</code></a>, and 2 more</small>
       <div class="d-none name"><code>geom_consort.Rd</code></div>
     </div>
 
@@ -73,8 +74,15 @@ same styling as the diagram lines.</p>
 <span>  label_color <span class="op">=</span> <span class="st">"black"</span>,</span>
 <span>  label_size <span class="op">=</span> <span class="fl">11</span>,</span>
 <span>  label_height <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  family <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  fill <span class="op">=</span> <span class="st">"white"</span>,</span>
-<span>  box_color <span class="op">=</span> <span class="st">"black"</span></span>
+<span>  box_color <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>  linewidth <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span>  box_r <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  box_padding <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span>  arrow_length <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  row_gap <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  equal_columns <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">geom_consort_arrow</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
@@ -100,12 +108,48 @@ same styling as the diagram lines.</p>
 <dd><p>Line height of the box label text.</p></dd>
 
 
+<dt id="arg-family">family<a class="anchor" aria-label="anchor" href="#arg-family"></a></dt>
+<dd><p>Font family of the box label text. The default (<code>""</code>) uses
+the device default.</p></dd>
+
+
 <dt id="arg-fill">fill<a class="anchor" aria-label="anchor" href="#arg-fill"></a></dt>
-<dd><p>Fill color of the boxes.</p></dd>
+<dd><p>Fill color of the boxes. Individual boxes can override this
+with the <code>fill</code> argument of <code><a href="consort_box_add.html">consort_box_add()</a></code>.</p></dd>
 
 
 <dt id="arg-box-color">box_color<a class="anchor" aria-label="anchor" href="#arg-box-color"></a></dt>
 <dd><p>Color of the box borders.</p></dd>
+
+
+<dt id="arg-linewidth">linewidth<a class="anchor" aria-label="anchor" href="#arg-linewidth"></a></dt>
+<dd><p>Width of the box borders; arrows and lines are drawn
+slightly lighter, in proportion.</p></dd>
+
+
+<dt id="arg-box-r">box_r<a class="anchor" aria-label="anchor" href="#arg-box-r"></a></dt>
+<dd><p>Corner radius of the boxes, in lines. The default <code>0</code> draws
+square corners, as in the official CONSORT and PRISMA templates.</p></dd>
+
+
+<dt id="arg-box-padding">box_padding<a class="anchor" aria-label="anchor" href="#arg-box-padding"></a></dt>
+<dd><p>Padding between a box's text and its border, in lines.</p></dd>
+
+
+<dt id="arg-arrow-length">arrow_length<a class="anchor" aria-label="anchor" href="#arg-arrow-length"></a></dt>
+<dd><p>Length of the arrow heads, in millimeters.</p></dd>
+
+
+<dt id="arg-row-gap">row_gap<a class="anchor" aria-label="anchor" href="#arg-row-gap"></a></dt>
+<dd><p>In a row/column layout, the vertical gap between rows, in
+lines. The default (<code>NULL</code>) equalizes the gaps to fill the panel, capped
+at 2 lines so the diagram stays compact on large devices.</p></dd>
+
+
+<dt id="arg-equal-columns">equal_columns<a class="anchor" aria-label="anchor" href="#arg-equal-columns"></a></dt>
+<dd><p>In a row/column layout, should all boxes in a column
+be drawn at the width of the column's widest box? The official CONSORT
+and PRISMA templates use uniform-width boxes.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -125,22 +169,28 @@ same styling as the diagram lines.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cohorts</span> <span class="op">&lt;-</span> <span class="va">trial_data</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="cohort_start.html">cohort_start</a></span><span class="op">(</span><span class="st">"Assessed for eligibility"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cohorts</span> <span class="op">&lt;-</span> <span class="va">trial_data</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="cohort_start.html">cohort_start</a></span><span class="op">(</span><span class="st">"Assessed for eligibility"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="cohort_define.html">cohort_define</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    randomized <span class="op">=</span> <span class="va">.full</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">declined</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="cohort_label.html">cohort_label</a></span><span class="op">(</span>randomized <span class="op">=</span> <span class="st">"Randomized"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    randomized <span class="op">=</span> <span class="va">.full</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">declined</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    excluded <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">.full</span>, <span class="va">randomized</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="cohort_label.html">cohort_label</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    randomized <span class="op">=</span> <span class="st">"Randomized"</span>,</span></span>
+<span class="r-in"><span>    excluded <span class="op">=</span> <span class="st">"Declined to participate"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">consort</span> <span class="op">&lt;-</span> <span class="va">cohorts</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="consort_box_add.html">consort_box_add</a></span><span class="op">(</span><span class="st">"full"</span>, <span class="fl">0</span>, <span class="fl">10</span>, <span class="fu"><a href="cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">cohorts</span>, <span class="va">.full</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="consort_box_add.html">consort_box_add</a></span><span class="op">(</span><span class="st">"randomized"</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fu"><a href="cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">cohorts</span>, <span class="va">randomized</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span><span class="st">"full"</span>, <span class="st">"bottom"</span>, <span class="st">"randomized"</span>, <span class="st">"top"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">consort</span> <span class="op">&lt;-</span> <span class="va">cohorts</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="consort_box_add.html">consort_box_add</a></span><span class="op">(</span><span class="st">"full"</span>, row <span class="op">=</span> <span class="fl">1</span>, label <span class="op">=</span> <span class="fu"><a href="cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">cohorts</span>, <span class="va">.full</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="consort_box_add.html">consort_box_add</a></span><span class="op">(</span><span class="st">"excluded"</span>, row <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"side"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="consort_box_add.html">consort_box_add</a></span><span class="op">(</span><span class="st">"randomized"</span>, row <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"full"</span>, end <span class="op">=</span> <span class="st">"randomized"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"full"</span>, end <span class="op">=</span> <span class="st">"excluded"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">consort</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">geom_consort</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="theme_consort.html">theme_consort</a></span><span class="op">(</span>margin_h <span class="op">=</span> <span class="fl">12</span>, margin_v <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="theme_consort.html">theme_consort</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="geom_consort-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

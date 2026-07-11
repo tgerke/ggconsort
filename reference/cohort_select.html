@@ -9,7 +9,7 @@ object"><meta property="og:image" content="https://tgerke.github.io/ggconsort/lo
 
     <a class="navbar-brand me-2" href="../index.html">ggconsort</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,7 +20,8 @@ object"><meta property="og:image" content="https://tgerke.github.io/ggconsort/lo
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/prisma.html">PRISMA flow diagrams with ggconsort</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/consort.html">A complete CONSORT diagram</a></li>
+    <li><a class="dropdown-item" href="../articles/prisma.html">PRISMA flow diagrams with ggconsort</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -34,7 +35,7 @@ object"><meta property="og:image" content="https://tgerke.github.io/ggconsort/lo
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Subset ggconsort cohort objects</h1>
-      <small class="dont-index">Source: <a href="https://github.com/tgerke/ggconsort/blob/v0.3.0/R/cohort_select.R" class="external-link"><code>R/cohort_select.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/tgerke/ggconsort/blob/main/R/cohort_select.R" class="external-link"><code>R/cohort_select.R</code></a></small>
       <div class="d-none name"><code>cohort_select.Rd</code></div>
     </div>
 
@@ -69,24 +70,24 @@ object</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cohorts</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>  <span class="va">trial_data</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="cohort_start.html">cohort_start</a></span><span class="op">(</span><span class="st">"Assessed for eligibility"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="va">trial_data</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="cohort_start.html">cohort_start</a></span><span class="op">(</span><span class="st">"Assessed for eligibility"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="cohort_define.html">cohort_define</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    consented <span class="op">=</span> <span class="va">.full</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">declined</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    treatment_a <span class="op">=</span> <span class="va">consented</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Drug A"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    treatment_b <span class="op">=</span> <span class="va">consented</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Drug B"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    consented <span class="op">=</span> <span class="va">.full</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">declined</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    treatment_a <span class="op">=</span> <span class="va">consented</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Drug A"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    treatment_b <span class="op">=</span> <span class="va">consented</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Drug B"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="cohort_label.html">cohort_label</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    consented <span class="op">=</span> <span class="st">"Consented"</span>,</span></span>
 <span class="r-in"><span>    treatment_a <span class="op">=</span> <span class="st">"Allocated to arm A"</span>,</span></span>
 <span class="r-in"><span>    treatment_b <span class="op">=</span> <span class="st">"Allocated to arm B"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">cohorts</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">cohort_select</span><span class="op">(</span><span class="va">consented</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cohorts</span> <span class="op">|&gt;</span> <span class="fu">cohort_select</span><span class="op">(</span><span class="va">consented</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A ggconsort cohort of 1200 observations with 1 cohort:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   - consented (1141)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">cohorts</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span><span class="va">cohorts</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">cohort_select</span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"treatment_"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A ggconsort cohort of 1200 observations with 2 cohorts:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   - treatment_a (469)</span>

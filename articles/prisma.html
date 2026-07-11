@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggconsort</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +39,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/prisma.html">PRISMA flow diagrams with ggconsort</a></li>
+<li><a class="dropdown-item" href="../articles/consort.html">A complete CONSORT diagram</a></li>
+    <li><a class="dropdown-item" href="../articles/prisma.html">PRISMA flow diagrams with ggconsort</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -64,7 +65,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>PRISMA flow diagrams with ggconsort</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/tgerke/ggconsort/blob/v0.3.0/vignettes/articles/prisma.Rmd" class="external-link"><code>vignettes/articles/prisma.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/tgerke/ggconsort/blob/main/vignettes/articles/prisma.Rmd" class="external-link"><code>vignettes/articles/prisma.Rmd</code></a></small>
       <div class="d-none name"><code>prisma.Rmd</code></div>
     </div>
 
@@ -88,7 +89,7 @@ and columns that track each record’s fate. Here we simulate one.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tgerke.github.io/ggconsort">ggconsort</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">citations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">500</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">citations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">500</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    source <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">id</span> <span class="op">&lt;=</span> <span class="fl">412</span>, <span class="st">"Databases"</span>, <span class="st">"Registers"</span><span class="op">)</span>,</span>
 <span>    duplicate <span class="op">=</span> <span class="va">id</span> <span class="op">&lt;=</span> <span class="fl">102</span>,</span>
@@ -123,22 +124,22 @@ records or from a previously defined cohort, and
 drop out at each step.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">review_cohorts</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">citations</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/cohort_start.html">cohort_start</a></span><span class="op">(</span><span class="st">"Records identified"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="va">citations</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/cohort_start.html">cohort_start</a></span><span class="op">(</span><span class="st">"Records identified"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/cohort_define.html">cohort_define</a></span><span class="op">(</span></span>
-<span>    from_databases <span class="op">=</span> <span class="va">.full</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">source</span> <span class="op">==</span> <span class="st">"Databases"</span><span class="op">)</span>,</span>
-<span>    from_registers <span class="op">=</span> <span class="va">.full</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">source</span> <span class="op">==</span> <span class="st">"Registers"</span><span class="op">)</span>,</span>
-<span>    screened <span class="op">=</span> <span class="va">.full</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">duplicate</span><span class="op">)</span>,</span>
+<span>    from_databases <span class="op">=</span> <span class="va">.full</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">source</span> <span class="op">==</span> <span class="st">"Databases"</span><span class="op">)</span>,</span>
+<span>    from_registers <span class="op">=</span> <span class="va">.full</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">source</span> <span class="op">==</span> <span class="st">"Registers"</span><span class="op">)</span>,</span>
+<span>    screened <span class="op">=</span> <span class="va">.full</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">duplicate</span><span class="op">)</span>,</span>
 <span>    duplicates <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">.full</span>, <span class="va">screened</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>,</span>
-<span>    sought <span class="op">=</span> <span class="va">screened</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">passed_screen</span><span class="op">)</span>,</span>
+<span>    sought <span class="op">=</span> <span class="va">screened</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">passed_screen</span><span class="op">)</span>,</span>
 <span>    screened_out <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">screened</span>, <span class="va">sought</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>,</span>
-<span>    assessed <span class="op">=</span> <span class="va">sought</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">retrieved</span><span class="op">)</span>,</span>
+<span>    assessed <span class="op">=</span> <span class="va">sought</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">retrieved</span><span class="op">)</span>,</span>
 <span>    not_retrieved <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">sought</span>, <span class="va">assessed</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>,</span>
-<span>    included <span class="op">=</span> <span class="va">assessed</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">exclusion_reason</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    excluded_population <span class="op">=</span> <span class="va">assessed</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">exclusion_reason</span> <span class="op">==</span> <span class="st">"Wrong population"</span><span class="op">)</span>,</span>
-<span>    excluded_outcome <span class="op">=</span> <span class="va">assessed</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">exclusion_reason</span> <span class="op">==</span> <span class="st">"Wrong outcome"</span><span class="op">)</span>,</span>
-<span>    excluded_design <span class="op">=</span> <span class="va">assessed</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">exclusion_reason</span> <span class="op">==</span> <span class="st">"Wrong study design"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    included <span class="op">=</span> <span class="va">assessed</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">exclusion_reason</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    excluded_population <span class="op">=</span> <span class="va">assessed</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">exclusion_reason</span> <span class="op">==</span> <span class="st">"Wrong population"</span><span class="op">)</span>,</span>
+<span>    excluded_outcome <span class="op">=</span> <span class="va">assessed</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">exclusion_reason</span> <span class="op">==</span> <span class="st">"Wrong outcome"</span><span class="op">)</span>,</span>
+<span>    excluded_design <span class="op">=</span> <span class="va">assessed</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">exclusion_reason</span> <span class="op">==</span> <span class="st">"Wrong study design"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/cohort_label.html">cohort_label</a></span><span class="op">(</span></span>
 <span>    from_databases <span class="op">=</span> <span class="st">"Databases"</span>,</span>
 <span>    from_registers <span class="op">=</span> <span class="st">"Registers"</span>,</span>
@@ -171,48 +172,44 @@ drop out at each step.</p>
 </h2>
 <p>Each PRISMA box declares a <code>row</code> and <code>col</code> grid
 position: the main flow runs down the <code>"main"</code> column, with
-the reasons for attrition beside it in the <code>"side"</code> column.
-Arrows connect boxes by name — boxes in the same column are joined
-vertically and boxes in the same row horizontally, PRISMA-style, from
-box edge to box edge. The stage labels on the left are
-<code><a href="../reference/consort_box_add.html">consort_stage_add()</a></code> badges; <code>row = c(2, 4)</code>
-centers “Screening” across those rows. Multi-line labels are built with
-<code>&lt;br&gt;</code> (labels are rendered by <a href="https://wilkelab.org/gridtext/" class="external-link">gridtext</a>, so markdown and HTML
-formatting work).</p>
+the reasons for attrition beside it in the <code>"side"</code> column. A
+box named after a cohort labels itself with that cohort’s label and
+count, so the single-count boxes need nothing but a name and a position;
+custom multi-line labels are built with <code>&lt;br&gt;</code> (labels
+are rendered by <a href="https://wilkelab.org/gridtext/" class="external-link">gridtext</a>,
+so markdown and HTML formatting work). Arrows connect boxes by name —
+boxes in the same column are joined vertically and boxes in the same row
+horizontally, PRISMA-style, from box edge to box edge.</p>
+<p>The furniture of the official template is a few
+<code><a href="../reference/consort_box_add.html">consort_stage_add()</a></code> calls: the rotated stage labels sit in
+the left margin (the default column), with <code>row = c(2, 4)</code>
+centering “Screening” across those rows, and the header bar spans both
+columns via <code>col = c("main", "side")</code> in the template’s
+amber.</p>
 <p>ggconsort measures every box when the plot is drawn and computes the
-spacing to fit the figure, so no coordinates are needed anywhere.</p>
+spacing to fit the figure, so no coordinates are needed anywhere;
+<code>equal_columns = TRUE</code> matches the uniform box widths of the
+official template.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">review_prisma</span> <span class="op">&lt;-</span> <span class="va">review_cohorts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="va">review_prisma</span> <span class="op">&lt;-</span> <span class="va">review_cohorts</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
 <span>    <span class="st">"identified"</span>, row <span class="op">=</span> <span class="fl">1</span>, label <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
 <span>      <span class="st">"Records identified from:&lt;br&gt;</span></span>
 <span><span class="st">      {cohort_count_adorn(review_cohorts, from_databases)}&lt;br&gt;</span></span>
 <span><span class="st">      {cohort_count_adorn(review_cohorts, from_registers)}"</span></span>
 <span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
 <span>    <span class="st">"duplicates"</span>, row <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"side"</span>, label <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
 <span>      <span class="st">"Records removed before screening:&lt;br&gt;</span></span>
 <span><span class="st">      {cohort_count_adorn(review_cohorts, duplicates)}"</span></span>
 <span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"screened"</span>, row <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">screened</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"screened_out"</span>, row <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"side"</span>,</span>
-<span>    label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">screened_out</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"sought"</span>, row <span class="op">=</span> <span class="fl">3</span>, label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">sought</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"not_retrieved"</span>, row <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"side"</span>,</span>
-<span>    label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">not_retrieved</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"assessed"</span>, row <span class="op">=</span> <span class="fl">4</span>, label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">assessed</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span><span class="st">"screened"</span>, row <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span><span class="st">"screened_out"</span>, row <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"side"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span><span class="st">"sought"</span>, row <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span><span class="st">"not_retrieved"</span>, row <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"side"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span><span class="st">"assessed"</span>, row <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
 <span>    <span class="st">"excluded"</span>, row <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"side"</span>, label <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
 <span>      <span class="st">"Reports excluded:&lt;br&gt;</span></span>
@@ -220,33 +217,35 @@ spacing to fit the figure, so no coordinates are needed anywhere.</p>
 <span><span class="st">      • {cohort_count_adorn(review_cohorts, excluded_outcome)}&lt;br&gt;</span></span>
 <span><span class="st">      • {cohort_count_adorn(review_cohorts, excluded_design)}"</span></span>
 <span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"included"</span>, row <span class="op">=</span> <span class="fl">5</span>, label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">included</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"identified"</span>, end <span class="op">=</span> <span class="st">"screened"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"screened"</span>, end <span class="op">=</span> <span class="st">"sought"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"sought"</span>, end <span class="op">=</span> <span class="st">"assessed"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"assessed"</span>, end <span class="op">=</span> <span class="st">"included"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"identified"</span>, end <span class="op">=</span> <span class="st">"duplicates"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"screened"</span>, end <span class="op">=</span> <span class="st">"screened_out"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"sought"</span>, end <span class="op">=</span> <span class="st">"not_retrieved"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"assessed"</span>, end <span class="op">=</span> <span class="st">"excluded"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_stage_add</a></span><span class="op">(</span><span class="st">"Identification"</span>, row <span class="op">=</span> <span class="fl">1</span>, angle <span class="op">=</span> <span class="fl">90</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_stage_add</a></span><span class="op">(</span><span class="st">"Screening"</span>, row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>, angle <span class="op">=</span> <span class="fl">90</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span><span class="st">"included"</span>, row <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"identified"</span>, end <span class="op">=</span> <span class="st">"screened"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"screened"</span>, end <span class="op">=</span> <span class="st">"sought"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"sought"</span>, end <span class="op">=</span> <span class="st">"assessed"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"assessed"</span>, end <span class="op">=</span> <span class="st">"included"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"identified"</span>, end <span class="op">=</span> <span class="st">"duplicates"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"screened"</span>, end <span class="op">=</span> <span class="st">"screened_out"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"sought"</span>, end <span class="op">=</span> <span class="st">"not_retrieved"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"assessed"</span>, end <span class="op">=</span> <span class="st">"excluded"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_stage_add</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Identification of studies via databases and registers"</span>,</span>
+<span>    row <span class="op">=</span> <span class="fl">0</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"main"</span>, <span class="st">"side"</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"#ffc000"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_stage_add</a></span><span class="op">(</span><span class="st">"Identification"</span>, row <span class="op">=</span> <span class="fl">1</span>, angle <span class="op">=</span> <span class="fl">90</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_stage_add</a></span><span class="op">(</span><span class="st">"Screening"</span>, row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>, angle <span class="op">=</span> <span class="fl">90</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_stage_add</a></span><span class="op">(</span><span class="st">"Included"</span>, row <span class="op">=</span> <span class="fl">5</span>, angle <span class="op">=</span> <span class="fl">90</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">review_prisma</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">review_prisma</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_consort.html">geom_consort</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_consort.html">geom_consort</a></span><span class="op">(</span>equal_columns <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_consort.html">theme_consort</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="prisma_files/figure-html/prisma-plot-1.png" class="r-plt" alt="PRISMA 2020 flow diagram: 500 records identified from databases and registers, 398 screened after removing 102 duplicates, 147 reports sought, 138 assessed for eligibility, and 31 studies included in the review" width="100%"></p>
 <p>At analysis time, the included studies are one
 <code><a href="../reference/cohort_pull.html">cohort_pull()</a></code> away:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">review_cohorts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="va">review_cohorts</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/cohort_pull.html">cohort_pull</a></span><span class="op">(</span><span class="va">included</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 31 × 6</span></span></span>
 <span><span class="co">#&gt;       id source    duplicate passed_screen retrieved exclusion_reason</span></span>

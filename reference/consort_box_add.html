@@ -11,7 +11,7 @@ that can be plotted with ggplot2::ggplot() and geom_consort()."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">ggconsort</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,7 +22,8 @@ that can be plotted with ggplot2::ggplot() and geom_consort()."><meta property="
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/prisma.html">PRISMA flow diagrams with ggconsort</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/consort.html">A complete CONSORT diagram</a></li>
+    <li><a class="dropdown-item" href="../articles/prisma.html">PRISMA flow diagrams with ggconsort</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -36,7 +37,7 @@ that can be plotted with ggplot2::ggplot() and geom_consort()."><meta property="
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Add boxes, arrows, lines, and stage badges to a CONSORT diagram</h1>
-      <small class="dont-index">Source: <a href="https://github.com/tgerke/ggconsort/blob/v0.3.0/R/consort_arrow_add.R" class="external-link"><code>R/consort_arrow_add.R</code></a>, <a href="https://github.com/tgerke/ggconsort/blob/v0.3.0/R/consort_box_add.R" class="external-link"><code>R/consort_box_add.R</code></a>, <a href="https://github.com/tgerke/ggconsort/blob/v0.3.0/R/consort_line_add.R" class="external-link"><code>R/consort_line_add.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/tgerke/ggconsort/blob/main/R/consort_arrow_add.R" class="external-link"><code>R/consort_arrow_add.R</code></a>, <a href="https://github.com/tgerke/ggconsort/blob/main/R/consort_box_add.R" class="external-link"><code>R/consort_box_add.R</code></a>, <a href="https://github.com/tgerke/ggconsort/blob/main/R/consort_line_add.R" class="external-link"><code>R/consort_line_add.R</code></a></small>
       <div class="d-none name"><code>consort_box_add.Rd</code></div>
     </div>
 
@@ -65,14 +66,24 @@ that can be plotted with <code><a href="https://ggplot2.tidyverse.org/reference/
 <span>  <span class="va">name</span>,</span>
 <span>  x <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">label</span>,</span>
+<span>  label <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  hjust <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  vjust <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  row <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  col <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fill <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  text_color <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">consort_stage_add</span><span class="op">(</span><span class="va">.data</span>, <span class="va">label</span>, <span class="va">row</span>, col <span class="op">=</span> <span class="st">"left"</span>, fill <span class="op">=</span> <span class="st">"#9bc0fc"</span>, angle <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu">consort_stage_add</span><span class="op">(</span></span>
+<span>  <span class="va">.data</span>,</span>
+<span>  <span class="va">label</span>,</span>
+<span>  <span class="va">row</span>,</span>
+<span>  col <span class="op">=</span> <span class="st">"margin"</span>,</span>
+<span>  fill <span class="op">=</span> <span class="st">"#9bc0fc"</span>,</span>
+<span>  angle <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">consort_line_add</span><span class="op">(</span></span>
 <span>  <span class="va">.data</span>,</span>
@@ -128,8 +139,11 @@ the row/column layout instead.</p></dd>
 <dt id="arg-label">label<a class="anchor" aria-label="anchor" href="#arg-label"></a></dt>
 <dd><p>Text displayed in the box. Interpreted as markdown/HTML by
 ggtext/gridtext, so labels may contain formatting such as <code>&lt;br&gt;</code> or
-<code>**bold**</code>. <code><a href="cohort_count.html">cohort_count_adorn()</a></code> is a convenient way to build labels
-with cohort counts.</p></dd>
+<code>**bold**</code>. When <code>name</code> matches a cohort defined with <code><a href="cohort_define.html">cohort_define()</a></code>,
+<code>label</code> may be omitted: the box is labeled automatically with the
+cohort's label and count, as by <code><a href="cohort_count.html">cohort_count_adorn()</a></code>.
+<code><a href="cohort_count.html">cohort_count_bullets()</a></code> is a convenient way to build multi-line labels
+such as exclusion boxes.</p></dd>
 
 
 <dt id="arg-hjust-vjust">hjust, vjust<a class="anchor" aria-label="anchor" href="#arg-hjust-vjust"></a></dt>
@@ -141,12 +155,21 @@ left edge at <code>x</code>. Ignored in row/column layouts.</p></dd>
 
 <dt id="arg-row-col">row, col<a class="anchor" aria-label="anchor" href="#arg-row-col"></a></dt>
 <dd><p>Grid position of the box or stage badge (see the
-"Row/column layout" section). For <code>consort_stage_add()</code>, <code>row</code> may be a
-length-2 vector to center the badge across a span of rows.</p></dd>
+"Row/column layout" section). For <code>consort_stage_add()</code>, <code>row</code> and <code>col</code>
+may be length-2 vectors to center the badge across a span of rows or
+columns (e.g. <code>col = c("main", "side")</code> for a header bar spanning the
+diagram).</p></dd>
 
 
 <dt id="arg-fill">fill<a class="anchor" aria-label="anchor" href="#arg-fill"></a></dt>
-<dd><p>Fill color of the stage badge.</p></dd>
+<dd><p>For <code>consort_box_add()</code>, an optional fill color for this box,
+overriding the <code><a href="geom_consort.html">geom_consort()</a></code> <code>fill</code>. For <code>consort_stage_add()</code>, the
+fill color of the stage badge.</p></dd>
+
+
+<dt id="arg-color-text-color">color, text_color<a class="anchor" aria-label="anchor" href="#arg-color-text-color"></a></dt>
+<dd><p>Optional border and text colors for this box,
+overriding the <code><a href="geom_consort.html">geom_consort()</a></code> <code>box_color</code> and <code>label_color</code>.</p></dd>
 
 
 <dt id="arg-angle">angle<a class="anchor" aria-label="anchor" href="#arg-angle"></a></dt>
@@ -177,10 +200,13 @@ row/column layout.</p></li>
 <p>Instead of picking coordinates by hand, boxes can declare a grid position
 with <code>row</code> and <code>col</code>. Rows count from 1 at the top. <code>col</code> is <code>"main"</code> (the
 central spine, column 0), <code>"side"</code> (column 1, right of the spine),
-<code>"left"</code> (column -1), or any number. At draw time ggconsort measures every
-box on the open graphics device and lays the grid out to fill the plot:
-row gaps are equalized, columns are spread so boxes never overlap, and
-nothing is clipped, whatever the device size.</p>
+<code>"left"</code> (column -1), or any number. Stage badges may also use
+<code>"margin"</code> (their default), which resolves to one column left of the
+leftmost box so badges sit in the margin, as in the official CONSORT and
+PRISMA templates. At draw time ggconsort measures every box on the open
+graphics device and lays the grid out to fill the plot: row gaps are
+equalized (capped so large devices stay compact), columns are spread so
+boxes never overlap, and nothing is clipped, whatever the device size.</p>
 <p>In a row/column layout, arrows need only <code>start</code> and <code>end</code> names:</p><ul><li><p>boxes in the same column are connected vertically,</p></li>
 <li><p>boxes in the same row are connected horizontally,</p></li>
 <li><p>a box in another column and row is reached by a horizontal branch off
@@ -193,27 +219,28 @@ into each arm.</p></li>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cohorts</span> <span class="op">&lt;-</span> <span class="va">trial_data</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="cohort_start.html">cohort_start</a></span><span class="op">(</span><span class="st">"Assessed for eligibility"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cohorts</span> <span class="op">&lt;-</span> <span class="va">trial_data</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="cohort_start.html">cohort_start</a></span><span class="op">(</span><span class="st">"Assessed for eligibility"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="cohort_define.html">cohort_define</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    randomized <span class="op">=</span> <span class="va">.full</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">declined</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    randomized <span class="op">=</span> <span class="va">.full</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">declined</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    excluded <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">.full</span>, <span class="va">randomized</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="cohort_label.html">cohort_label</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    randomized <span class="op">=</span> <span class="st">"Randomized"</span>,</span></span>
 <span class="r-in"><span>    excluded <span class="op">=</span> <span class="st">"Declined to participate"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># row/column layout: no coordinates, spacing computed at draw time</span></span></span>
-<span class="r-in"><span><span class="va">consort</span> <span class="op">&lt;-</span> <span class="va">cohorts</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span><span class="co"># row/column layout: no coordinates, spacing computed at draw time.</span></span></span>
+<span class="r-in"><span><span class="co"># Boxes named after a cohort are labeled automatically with its count.</span></span></span>
+<span class="r-in"><span><span class="va">consort</span> <span class="op">&lt;-</span> <span class="va">cohorts</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">consort_box_add</span><span class="op">(</span><span class="st">"full"</span>, row <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"main"</span>,</span></span>
-<span class="r-in"><span>    label <span class="op">=</span> <span class="fu"><a href="cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">cohorts</span>, <span class="va">.full</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">consort_box_add</span><span class="op">(</span><span class="st">"exclusions"</span>, row <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"side"</span>,</span></span>
-<span class="r-in"><span>    label <span class="op">=</span> <span class="fu"><a href="cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">cohorts</span>, <span class="va">excluded</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">consort_box_add</span><span class="op">(</span><span class="st">"randomized"</span>, row <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"main"</span>,</span></span>
-<span class="r-in"><span>    label <span class="op">=</span> <span class="fu"><a href="cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">cohorts</span>, <span class="va">randomized</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">consort_arrow_add</span><span class="op">(</span>start <span class="op">=</span> <span class="st">"full"</span>, end <span class="op">=</span> <span class="st">"randomized"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">consort_arrow_add</span><span class="op">(</span>start <span class="op">=</span> <span class="st">"full"</span>, end <span class="op">=</span> <span class="st">"exclusions"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    label <span class="op">=</span> <span class="fu"><a href="cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">cohorts</span>, <span class="va">.full</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">consort_box_add</span><span class="op">(</span><span class="st">"excluded"</span>, row <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"side"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">consort_box_add</span><span class="op">(</span><span class="st">"randomized"</span>, row <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"main"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">consort_arrow_add</span><span class="op">(</span>start <span class="op">=</span> <span class="st">"full"</span>, end <span class="op">=</span> <span class="st">"randomized"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">consort_arrow_add</span><span class="op">(</span>start <span class="op">=</span> <span class="st">"full"</span>, end <span class="op">=</span> <span class="st">"excluded"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="co"># a stage badge in the margin, spanning rows 1 to 3</span></span></span>
+<span class="r-in"><span>  <span class="fu">consort_stage_add</span><span class="op">(</span><span class="st">"Enrollment"</span>, row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">consort</span><span class="op">)</span> <span class="op">+</span></span></span>

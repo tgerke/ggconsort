@@ -22,8 +22,15 @@ geom_consort(
   label_color = "black",
   label_size = 11,
   label_height = 1,
+  family = "",
   fill = "white",
-  box_color = "black"
+  box_color = "black",
+  linewidth = 0.25,
+  box_r = 0,
+  box_padding = 0.25,
+  arrow_length = 2,
+  row_gap = NULL,
+  equal_columns = FALSE
 )
 
 geom_consort_arrow(...)
@@ -47,13 +54,50 @@ geom_consort_line(x, xend, y, yend, ...)
 
   Line height of the box label text.
 
+- family:
+
+  Font family of the box label text. The default (`""`) uses the device
+  default.
+
 - fill:
 
-  Fill color of the boxes.
+  Fill color of the boxes. Individual boxes can override this with the
+  `fill` argument of
+  [`consort_box_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md).
 
 - box_color:
 
   Color of the box borders.
+
+- linewidth:
+
+  Width of the box borders; arrows and lines are drawn slightly lighter,
+  in proportion.
+
+- box_r:
+
+  Corner radius of the boxes, in lines. The default `0` draws square
+  corners, as in the official CONSORT and PRISMA templates.
+
+- box_padding:
+
+  Padding between a box's text and its border, in lines.
+
+- arrow_length:
+
+  Length of the arrow heads, in millimeters.
+
+- row_gap:
+
+  In a row/column layout, the vertical gap between rows, in lines. The
+  default (`NULL`) equalizes the gaps to fill the panel, capped at 2
+  lines so the diagram stays compact on large devices.
+
+- equal_columns:
+
+  In a row/column layout, should all boxes in a column be drawn at the
+  width of the column's widest box? The official CONSORT and PRISMA
+  templates use uniform-width boxes.
 
 - ...:
 
@@ -72,20 +116,26 @@ A ggplot2 layer or list of layers that can be added to a plot.
 ## Examples
 
 ``` r
-cohorts <- trial_data %>%
-  cohort_start("Assessed for eligibility") %>%
+cohorts <- trial_data |>
+  cohort_start("Assessed for eligibility") |>
   cohort_define(
-    randomized = .full %>% dplyr::filter(declined != 1)
-  ) %>%
-  cohort_label(randomized = "Randomized")
+    randomized = .full |> dplyr::filter(declined != 1),
+    excluded = dplyr::anti_join(.full, randomized, by = "id")
+  ) |>
+  cohort_label(
+    randomized = "Randomized",
+    excluded = "Declined to participate"
+  )
 
-consort <- cohorts %>%
-  consort_box_add("full", 0, 10, cohort_count_adorn(cohorts, .full)) %>%
-  consort_box_add("randomized", 0, 0, cohort_count_adorn(cohorts, randomized)) %>%
-  consort_arrow_add("full", "bottom", "randomized", "top")
+consort <- cohorts |>
+  consort_box_add("full", row = 1, label = cohort_count_adorn(cohorts, .full)) |>
+  consort_box_add("excluded", row = 2, col = "side") |>
+  consort_box_add("randomized", row = 3) |>
+  consort_arrow_add(start = "full", end = "randomized") |>
+  consort_arrow_add(start = "full", end = "excluded")
 
 library(ggplot2)
 ggplot(consort) +
   geom_consort() +
-  theme_consort(margin_h = 12, margin_v = 5)
+  theme_consort()
 ```

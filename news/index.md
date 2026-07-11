@@ -1,5 +1,70 @@
 # Changelog
 
+## ggconsort 0.4.0
+
+### Breaking changes
+
+- ggconsort now uses the base pipe `|>` throughout and no longer imports
+  or re-exports magrittr’s `%>%`. Code that relied on ggconsort
+  providing `%>%` should attach magrittr (or dplyr) itself. ggconsort
+  now requires R \>= 4.1.
+
+- In a row/column layout, row gaps are equalized but capped at 2 lines
+  and the diagram is vertically centered, so large devices produce a
+  compact CONSORT-style figure instead of a stretched one. Set
+  `geom_consort(row_gap =)` for explicit control.
+
+- [`consort_stage_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md)
+  badges default to a new `"margin"` column, resolved at plot time to
+  one column left of the leftmost box — stage labels sit in the margin
+  as in the official CONSORT and PRISMA templates, and never collide
+  with boxes. Pass an explicit `col` for the previous behavior.
+
+### New features
+
+- [`consort_box_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md)
+  labels a box automatically when its `name` matches a cohort: the box
+  text becomes the cohort’s label and count, as formatted by
+  [`cohort_count_adorn()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md),
+  so most boxes need only a name and a grid position.
+
+- New
+  [`cohort_count_bullets()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
+  builds multi-line box labels — a header cohort followed by bulleted
+  detail cohorts — replacing hand-written `glue()`/`<br>` blocks for
+  CONSORT exclusion boxes and PRISMA reasons boxes.
+
+- [`geom_consort()`](https://tgerke.github.io/ggconsort/reference/geom_consort.md)
+  gains styling parameters: `family` (font), `linewidth` (box borders,
+  with arrows scaled in proportion), `box_r` (corner radius),
+  `box_padding`, `arrow_length` (arrow head size), `row_gap`, and
+  `equal_columns` (draw every box in a column at the width of the
+  column’s widest box, matching the uniform boxes of the official
+  templates).
+
+- [`consort_box_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md)
+  gains per-box `fill`, `color`, and `text_color` overrides for
+  highlighting individual boxes.
+
+- [`consort_stage_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md)
+  accepts a length-2 `col` to span columns, e.g.
+  `col = c("main", "side")` for a PRISMA 2020 header bar.
+
+- `trial_data` gains follow-up and analysis indicators
+  (`lost_to_followup`, `discontinued`, `not_analyzed`) so a complete
+  four-stage CONSORT diagram can be built from the bundled data.
+
+### Documentation
+
+- New pkgdown article building a complete four-stage CONSORT diagram
+  (Enrollment, Allocation, Follow-up, Analysis) with margin stage
+  labels.
+
+- The PRISMA article now includes the official template’s spanning
+  header bar and uniform column widths; README and reference examples
+  use the automatic box labels and
+  [`cohort_count_bullets()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md).
+
 ## ggconsort 0.3.0
 
 ### New features

@@ -10,6 +10,8 @@ cohort_count(.data, ...)
 cohort_count_int(.data, ...)
 
 cohort_count_adorn(.data, ..., .label_fn = NULL)
+
+cohort_count_bullets(.data, ..., .label_fn = NULL)
 ```
 
 ## Arguments
@@ -45,21 +47,27 @@ A `tibble` with cohort name, row number total, and label.
   custom format. By default, counts are formatted with comma separators,
   e.g. "Randomized (n = 5,932,291)".
 
+- `cohort_count_bullets()`: Returns a multi-line box label: the first
+  selected cohort becomes the header line and the rest become bullet
+  points, e.g. for the "Excluded" box of a CONSORT diagram: "Excluded (n
+  = 262)" followed by one bulleted line per reason. Each line is
+  formatted as by `cohort_count_adorn()`.
+
 ## Examples
 
 ``` r
-cohorts <- trial_data %>%
-  cohort_start("Assessed for eligibility") %>%
+cohorts <- trial_data |>
+  cohort_start("Assessed for eligibility") |>
     cohort_define(
-      consented = .full %>% dplyr::filter(declined != 1),
-      consented_chemonaive = consented %>% dplyr::filter(prior_chemo != 1)
-    ) %>%
+      consented = .full |> dplyr::filter(declined != 1),
+      consented_chemonaive = consented |> dplyr::filter(prior_chemo != 1)
+    ) |>
     cohort_label(
       consented = "Consented",
       consented_chemonaive = "Chemotherapy naive"
     )
 
-cohorts %>%
+cohorts |>
   cohort_count()
 #> # A tibble: 3 × 3
 #>   cohort               count label                   
@@ -68,13 +76,13 @@ cohorts %>%
 #> 2 consented             1141 Consented               
 #> 3 consented_chemonaive  1028 Chemotherapy naive      
 
-cohorts %>%
+cohorts |>
   cohort_count_adorn()
 #> [1] "Assessed for eligibility (n = 1,200)"
 #> [2] "Consented (n = 1,141)"               
 #> [3] "Chemotherapy naive (n = 1,028)"      
 
-cohorts %>%
+cohorts |>
   cohort_count_adorn(
     starts_with("consented"),
     .label_fn = function(cohort, label, count, ...) {
@@ -83,4 +91,8 @@ cohorts %>%
   )
 #> [1] "1141 Consented (consented)"                    
 #> [2] "1028 Chemotherapy naive (consented_chemonaive)"
+
+cohorts |>
+  cohort_count_bullets(consented, consented_chemonaive)
+#> [1] "Consented (n = 1,141)<br>• Chemotherapy naive (n = 1,028)"
 ```

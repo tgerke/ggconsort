@@ -30,16 +30,16 @@ A ggplot2 theme object.
 ## Examples
 
 ``` r
-cohorts <- trial_data %>%
-  cohort_start("Assessed for eligibility") %>%
+cohorts <- trial_data |>
+  cohort_start("Assessed for eligibility") |>
   cohort_define(
-    randomized = .full %>% dplyr::filter(declined != 1)
-  ) %>%
+    randomized = .full |> dplyr::filter(declined != 1)
+  ) |>
   cohort_label(randomized = "Randomized")
 
-consort <- cohorts %>%
-  consort_box_add("full", row = 1, label = cohort_count_adorn(cohorts, .full)) %>%
-  consort_box_add("randomized", row = 2, label = cohort_count_adorn(cohorts, randomized)) %>%
+consort <- cohorts |>
+  consort_box_add("full", row = 1, label = cohort_count_adorn(cohorts, .full)) |>
+  consort_box_add("randomized", row = 2, label = cohort_count_adorn(cohorts, randomized)) |>
   consort_arrow_add(start = "full", end = "randomized")
 
 library(ggplot2)

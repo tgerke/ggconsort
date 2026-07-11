@@ -59,15 +59,16 @@ participate in a randomized trial comparing Drug A to Drug B.
 library(ggconsort)
 
 head(trial_data)
-#> # A tibble: 6 × 5
-#>      id declined prior_chemo bone_mets treatment
-#>   <int>    <int>       <int>     <int> <chr>    
-#> 1 65464        0           0         0 Drug A   
-#> 2 48228        0           0         0 Drug B   
-#> 3 92586        0           0         0 Drug A   
-#> 4 70176        0           0         0 Drug B   
-#> 5 89052        0           0         0 Drug A   
-#> 6 97333        0           0         0 Drug B
+#> # A tibble: 6 × 8
+#>      id declined prior_chemo bone_mets treatment lost_to_followup discontinued
+#>   <int>    <int>       <int>     <int> <chr>                <int>        <int>
+#> 1 65464        0           0         0 Drug A                   0            0
+#> 2 48228        0           0         0 Drug B                   0            0
+#> 3 92586        0           0         0 Drug A                   0            0
+#> 4 70176        0           0         0 Drug B                   0            0
+#> 5 89052        0           0         0 Drug A                   0            0
+#> 6 97333        0           0         0 Drug B                   0            0
+#> # ℹ 1 more variable: not_analyzed <int>
 ```
 
 Of the 1200 approached patients, only a subset were ultimately
@@ -84,22 +85,22 @@ following dplyr chain.
 library(dplyr)
 
 study_cohorts <- 
-  trial_data %>%
-  cohort_start("Assessed for eligibility") %>%
+  trial_data |>
+  cohort_start("Assessed for eligibility") |>
   # Define cohorts using named expressions --------------------
   # Notice that you can use previously defined cohorts in subsequent steps
   cohort_define(
-    consented = .full %>% filter(declined != 1),
-    consented_chemonaive = consented %>% filter(prior_chemo != 1),
-    randomized = consented_chemonaive %>% filter(bone_mets != 1),
-    treatment_a = randomized %>% filter(treatment == "Drug A"),
-    treatment_b = randomized %>% filter(treatment == "Drug B"),
+    consented = .full |> filter(declined != 1),
+    consented_chemonaive = consented |> filter(prior_chemo != 1),
+    randomized = consented_chemonaive |> filter(bone_mets != 1),
+    treatment_a = randomized |> filter(treatment == "Drug A"),
+    treatment_b = randomized |> filter(treatment == "Drug B"),
     # anti_join is useful for counting exclusions -------------
     excluded = anti_join(.full, randomized, by = "id"),
     excluded_declined = anti_join(.full, consented, by = "id"),
     excluded_chemo = anti_join(consented, consented_chemonaive, by = "id"),
     excluded_mets = anti_join(consented_chemonaive, randomized, by = "id")
-  ) %>%
+  ) |>
   # Provide text labels for cohorts ---------------------------
   cohort_label(
     consented = "Consented",
@@ -150,58 +151,64 @@ summary(study_cohorts)
 Next, we lay out the diagram. Boxes declare a `row` and `col` grid
 position instead of coordinates: `col = "main"` (the default) is the
 central spine, `"side"` puts a box to the right, and numbers give finer
-control (the arms below sit at columns -1 and 1). Arrows just connect
-boxes by name — vertically within a column, horizontally within a row,
-and `end = c("arm_a", "arm_b")` draws the T-split into the study arms.
-ggconsort measures every box when the plot is drawn and spaces the grid
-to fit the device, so there are no coordinates to fiddle with and
-nothing gets clipped. Note also
-[`cohort_count_adorn()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md),
-a convenience function that glues cohort counts to their labels.
+control (the arms below sit at columns -1 and 1). A box named after a
+cohort labels itself with that cohort’s label and count, so most boxes
+need nothing but a name and a position, and
+[`cohort_count_bullets()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
+builds the bulleted exclusion box in one call. Arrows just connect boxes
+by name — vertically within a column, horizontally within a row, and
+`end = c("treatment_a", "treatment_b")` draws the T-split into the study
+arms. Stage badges land in the left margin, as in the official CONSORT
+template. ggconsort measures every box when the plot is drawn and spaces
+the grid to fit the device, so there are no coordinates to fiddle with
+and nothing gets clipped.
 
 ``` r
 
 library(ggplot2)
 
-study_consort <- study_cohorts %>%
+study_consort <- study_cohorts |>
   consort_box_add(
     "full", row = 1, label = cohort_count_adorn(study_cohorts, .full)
-  ) %>%
+  ) |>
   consort_box_add(
-    "exclusions", row = 2, col = "side", label = glue::glue(
-      '{cohort_count_adorn(study_cohorts, excluded)}<br>
-      • {cohort_count_adorn(study_cohorts, excluded_declined)}<br>
-      • {cohort_count_adorn(study_cohorts, excluded_chemo)}<br>
-      • {cohort_count_adorn(study_cohorts, excluded_mets)}
-      ')
-  ) %>%
-  consort_box_add(
-    "randomized", row = 3, label = cohort_count_adorn(study_cohorts, randomized)
-  ) %>%
-  consort_box_add(
-    "arm_a", row = 4, col = -1,
-    label = cohort_count_adorn(study_cohorts, treatment_a)
-  ) %>%
-  consort_box_add(
-    "arm_b", row = 4, col = 1,
-    label = cohort_count_adorn(study_cohorts, treatment_b)
-  ) %>%
-  consort_arrow_add(start = "full", end = "randomized") %>%
-  consort_arrow_add(start = "full", end = "exclusions") %>%
-  consort_arrow_add(start = "randomized", end = c("arm_a", "arm_b")) %>%
-  consort_stage_add("Allocation", row = 4, col = "main")
+    "exclusions", row = 2, col = "side",
+    label = cohort_count_bullets(
+      study_cohorts, excluded,
+      excluded_declined, excluded_chemo, excluded_mets
+    )
+  ) |>
+  consort_box_add("randomized", row = 3) |>
+  consort_box_add("treatment_a", row = 4, col = -1) |>
+  consort_box_add("treatment_b", row = 4, col = 1) |>
+  consort_arrow_add(start = "full", end = "randomized") |>
+  consort_arrow_add(start = "full", end = "exclusions") |>
+  consort_arrow_add(start = "randomized", end = c("treatment_a", "treatment_b")) |>
+  consort_stage_add("Enrollment", row = c(1, 3)) |>
+  consort_stage_add("Allocation", row = 4)
 
-study_consort %>%
+study_consort |>
   ggplot() +
-  geom_consort() +
+  geom_consort(equal_columns = TRUE) +
   theme_consort()
 ```
 
 ![CONSORT diagram: 1,200 patients assessed for eligibility, 262 excluded
 (declined, prior chemotherapy, or bone metastasis), 938 randomized and
-allocated 469 each to arms A and
-B](reference/figures/README-example-consort-1.png)
+allocated 469 each to arms A and B, with Enrollment and Allocation stage
+labels in the left
+margin](reference/figures/README-example-consort-1.png)
 
+The [complete CONSORT
+article](https://tgerke.github.io/ggconsort/articles/consort.html)
+continues this diagram through the Follow-up and Analysis stages, and
+the [PRISMA
+article](https://tgerke.github.io/ggconsort/articles/prisma.html) builds
+a PRISMA 2020 flow diagram with the same verbs. Styling lives in
+[`geom_consort()`](https://tgerke.github.io/ggconsort/reference/geom_consort.md)
+— fills, borders, corner radius, fonts, and spacing, with per-box
+overrides in
+[`consort_box_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md).
 Prefer to place things by hand?
 [`consort_box_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md)
 and
@@ -214,22 +221,23 @@ desired data frame of randomized subjects:
 
 ``` r
 
-study_cohorts %>%
+study_cohorts |>
   cohort_pull(randomized)
-#> # A tibble: 938 × 5
-#>       id declined prior_chemo bone_mets treatment
-#>    <int>    <int>       <int>     <int> <chr>    
-#>  1 65464        0           0         0 Drug A   
-#>  2 48228        0           0         0 Drug B   
-#>  3 92586        0           0         0 Drug A   
-#>  4 70176        0           0         0 Drug B   
-#>  5 89052        0           0         0 Drug A   
-#>  6 97333        0           0         0 Drug B   
-#>  7 80724        0           0         0 Drug A   
-#>  8 65186        0           0         0 Drug B   
-#>  9 48837        0           0         0 Drug A   
-#> 10 99005        0           0         0 Drug B   
+#> # A tibble: 938 × 8
+#>       id declined prior_chemo bone_mets treatment lost_to_followup discontinued
+#>    <int>    <int>       <int>     <int> <chr>                <int>        <int>
+#>  1 65464        0           0         0 Drug A                   0            0
+#>  2 48228        0           0         0 Drug B                   0            0
+#>  3 92586        0           0         0 Drug A                   0            0
+#>  4 70176        0           0         0 Drug B                   0            0
+#>  5 89052        0           0         0 Drug A                   0            0
+#>  6 97333        0           0         0 Drug B                   0            0
+#>  7 80724        0           0         0 Drug A                   0            0
+#>  8 65186        0           0         0 Drug B                   0            0
+#>  9 48837        0           0         0 Drug A                   0            0
+#> 10 99005        0           0         0 Drug B                   0            0
 #> # ℹ 928 more rows
+#> # ℹ 1 more variable: not_analyzed <int>
 ```
 
 # Package index
@@ -239,6 +247,7 @@ study_cohorts %>%
 - [`cohort_count()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
   [`cohort_count_int()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
   [`cohort_count_adorn()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
+  [`cohort_count_bullets()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
   : Count the number of rows in each ggconsort cohort
 - [`cohort_define()`](https://tgerke.github.io/ggconsort/reference/cohort_define.md)
   : Define ggconsort cohorts
@@ -271,5 +280,7 @@ study_cohorts %>%
 
 ### All vignettes
 
+- [A complete CONSORT
+  diagram](https://tgerke.github.io/ggconsort/articles/consort.md):
 - [PRISMA flow diagrams with
   ggconsort](https://tgerke.github.io/ggconsort/articles/prisma.md):

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggconsort</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,8 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/prisma.html">PRISMA flow diagrams with ggconsort</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/consort.html">A complete CONSORT diagram</a></li>
+    <li><a class="dropdown-item" href="../articles/prisma.html">PRISMA flow diagrams with ggconsort</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -32,9 +33,32 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/tgerke/ggconsort/blob/v0.3.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/tgerke/ggconsort/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="ggconsort-040">ggconsort 0.4.0<a class="anchor" aria-label="anchor" href="#ggconsort-040"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h3>
+<ul><li><p>ggconsort now uses the base pipe <code>|&gt;</code> throughout and no longer imports or re-exports magrittr’s <code>%&gt;%</code>. Code that relied on ggconsort providing <code>%&gt;%</code> should attach magrittr (or dplyr) itself. ggconsort now requires R &gt;= 4.1.</p></li>
+<li><p>In a row/column layout, row gaps are equalized but capped at 2 lines and the diagram is vertically centered, so large devices produce a compact CONSORT-style figure instead of a stretched one. Set <code>geom_consort(row_gap =)</code> for explicit control.</p></li>
+<li><p><code><a href="../reference/consort_box_add.html">consort_stage_add()</a></code> badges default to a new <code>"margin"</code> column, resolved at plot time to one column left of the leftmost box — stage labels sit in the margin as in the official CONSORT and PRISMA templates, and never collide with boxes. Pass an explicit <code>col</code> for the previous behavior.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-0-4-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0"></a></h3>
+<ul><li><p><code><a href="../reference/consort_box_add.html">consort_box_add()</a></code> labels a box automatically when its <code>name</code> matches a cohort: the box text becomes the cohort’s label and count, as formatted by <code><a href="../reference/cohort_count.html">cohort_count_adorn()</a></code>, so most boxes need only a name and a grid position.</p></li>
+<li><p>New <code><a href="../reference/cohort_count.html">cohort_count_bullets()</a></code> builds multi-line box labels — a header cohort followed by bulleted detail cohorts — replacing hand-written <code>glue()</code>/<code>&lt;br&gt;</code> blocks for CONSORT exclusion boxes and PRISMA reasons boxes.</p></li>
+<li><p><code><a href="../reference/geom_consort.html">geom_consort()</a></code> gains styling parameters: <code>family</code> (font), <code>linewidth</code> (box borders, with arrows scaled in proportion), <code>box_r</code> (corner radius), <code>box_padding</code>, <code>arrow_length</code> (arrow head size), <code>row_gap</code>, and <code>equal_columns</code> (draw every box in a column at the width of the column’s widest box, matching the uniform boxes of the official templates).</p></li>
+<li><p><code><a href="../reference/consort_box_add.html">consort_box_add()</a></code> gains per-box <code>fill</code>, <code>color</code>, and <code>text_color</code> overrides for highlighting individual boxes.</p></li>
+<li><p><code><a href="../reference/consort_box_add.html">consort_stage_add()</a></code> accepts a length-2 <code>col</code> to span columns, e.g. <code>col = c("main", "side")</code> for a PRISMA 2020 header bar.</p></li>
+<li><p><code>trial_data</code> gains follow-up and analysis indicators (<code>lost_to_followup</code>, <code>discontinued</code>, <code>not_analyzed</code>) so a complete four-stage CONSORT diagram can be built from the bundled data.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-0-4-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-4-0"></a></h3>
+<ul><li><p>New pkgdown article building a complete four-stage CONSORT diagram (Enrollment, Allocation, Follow-up, Analysis) with margin stage labels.</p></li>
+<li><p>The PRISMA article now includes the official template’s spanning header bar and uniform column widths; README and reference examples use the automatic box labels and <code><a href="../reference/cohort_count.html">cohort_count_bullets()</a></code>.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="ggconsort-030">ggconsort 0.3.0<a class="anchor" aria-label="anchor" href="#ggconsort-030"></a></h2>
 <div class="section level3">

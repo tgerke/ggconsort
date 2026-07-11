@@ -22,3 +22,11 @@ cohort_start(.data, label = NULL)
 ## Value
 
 Returns a `ggconsort_cohort` object with `$data` and `$labels` items
+
+## Examples
+
+``` r
+trial_data |>
+  cohort_start("Assessed for eligibility")
+#> A ggconsort cohort of 1200 observations with 0 cohorts.
+```

@@ -11,15 +11,15 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/tgerke/ggconsort/blob/v0.3.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/tgerke/ggconsort/blob/main/DESCRIPTION)
 
 Gerke T, Aden-Buie G (2026). *ggconsort: Create CONSORT Diagrams*. R
-package version 0.3.0, <https://tgerke.github.io/ggconsort>.
+package version 0.4.0, <https://tgerke.github.io/ggconsort>.
 
     @Manual{,
       title = {ggconsort: Create CONSORT Diagrams},
       author = {Travis Gerke and Garrick Aden-Buie},
       year = {2026},
-      note = {R package version 0.3.0},
+      note = {R package version 0.4.0},
       url = {https://tgerke.github.io/ggconsort},
     }

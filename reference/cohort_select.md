@@ -26,24 +26,24 @@ A `ggconsort_cohort` object
 
 ``` r
 cohorts <-
-  trial_data %>%
-  cohort_start("Assessed for eligibility") %>%
+  trial_data |>
+  cohort_start("Assessed for eligibility") |>
   cohort_define(
-    consented = .full %>% dplyr::filter(declined != 1),
-    treatment_a = consented %>% dplyr::filter(treatment == "Drug A"),
-    treatment_b = consented %>% dplyr::filter(treatment == "Drug B")
-  ) %>%
+    consented = .full |> dplyr::filter(declined != 1),
+    treatment_a = consented |> dplyr::filter(treatment == "Drug A"),
+    treatment_b = consented |> dplyr::filter(treatment == "Drug B")
+  ) |>
   cohort_label(
     consented = "Consented",
     treatment_a = "Allocated to arm A",
     treatment_b = "Allocated to arm B"
   )
 
-cohorts %>% cohort_select(consented)
+cohorts |> cohort_select(consented)
 #> A ggconsort cohort of 1200 observations with 1 cohort:
 #>   - consented (1141)
 
-cohorts %>%
+cohorts |>
   cohort_select(starts_with("treatment_"))
 #> A ggconsort cohort of 1200 observations with 2 cohorts:
 #>   - treatment_a (469)

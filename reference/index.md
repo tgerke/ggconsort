@@ -5,6 +5,7 @@
 - [`cohort_count()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
   [`cohort_count_int()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
   [`cohort_count_adorn()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
+  [`cohort_count_bullets()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
   : Count the number of rows in each ggconsort cohort
 - [`cohort_define()`](https://tgerke.github.io/ggconsort/reference/cohort_define.md)
   : Define ggconsort cohorts

@@ -27,14 +27,24 @@ consort_box_add(
   name,
   x = NULL,
   y = NULL,
-  label,
+  label = NULL,
   hjust = NULL,
   vjust = NULL,
   row = NULL,
-  col = NULL
+  col = NULL,
+  fill = NULL,
+  color = NULL,
+  text_color = NULL
 )
 
-consort_stage_add(.data, label, row, col = "left", fill = "#9bc0fc", angle = 0)
+consort_stage_add(
+  .data,
+  label,
+  row,
+  col = "margin",
+  fill = "#9bc0fc",
+  angle = 0
+)
 
 consort_line_add(
   .data,
@@ -88,9 +98,14 @@ consort_line_add(
 
   Text displayed in the box. Interpreted as markdown/HTML by
   ggtext/gridtext, so labels may contain formatting such as `<br>` or
-  `**bold**`.
-  [`cohort_count_adorn()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
-  is a convenient way to build labels with cohort counts.
+  `**bold**`. When `name` matches a cohort defined with
+  [`cohort_define()`](https://tgerke.github.io/ggconsort/reference/cohort_define.md),
+  `label` may be omitted: the box is labeled automatically with the
+  cohort's label and count, as by
+  [`cohort_count_adorn()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md).
+  [`cohort_count_bullets()`](https://tgerke.github.io/ggconsort/reference/cohort_count.md)
+  is a convenient way to build multi-line labels such as exclusion
+  boxes.
 
 - hjust, vjust:
 
@@ -102,12 +117,22 @@ consort_line_add(
 - row, col:
 
   Grid position of the box or stage badge (see the "Row/column layout"
-  section). For `consort_stage_add()`, `row` may be a length-2 vector to
-  center the badge across a span of rows.
+  section). For `consort_stage_add()`, `row` and `col` may be length-2
+  vectors to center the badge across a span of rows or columns (e.g.
+  `col = c("main", "side")` for a header bar spanning the diagram).
 
 - fill:
 
-  Fill color of the stage badge.
+  For `consort_box_add()`, an optional fill color for this box,
+  overriding the
+  [`geom_consort()`](https://tgerke.github.io/ggconsort/reference/geom_consort.md)
+  `fill`. For `consort_stage_add()`, the fill color of the stage badge.
+
+- color, text_color:
+
+  Optional border and text colors for this box, overriding the
+  [`geom_consort()`](https://tgerke.github.io/ggconsort/reference/geom_consort.md)
+  `box_color` and `label_color`.
 
 - angle:
 
@@ -137,10 +162,13 @@ A `ggconsort` object.
 Instead of picking coordinates by hand, boxes can declare a grid
 position with `row` and `col`. Rows count from 1 at the top. `col` is
 `"main"` (the central spine, column 0), `"side"` (column 1, right of the
-spine), `"left"` (column -1), or any number. At draw time ggconsort
-measures every box on the open graphics device and lays the grid out to
-fill the plot: row gaps are equalized, columns are spread so boxes never
-overlap, and nothing is clipped, whatever the device size.
+spine), `"left"` (column -1), or any number. Stage badges may also use
+`"margin"` (their default), which resolves to one column left of the
+leftmost box so badges sit in the margin, as in the official CONSORT and
+PRISMA templates. At draw time ggconsort measures every box on the open
+graphics device and lays the grid out to fill the plot: row gaps are
+equalized (capped so large devices stay compact), columns are spread so
+boxes never overlap, and nothing is clipped, whatever the device size.
 
 In a row/column layout, arrows need only `start` and `end` names:
 
@@ -160,27 +188,28 @@ A diagram must use either coordinates or rows/columns, not a mixture.
 ## Examples
 
 ``` r
-cohorts <- trial_data %>%
-  cohort_start("Assessed for eligibility") %>%
+cohorts <- trial_data |>
+  cohort_start("Assessed for eligibility") |>
   cohort_define(
-    randomized = .full %>% dplyr::filter(declined != 1),
+    randomized = .full |> dplyr::filter(declined != 1),
     excluded = dplyr::anti_join(.full, randomized, by = "id")
-  ) %>%
+  ) |>
   cohort_label(
     randomized = "Randomized",
     excluded = "Declined to participate"
   )
 
-# row/column layout: no coordinates, spacing computed at draw time
-consort <- cohorts %>%
+# row/column layout: no coordinates, spacing computed at draw time.
+# Boxes named after a cohort are labeled automatically with its count.
+consort <- cohorts |>
   consort_box_add("full", row = 1, col = "main",
-    label = cohort_count_adorn(cohorts, .full)) %>%
-  consort_box_add("exclusions", row = 2, col = "side",
-    label = cohort_count_adorn(cohorts, excluded)) %>%
-  consort_box_add("randomized", row = 3, col = "main",
-    label = cohort_count_adorn(cohorts, randomized)) %>%
-  consort_arrow_add(start = "full", end = "randomized") %>%
-  consort_arrow_add(start = "full", end = "exclusions")
+    label = cohort_count_adorn(cohorts, .full)) |>
+  consort_box_add("excluded", row = 2, col = "side") |>
+  consort_box_add("randomized", row = 3, col = "main") |>
+  consort_arrow_add(start = "full", end = "randomized") |>
+  consort_arrow_add(start = "full", end = "excluded") |>
+  # a stage badge in the margin, spanning rows 1 to 3
+  consort_stage_add("Enrollment", row = c(1, 3))
 
 library(ggplot2)
 ggplot(consort) +
