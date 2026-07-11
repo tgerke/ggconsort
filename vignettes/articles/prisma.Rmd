@@ -199,8 +199,7 @@ review_prisma %>%
   ggtext::geom_richtext(
     aes(x = -28, y = y, label = label),
     data = tibble(
-      # "Included" sits at 9, not 10: the included box hangs below its anchor
-      y = c(50, 35, 9),
+      y = c(50, 35, 10),
       label = c("Identification", "Screening", "Included")
     ),
     fill = "#9bc0fc", angle = 90

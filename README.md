@@ -161,7 +161,8 @@ study_consort <- study_cohorts %>%
       • {cohort_count_adorn(study_cohorts, excluded_declined)}<br>
       • {cohort_count_adorn(study_cohorts, excluded_chemo)}<br>
       • {cohort_count_adorn(study_cohorts, excluded_mets)}
-      ')
+      '),
+    hjust = 0
   ) %>%
   consort_box_add(
     "randomized", 0, 30, cohort_count_adorn(study_cohorts, randomized)
@@ -204,8 +205,7 @@ study_consort %>%
   # you can include other ggplot geoms, as needed -------------
   ggtext::geom_richtext(
     aes(x = 0, y = 15, label = "Allocation"),
-    # vjust = 1 hangs the badge from y = 15, aligning it with the arm boxes
-    fill = "#9bc0fc", vjust = 1
+    fill = "#9bc0fc"
   )
 #> Warning in ggtext::geom_richtext(aes(x = 0, y = 15, label = "Allocation"), : All aesthetics have length 1, but the data has 11 rows.
 #> ℹ Please consider using `annotate()` or provide this layer with data containing

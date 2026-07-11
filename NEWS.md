@@ -1,3 +1,21 @@
+# ggconsort (development version)
+
+## New features
+
+* `geom_consort()` is now a single layer that measures each box on the open
+  graphics device at draw time. Boxes are placed exactly at their (`x`, `y`)
+  coordinates (centered by default, or per user-supplied `hjust`/`vjust`),
+  and arrows start and end precisely at the measured box edges instead of
+  being anchored at box centers. Diagrams no longer depend on justification
+  tricks to fake edge attachment, and connections stay correct at any device
+  size. The previous layers remain available as `geom_consort_box()` and
+  `geom_consort_arrow()`.
+
+* Boxes that receive an arrow are no longer shifted by inferred justification;
+  a box entered from the left keeps its position and only left-aligns if you
+  ask for `hjust = 0`. Set `hjust`/`vjust` explicitly where the old inference
+  was load-bearing.
+
 # ggconsort 0.2.0
 
 ## New features

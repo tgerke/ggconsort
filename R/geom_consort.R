@@ -2,17 +2,22 @@
 #'
 #' `geom_consort()` draws the boxes, arrows, and lines of a `ggconsort` object
 #' created with [consort_box_add()], [consort_arrow_add()], and
-#' [consort_line_add()]. It is the layer you will typically add to
-#' `ggplot(<ggconsort object>)`, and it combines `geom_consort_arrow()` and
-#' `geom_consort_box()`, which can also be used individually.
-#' `geom_consort_line()` draws a standalone line segment with the same styling
-#' as the diagram lines.
+#' [consort_line_add()]. It measures the rendered size of each box at draw
+#' time, so boxes are centered on their (`x`, `y`) coordinates and arrows
+#' start and end exactly at box edges, whatever the device size.
+#' `geom_consort_arrow()` and `geom_consort_box()` are the legacy component
+#' layers, which anchor arrows at box centers and shift box text by its
+#' justification; they remain available for diagrams that depend on that
+#' behavior. `geom_consort_line()` draws a standalone line segment with the
+#' same styling as the diagram lines.
 #'
 #' @param label_color Color of the box label text.
 #' @param label_size Size of the box label text, in points.
 #' @param label_height Line height of the box label text.
-#' @param ... Additional arguments passed to [ggtext::geom_richtext()] by
-#'   `geom_consort_box()`, e.g. `fill`. Ignored by `geom_consort_arrow()`.
+#' @param fill Fill color of the boxes.
+#' @param box_color Color of the box borders.
+#' @param ... For `geom_consort_box()`, additional arguments passed to
+#'   [ggtext::geom_richtext()]. Ignored by `geom_consort_arrow()`.
 #'
 #' @return A ggplot2 layer or list of layers that can be added to a plot.
 #'
@@ -32,11 +37,32 @@
 #' library(ggplot2)
 #' ggplot(consort) +
 #'   geom_consort() +
-#'   theme_consort(margin_h = 22, margin_v = 7)
+#'   theme_consort(margin_h = 12, margin_v = 5)
 #' @export
-geom_consort <- function(...) {
-  list(
-    geom_consort_arrow(...),
-    geom_consort_box(...)
+geom_consort <- function(
+  label_color = "black", label_size = 11, label_height = 1,
+  fill = "white", box_color = "black"
+) {
+  ggplot2::layer(
+    geom = GeomConsortDiagram,
+    stat = "identity",
+    position = "identity",
+    data = NULL,
+    mapping = ggplot2::aes(
+      x = .data$x, y = .data$y, xend = .data$xend, yend = .data$yend,
+      label = .data$label, type = .data$type, name = .data$name,
+      start = .data$start, end = .data$end,
+      start_side = .data$start_side, end_side = .data$end_side,
+      hjust = .data$hjust_user, vjust = .data$vjust_user
+    ),
+    show.legend = FALSE,
+    inherit.aes = FALSE,
+    params = list(
+      label_color = label_color,
+      label_size = label_size,
+      label_height = label_height,
+      fill = fill,
+      box_color = box_color
+    )
   )
 }

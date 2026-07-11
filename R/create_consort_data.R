@@ -97,14 +97,16 @@ create_consort_data <- function(.data, ...) {
     by = c("name" = "end")
   ) %>%
     dplyr::mutate(
-      # user-supplied justification wins over arrow-based inference (#24)
+      # blended hjust/vjust (user beats arrow-based inference, #24) feed the
+      # legacy geom_consort_box(); geom_consort() reads only hjust/vjust_user
+      # and measures boxes at draw time instead
       vjust = dplyr::coalesce(.data$vjust_user, .data$vjust_arrow, .5),
       hjust = dplyr::coalesce(.data$hjust_user, .data$hjust_arrow, .5),
+      x = .data$box_x,
+      y = .data$box_y,
       type = "box"
     ) %>%
-    dplyr::select(
-      -"hjust_user", -"vjust_user", -"hjust_arrow", -"vjust_arrow"
-    )
+    dplyr::select(-"hjust_arrow", -"vjust_arrow")
 
   arrows <- dplyr::left_join(
     consort_arrows,
@@ -124,7 +126,7 @@ create_consort_data <- function(.data, ...) {
       yend = dplyr::if_else(!is.na(.data$end_y), as.numeric(.data$end_y), .data$yend),
       type = "arrow"
     ) %>%
-    dplyr::select(-dplyr::starts_with("start_"), -dplyr::starts_with("end_"))
+    dplyr::select(-"start_x", -"start_y", -"end_x", -"end_y")
 
   lines <- dplyr::left_join(
     consort_lines,
@@ -144,13 +146,15 @@ create_consort_data <- function(.data, ...) {
       yend = dplyr::if_else(is.na(.data$end_y), .data$yend, as.numeric(.data$end_y)),
       type = "line"
     ) %>%
-    dplyr::select(-dplyr::starts_with("start_"), -dplyr::starts_with("end_"))
+    dplyr::select(-"start_x", -"start_y", -"end_x", -"end_y")
 
-  out <- dplyr::full_join(
-    boxes,
-    dplyr::bind_rows(arrows, lines),
-    by = "type"
-  )
+  out <- dplyr::bind_rows(boxes, arrows, lines) %>%
+    dplyr::mutate(
+      dplyr::across(
+        c("start", "end", "start_side", "end_side"),
+        as.character
+      )
+    )
 
   # drop rows that are all-NA apart from their type
   out %>%

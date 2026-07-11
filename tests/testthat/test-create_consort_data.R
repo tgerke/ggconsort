@@ -36,6 +36,24 @@ test_that("a box-only consort builds plotting data (#21, #22)", {
   expect_equal(data$type, "box")
 })
 
+test_that("arrows carry names and sides through for edge anchoring", {
+  data <- test_cohort() %>%
+    consort_box_add("a", 0, 10, "A") %>%
+    consort_box_add("b", 5, 0, "B") %>%
+    consort_arrow_add(start = "a", start_side = "bottom", end = "b", end_side = "top") %>%
+    create_consort_data()
+
+  arrow <- data[data$type == "arrow", ]
+  expect_equal(arrow$start, "a")
+  expect_equal(arrow$start_side, "bottom")
+  expect_equal(arrow$end, "b")
+  expect_equal(arrow$end_side, "top")
+  # boxes expose x/y alongside legacy box_x/box_y
+  boxes <- data[data$type == "box", ]
+  expect_equal(boxes$x, boxes$box_x)
+  expect_equal(boxes$y, boxes$box_y)
+})
+
 test_that("arrows resolve coordinates from box names", {
   data <- test_cohort() %>%
     consort_box_add("a", 0, 10, "A") %>%
