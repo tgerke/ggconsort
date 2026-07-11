@@ -14,8 +14,13 @@
 #' @keywords internal
 #' @export
 create_consort_data <- function(.data, ...) {
-  # FIXME: account for 2+ arrows coming in by summarizing those rows
-  # FIXME: need to assert that we've got a cohort with consort data
+  if (!inherits(.data, "ggconsort")) {
+    stop(
+      "`.data` must be a ggconsort object with diagram elements added by ",
+      "`consort_box_add()`, `consort_arrow_add()`, or `consort_line_add()`.",
+      call. = FALSE
+    )
+  }
 
   consort_boxes <- .data$consort %>%
     dplyr::filter(.data$type == "box")
@@ -66,32 +71,39 @@ create_consort_data <- function(.data, ...) {
     )
   }
 
+  # one row per box regardless of how many arrows come in; justification is
+  # inferred across all entry sides (top beats center vertically, left beats
+  # right horizontally)
+  arrow_entries <- consort_arrows %>%
+    dplyr::filter(!is.na(.data$end), !is.na(.data$end_side)) %>%
+    # with no named-end arrows, `end` is logical NA and can't join on `name`
+    dplyr::mutate(end = as.character(.data$end)) %>%
+    dplyr::distinct(.data$end, .data$end_side) %>%
+    dplyr::group_by(.data$end) %>%
+    dplyr::summarise(
+      arrow_in = paste(.data$end_side, collapse = ","),
+      vjust_arrow = dplyr::if_else(any(.data$end_side == "top"), 1, .5),
+      hjust_arrow = dplyr::case_when(
+        any(.data$end_side == "left") ~ 0,
+        any(.data$end_side == "right") ~ 1,
+        TRUE ~ .5
+      ),
+      .groups = "drop"
+    )
+
   boxes <- dplyr::left_join(
     consort_boxes,
-    consort_arrows %>% dplyr::select("end", "end_side"),
+    arrow_entries,
     by = c("name" = "end")
   ) %>%
     dplyr::mutate(
       # user-supplied justification wins over arrow-based inference (#24)
-      vjust = dplyr::coalesce(
-        .data$vjust_user,
-        dplyr::if_else(
-          .data$end_side == "top", 1, .5, missing = .5
-        )
-      ),
-      hjust = dplyr::coalesce(
-        .data$hjust_user,
-        dplyr::case_when(
-          .data$end_side == "left" ~ 0,
-          .data$end_side == "right" ~ 1,
-          TRUE ~ .5
-        )
-      ),
+      vjust = dplyr::coalesce(.data$vjust_user, .data$vjust_arrow, .5),
+      hjust = dplyr::coalesce(.data$hjust_user, .data$hjust_arrow, .5),
       type = "box"
     ) %>%
-    dplyr::select(-"hjust_user", -"vjust_user") %>%
-    dplyr::rename(
-      arrow_in = "end_side"
+    dplyr::select(
+      -"hjust_user", -"vjust_user", -"hjust_arrow", -"vjust_arrow"
     )
 
   arrows <- dplyr::left_join(

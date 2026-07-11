@@ -1,3 +1,32 @@
+test_that("create_consort_data() requires a ggconsort object", {
+  expect_error(
+    create_consort_data(mtcars),
+    "must be a ggconsort object"
+  )
+  # a cohort without any consort_*_add() calls is not enough
+  expect_error(
+    create_consort_data(test_cohort()),
+    "must be a ggconsort object"
+  )
+})
+
+test_that("a box with several incoming arrows keeps a single row", {
+  data <- test_cohort() %>%
+    consort_box_add("a", 0, 10, "A") %>%
+    consort_box_add("b", 10, 10, "B") %>%
+    consort_box_add("target", 5, 0, "target box") %>%
+    consort_arrow_add(start = "a", start_side = "bottom", end = "target", end_side = "top") %>%
+    consort_arrow_add(start = "b", start_side = "bottom", end = "target", end_side = "left") %>%
+    create_consort_data()
+
+  target <- data[data$type == "box" & !is.na(data$name) & data$name == "target", ]
+  expect_equal(nrow(target), 1)
+  expect_equal(target$arrow_in, "top,left")
+  # top entry sets vjust, left entry sets hjust
+  expect_equal(target$vjust, 1)
+  expect_equal(target$hjust, 0)
+})
+
 test_that("a box-only consort builds plotting data (#21, #22)", {
   data <- test_cohort() %>%
     consort_box_add("full", 0, 10, "Assessed") %>%

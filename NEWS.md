@@ -31,6 +31,11 @@
 * `plot()` on a `ggconsort` object now passes its `margin_h` and `margin_v`
   arguments through to `theme_consort()`.
 
+* A box with several incoming arrows is no longer drawn once per arrow; its
+  text justification is inferred across all entry sides. `create_consort_data()`
+  also gives an informative error when called on anything other than a
+  ggconsort object.
+
 ## Documentation
 
 * All exported functions are now documented, including `consort_box_add()`,
