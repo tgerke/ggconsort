@@ -102,3 +102,49 @@ test_that("boxes without arrows default to centered text", {
   expect_equal(box$hjust, 0.5)
   expect_equal(box$vjust, 0.5)
 })
+
+test_that("layout modes cannot be mixed", {
+  expect_error(
+    test_cohort() %>%
+      consort_box_add("a", row = 1, label = "A") %>%
+      consort_box_add("b", 0, 0, "B") %>%
+      create_consort_data(),
+    "same layout"
+  )
+  expect_error(
+    test_cohort() %>%
+      consort_box_add("a", 0, 10, "A") %>%
+      consort_stage_add("Stage", row = 1) %>%
+      create_consort_data(),
+    "row/column layout"
+  )
+  expect_error(
+    test_cohort() %>%
+      consort_box_add("a", row = 1, label = "A") %>%
+      consort_arrow_add(start_x = 0, start_y = 10, end = "a", end_side = "top") %>%
+      create_consort_data(),
+    "not available in a row/column layout"
+  )
+})
+
+test_that("grid layouts pass rows, columns, and stages through", {
+  data <- test_cohort() %>%
+    consort_box_add("a", row = 1, label = "A") %>%
+    consort_box_add("b", row = 2, col = "side", label = "B") %>%
+    consort_arrow_add(start = "a", end = "b") %>%
+    consort_stage_add("Stage", row = c(1, 2)) %>%
+    create_consort_data()
+
+  boxes <- data[data$type == "box", ]
+  expect_equal(boxes$row, c(1, 2))
+  expect_equal(boxes$col, c(0, 1))
+
+  stage <- data[data$type == "stage", ]
+  expect_equal(stage$label, "Stage")
+  expect_equal(stage$row2, 2)
+  expect_equal(stage$stage_fill, "#9bc0fc")
+
+  arrow <- data[data$type == "arrow", ]
+  expect_equal(arrow$start, "a")
+  expect_equal(arrow$end, "b")
+})

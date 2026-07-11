@@ -53,7 +53,11 @@ geom_consort <- function(
       label = .data$label, type = .data$type, name = .data$name,
       start = .data$start, end = .data$end,
       start_side = .data$start_side, end_side = .data$end_side,
-      hjust = .data$hjust_user, vjust = .data$vjust_user
+      hjust = .data$hjust_user, vjust = .data$vjust_user,
+      # `col` would collide with the ggplot2 colour alias, hence layout_*
+      layout_row = .data$row, layout_row2 = .data$row2, layout_col = .data$col,
+      stage_fill = .data$stage_fill, angle = .data$angle,
+      tee_group = .data$tee_group
     ),
     show.legend = FALSE,
     inherit.aes = FALSE,

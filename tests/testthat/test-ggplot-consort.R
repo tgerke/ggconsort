@@ -101,3 +101,74 @@ test_that("geom_consort() anchors arrows at measured box edges", {
   expect_equal(x0[2], npc_x(0))
   expect_equal(x1[2], npc_x(10), tolerance = 1e-6)
 })
+
+grid_consort_for_plotting <- function() {
+  cohorts <- test_cohort()
+
+  cohorts %>%
+    consort_box_add(
+      "full", row = 1, label = cohort_count_adorn(cohorts, .full)
+    ) %>%
+    consort_box_add(
+      "exclusions", row = 2, col = "side",
+      label = cohort_count_adorn(cohorts, excluded)
+    ) %>%
+    consort_box_add(
+      "consented", row = 3, label = cohort_count_adorn(cohorts, consented)
+    ) %>%
+    consort_box_add("arm_a", row = 4, col = -1, label = "Arm A (n = 3)") %>%
+    consort_box_add("arm_b", row = 4, col = 1, label = "Arm B (n = 4)") %>%
+    consort_arrow_add(start = "full", end = "consented") %>%
+    consort_arrow_add(start = "full", end = "exclusions") %>%
+    consort_arrow_add(start = "consented", end = c("arm_a", "arm_b")) %>%
+    consort_stage_add("Allocation", row = 4, col = "main")
+}
+
+test_that("row/column consort diagram renders consistently", {
+  skip_if_not_installed("vdiffr")
+
+  p <- ggplot2::ggplot(grid_consort_for_plotting()) +
+    geom_consort() +
+    theme_consort()
+
+  vdiffr::expect_doppelganger("consort-diagram-grid", p)
+})
+
+test_that("row/column layouts route arrows from measured boxes", {
+  p <- ggplot2::ggplot(grid_consort_for_plotting()) +
+    geom_consort() +
+    theme_consort()
+
+  path <- tempfile(fileext = ".pdf")
+  on.exit(unlink(path), add = TRUE)
+  grDevices::pdf(path, width = 7, height = 5)
+  g <- grid::grid.force(ggplot2::ggplotGrob(p), draw = TRUE)
+  grDevices::dev.off()
+
+  tree <- grid::getGrob(g, "consort_diagram_grob", grep = TRUE)
+  arrows <- grid::getGrob(tree, "segments", grep = TRUE, global = TRUE)[[1]]
+
+  x0 <- as.numeric(arrows$x0)
+  y0 <- as.numeric(arrows$y0)
+  x1 <- as.numeric(arrows$x1)
+  y1 <- as.numeric(arrows$y1)
+
+  # arrow 1, full -> consented: straight down the shared column
+  expect_equal(x0[1], x1[1])
+  expect_gt(y0[1], y1[1])
+
+  # arrow 2, full -> exclusions: a horizontal branch off the spine into the
+  # side box, at the side box's height
+  expect_equal(y0[2], y1[2])
+  expect_equal(x0[2], x1[1])
+  expect_gt(x1[2], x0[2])
+
+  # T-split: two vertical arrows drop into the arms from a shared crossbar
+  expect_equal(x0[3], x1[3])
+  expect_equal(x0[4], x1[4])
+  expect_equal(y0[3], y0[4])
+  expect_lt(x1[3], x1[4])
+
+  # every element lies inside the panel
+  expect_true(all(c(x0, x1, y0, y1) >= 0 & c(x0, x1, y0, y1) <= 1))
+})

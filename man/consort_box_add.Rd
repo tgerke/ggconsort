@@ -4,8 +4,9 @@
 \name{consort_arrow_add}
 \alias{consort_arrow_add}
 \alias{consort_box_add}
+\alias{consort_stage_add}
 \alias{consort_line_add}
-\title{Add boxes, arrows, and lines to a CONSORT diagram}
+\title{Add boxes, arrows, lines, and stage badges to a CONSORT diagram}
 \usage{
 consort_arrow_add(
   .data,
@@ -19,7 +20,19 @@ consort_arrow_add(
   end_y = NA
 )
 
-consort_box_add(.data, name, x, y, label, hjust = NULL, vjust = NULL)
+consort_box_add(
+  .data,
+  name,
+  x = NULL,
+  y = NULL,
+  label,
+  hjust = NULL,
+  vjust = NULL,
+  row = NULL,
+  col = NULL
+)
+
+consort_stage_add(.data, label, row, col = "left", fill = "#9bc0fc", angle = 0)
 
 consort_line_add(
   .data,
@@ -38,30 +51,42 @@ consort_line_add(
 returned by a previous \verb{consort_*_add()} call.}
 
 \item{start, end}{Names of the boxes where the arrow or line starts and
-ends.}
+ends. In a row/column layout, \code{end} may be a vector of names to draw a
+T-split from \code{start} into several boxes.}
 
 \item{start_side, end_side}{The side of the box (\code{"left"}, \code{"right"},
-\code{"top"}, or \code{"bottom"}) that the arrow or line leaves from or points to.}
+\code{"top"}, or \code{"bottom"}) that the arrow or line leaves from or points to.
+Optional: by default the sides follow from the relative positions of the
+two boxes.}
 
 \item{start_x, start_y, end_x, end_y}{Explicit coordinates for the start and
 end of the arrow or line, as an alternative to naming boxes with
-\code{start}/\code{end}.}
+\code{start}/\code{end}. Not available in row/column layouts.}
 
 \item{name}{A character name identifying the box, used to connect arrows
 and lines to the box.}
 
-\item{x, y}{Coordinates of the box.}
+\item{x, y}{Coordinates of the box. Omit them (and set \code{row}/\code{col}) to use
+the row/column layout instead.}
 
 \item{label}{Text displayed in the box. Interpreted as markdown/HTML by
-\code{\link[ggtext:geom_richtext]{ggtext::geom_richtext()}}, so labels may contain formatting such as
-\verb{<br>} or \verb{**bold**}. \code{\link[=cohort_count_adorn]{cohort_count_adorn()}} is a convenient way to build
-labels with cohort counts.}
+ggtext/gridtext, so labels may contain formatting such as \verb{<br>} or
+\verb{**bold**}. \code{\link[=cohort_count_adorn]{cohort_count_adorn()}} is a convenient way to build labels
+with cohort counts.}
 
-\item{hjust, vjust}{Optional numeric justification of the box text relative
-to (\code{x}, \code{y}), in \verb{[0, 1]} (e.g. \code{hjust = 0} is left-aligned, \code{0.5} is
-centered, \code{1} is right-aligned). By default, justification is inferred
-from the side on which an arrow enters the box, and is centered
-otherwise. Supply values to override that inference.}
+\item{hjust, vjust}{Optional numeric justification of the box relative to
+(\code{x}, \code{y}), in \verb{[0, 1]}. By default boxes are centered on their
+coordinates (\code{hjust = vjust = 0.5}). E.g. \code{hjust = 0} places the box's
+left edge at \code{x}. Ignored in row/column layouts.}
+
+\item{row, col}{Grid position of the box or stage badge (see the
+"Row/column layout" section). For \code{consort_stage_add()}, \code{row} may be a
+length-2 vector to center the badge across a span of rows.}
+
+\item{fill}{Fill color of the stage badge.}
+
+\item{angle}{Rotation of the stage badge text, in degrees (e.g. \code{90} for
+the vertical labels of a PRISMA diagram).}
 }
 \value{
 A \code{ggconsort} object.
@@ -73,13 +98,40 @@ that can be plotted with \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} and \co
 }
 \details{
 \itemize{
-\item \code{consort_box_add()} adds a text box at (\code{x}, \code{y}).
+\item \code{consort_box_add()} adds a text box, either at explicit (\code{x}, \code{y})
+coordinates or at a (\code{row}, \code{col}) grid position.
 \item \code{consort_arrow_add()} adds an arrow between two boxes (referenced by
 \code{name}) or between explicit coordinates.
 \item \code{consort_line_add()} adds a line without an arrow head, with the same
 interface as \code{consort_arrow_add()}.
+\item \code{consort_stage_add()} adds a stage badge (e.g. "Allocation") to a
+row/column layout.
 }
 }
+\section{Row/column layout}{
+
+Instead of picking coordinates by hand, boxes can declare a grid position
+with \code{row} and \code{col}. Rows count from 1 at the top. \code{col} is \code{"main"} (the
+central spine, column 0), \code{"side"} (column 1, right of the spine),
+\code{"left"} (column -1), or any number. At draw time ggconsort measures every
+box on the open graphics device and lays the grid out to fill the plot:
+row gaps are equalized, columns are spread so boxes never overlap, and
+nothing is clipped, whatever the device size.
+
+In a row/column layout, arrows need only \code{start} and \code{end} names:
+\itemize{
+\item boxes in the same column are connected vertically,
+\item boxes in the same row are connected horizontally,
+\item a box in another column and row is reached by a horizontal branch off
+the start box's vertical spine, at the height of the target box, and
+\item a vector \code{end} (e.g. \code{end = c("arm_a", "arm_b")}) draws the classic
+T-split: one drop from the start box, a crossbar, and an arrow down
+into each arm.
+}
+
+A diagram must use either coordinates or rows/columns, not a mixture.
+}
+
 \examples{
 cohorts <- trial_data \%>\%
   cohort_start("Assessed for eligibility") \%>\%
@@ -92,15 +144,19 @@ cohorts <- trial_data \%>\%
     excluded = "Declined to participate"
   )
 
+# row/column layout: no coordinates, spacing computed at draw time
 consort <- cohorts \%>\%
-  consort_box_add("full", 0, 20, cohort_count_adorn(cohorts, .full)) \%>\%
-  consort_box_add("exclusions", 10, 10, cohort_count_adorn(cohorts, excluded)) \%>\%
-  consort_box_add("randomized", 0, 0, cohort_count_adorn(cohorts, randomized)) \%>\%
-  consort_arrow_add(start = "full", start_side = "bottom", end = "randomized", end_side = "top") \%>\%
-  consort_arrow_add(start_x = 0, start_y = 10, end = "exclusions", end_side = "left")
+  consort_box_add("full", row = 1, col = "main",
+    label = cohort_count_adorn(cohorts, .full)) \%>\%
+  consort_box_add("exclusions", row = 2, col = "side",
+    label = cohort_count_adorn(cohorts, excluded)) \%>\%
+  consort_box_add("randomized", row = 3, col = "main",
+    label = cohort_count_adorn(cohorts, randomized)) \%>\%
+  consort_arrow_add(start = "full", end = "randomized") \%>\%
+  consort_arrow_add(start = "full", end = "exclusions")
 
 library(ggplot2)
 ggplot(consort) +
   geom_consort() +
-  theme_consort(margin_h = 12, margin_v = 1)
+  theme_consort()
 }

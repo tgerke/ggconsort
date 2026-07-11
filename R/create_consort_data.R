@@ -22,14 +22,48 @@ create_consort_data <- function(.data, ...) {
     )
   }
 
-  consort_boxes <- .data$consort %>%
-    dplyr::filter(.data$type == "box")
-  # consorts built without boxes never gain hjust/vjust columns
-  if (!"hjust" %in% names(consort_boxes)) consort_boxes$hjust <- NA_real_
-  if (!"vjust" %in% names(consort_boxes)) consort_boxes$vjust <- NA_real_
-  consort_boxes <- consort_boxes %>%
+  # columns that only some element types (or newer ggconsort versions) add
+  elements <- .data$consort
+  optional_defaults <- list(
+    hjust = NA_real_, vjust = NA_real_,
+    row = NA_real_, row2 = NA_real_, col = NA_real_,
+    stage_fill = NA_character_, angle = NA_real_, tee_group = NA_character_
+  )
+  for (nm in names(optional_defaults)) {
+    if (!nm %in% names(elements)) elements[[nm]] <- optional_defaults[[nm]]
+  }
+
+  is_box <- elements$type == "box"
+  grid_mode <- any(is_box & !is.na(elements$row))
+  if (grid_mode && any(is_box & is.na(elements$row))) {
+    stop(
+      "All boxes must use the same layout: either `row`/`col` grid ",
+      "positions or `x`/`y` coordinates, not a mixture.",
+      call. = FALSE
+    )
+  }
+  if (!grid_mode && any(elements$type == "stage")) {
+    stop(
+      "`consort_stage_add()` requires a row/column layout; ",
+      "give your boxes `row`/`col` positions.",
+      call. = FALSE
+    )
+  }
+  is_edge <- elements$type %in% c("arrow", "line")
+  has_explicit <- !is.na(elements$start_x) | !is.na(elements$start_y) |
+    !is.na(elements$end_x) | !is.na(elements$end_y)
+  if (grid_mode && any(is_edge & has_explicit)) {
+    stop(
+      "Explicit arrow/line coordinates (`start_x`, `end_y`, ...) are not ",
+      "available in a row/column layout; connect boxes by name instead.",
+      call. = FALSE
+    )
+  }
+
+  consort_boxes <- elements %>%
+    dplyr::filter(.data$type == "box") %>%
     dplyr::select(
-      "name", "box_x", "box_y", "label",
+      "name", "box_x", "box_y", "label", "row", "col",
       hjust_user = "hjust", vjust_user = "vjust"
     )
 
@@ -37,11 +71,11 @@ create_consort_data <- function(.data, ...) {
   box_anchors <- consort_boxes %>%
     dplyr::select("name", "box_x", "box_y")
 
-  consort_arrows <- .data$consort %>%
+  consort_arrows <- elements %>%
     dplyr::filter(.data$type == "arrow") %>%
     dplyr::select(
       "start", "start_side", "end", "end_side",
-      "start_x", "start_y", "end_x", "end_y"
+      "start_x", "start_y", "end_x", "end_y", "tee_group"
     )
   # if no arrows are set up, allow the joins so the box prints
   if (nrow(consort_arrows) == 0) {
@@ -49,12 +83,13 @@ create_consort_data <- function(.data, ...) {
       consort_arrows,
       dplyr::tibble(
         start = NA, start_side = NA, end = NA, end_side = NA,
-        start_x = NA, start_y = NA, end_x = NA, end_y = NA
+        start_x = NA, start_y = NA, end_x = NA, end_y = NA,
+        tee_group = NA_character_
       )
     )
   }
 
-  consort_lines <- .data$consort %>%
+  consort_lines <- elements %>%
     dplyr::filter(.data$type == "line") %>%
     dplyr::select(
       "start", "start_side", "end", "end_side",
@@ -148,7 +183,17 @@ create_consort_data <- function(.data, ...) {
     ) %>%
     dplyr::select(-"start_x", -"start_y", -"end_x", -"end_y")
 
-  out <- dplyr::bind_rows(boxes, arrows, lines) %>%
+  stages <- elements %>%
+    dplyr::filter(.data$type == "stage") %>%
+    dplyr::transmute(
+      .data$label,
+      x = .data$box_x, y = .data$box_y,
+      .data$row, .data$row2, .data$col,
+      .data$stage_fill, .data$angle,
+      type = "stage"
+    )
+
+  out <- dplyr::bind_rows(boxes, arrows, lines, stages) %>%
     dplyr::mutate(
       dplyr::across(
         c("start", "end", "start_side", "end_side"),

@@ -29,9 +29,10 @@ The goal of ggconsort is to provide convenience functions for creating [CONSORT 
 
 Stage 2 makes use of three ggconsort `consort_` verbs which equip the `ggconsort_cohort` object with `ggconsort` properties. The `ggconsort` object can be viewed with ggplot via `geom_consort() + theme_consort()`. `plot` and `print` methods are also available for the `ggconsort` object for visually iterative development.
 
-* `consort_box_add()` adds a text box to the CONSORT diagram
+* `consort_box_add()` adds a text box to the CONSORT diagram, at a `row`/`col` grid position (laid out automatically at draw time) or at explicit coordinates
 * `consort_arrow_add()` adds an arrow to the CONSORT diagram
 * `consort_line_add()` adds a line (without an arrow head) the CONSORT diagram
+* `consort_stage_add()` adds a stage badge (e.g. "Allocation") to a row/column layout
 
 ## Installation
 
@@ -98,68 +99,46 @@ study_cohorts
 summary(study_cohorts)
 ```
 
-Next, we add CONSORT "boxes" and "arrows" with appropriate ggconsort verbs, and plot with the CONSORT diagram `ggplot`. Note the use of `cohort_count_adorn()`, which is a convenience function that glues cohort counts to their labels.
+Next, we lay out the diagram. Boxes declare a `row` and `col` grid position instead of coordinates: `col = "main"` (the default) is the central spine, `"side"` puts a box to the right, and numbers give finer control (the arms below sit at columns -1 and 1). Arrows just connect boxes by name — vertically within a column, horizontally within a row, and `end = c("arm_a", "arm_b")` draws the T-split into the study arms. ggconsort measures every box when the plot is drawn and spaces the grid to fit the device, so there are no coordinates to fiddle with and nothing gets clipped. Note also `cohort_count_adorn()`, a convenience function that glues cohort counts to their labels.
 
 ```{r example-consort}
 library(ggplot2)
 
 study_consort <- study_cohorts %>%
   consort_box_add(
-    "full", 0, 50, cohort_count_adorn(study_cohorts, .full)
+    "full", row = 1, label = cohort_count_adorn(study_cohorts, .full)
   ) %>%
   consort_box_add(
-    "exclusions", 20, 40, glue::glue(
+    "exclusions", row = 2, col = "side", label = glue::glue(
       '{cohort_count_adorn(study_cohorts, excluded)}<br>
       • {cohort_count_adorn(study_cohorts, excluded_declined)}<br>
       • {cohort_count_adorn(study_cohorts, excluded_chemo)}<br>
       • {cohort_count_adorn(study_cohorts, excluded_mets)}
-      '),
-    hjust = 0
+      ')
   ) %>%
   consort_box_add(
-    "randomized", 0, 30, cohort_count_adorn(study_cohorts, randomized)
+    "randomized", row = 3, label = cohort_count_adorn(study_cohorts, randomized)
   ) %>%
   consort_box_add(
-    "arm_a", -30, 15, cohort_count_adorn(study_cohorts, treatment_a)
+    "arm_a", row = 4, col = -1,
+    label = cohort_count_adorn(study_cohorts, treatment_a)
   ) %>%
   consort_box_add(
-    "arm_b", 30, 15, cohort_count_adorn(study_cohorts, treatment_b)
+    "arm_b", row = 4, col = 1,
+    label = cohort_count_adorn(study_cohorts, treatment_b)
   ) %>%
-  consort_arrow_add(
-    start_x = 0, start_y = 40,
-    end = "exclusions", end_side = "left"
-  ) %>%
-  consort_arrow_add(
-    start = "full", start_side = "bottom",
-    end = "randomized", end_side = "top"
-  ) %>%
-  consort_arrow_add(
-    start_x = 0, start_y = 30,
-    end_x = 0, end_y = 22
-  ) %>%
-  consort_line_add(
-    start_x = -30, start_y = 22,
-    end_x = 30, end_y = 22
-  ) %>%
-  consort_arrow_add(
-    start_x = -30, start_y = 22,
-    end = "arm_a", end_side = "top"
-  ) %>%
-  consort_arrow_add(
-    start_x = 30, start_y = 22,
-    end = "arm_b", end_side = "top"
-  )
+  consort_arrow_add(start = "full", end = "randomized") %>%
+  consort_arrow_add(start = "full", end = "exclusions") %>%
+  consort_arrow_add(start = "randomized", end = c("arm_a", "arm_b")) %>%
+  consort_stage_add("Allocation", row = 4, col = "main")
 
 study_consort %>%
-  ggplot() + 
+  ggplot() +
   geom_consort() +
-  theme_consort(margin_h = 8, margin_v = 1) +
-  # you can include other ggplot geoms, as needed -------------
-  ggtext::geom_richtext(
-    aes(x = 0, y = 15, label = "Allocation"),
-    fill = "#9bc0fc"
-  )
+  theme_consort()
 ```
+
+Prefer to place things by hand? `consort_box_add()` and `consort_arrow_add()` also accept explicit coordinates — see `?consort_box_add`.
 
 At this point, we are ready for analysis. The following retrieves the desired data frame of randomized subjects:
 

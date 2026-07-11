@@ -2,6 +2,24 @@
 
 ## New features
 
+* `consort_box_add()` gains a row/column layout: declare `row` and `col`
+  (`"main"`, `"side"`, `"left"`, or a number) instead of `x`/`y`
+  coordinates, and the diagram is laid out at draw time from the measured
+  box sizes — row gaps are equalized, columns are spread so nothing
+  overlaps or clips, and the layout adapts to the device size. Explicit
+  coordinates remain fully supported.
+
+* In a row/column layout, `consort_arrow_add()` needs only `start` and `end`
+  box names: boxes in the same column connect vertically, boxes in the same
+  row horizontally, boxes elsewhere by a branch off the start box's column.
+  A vector `end` (e.g. `end = c("arm_a", "arm_b")`) draws the classic
+  T-split into study arms in one call.
+
+* New `consort_stage_add()` adds stage badges ("Allocation",
+  "Identification", ...) to a row/column layout, vertically centered on a
+  row or a span of rows, with optional rotation (`angle = 90`) for
+  PRISMA-style margin labels.
+
 * `geom_consort()` is now a single layer that measures each box on the open
   graphics device at draw time. Boxes are placed exactly at their (`x`, `y`)
   coordinates (centered by default, or per user-supplied `hjust`/`vjust`),

@@ -1,12 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^dev$
 ^README\.Rmd$
-^dev/ggconsort-hex\.R$
-^dev/ggconsort-hex\.png$
-^dev/ggconsort-hex\.svg$
-^dev/ggconsort\.fig$
-^dev/sim-data\.R$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
