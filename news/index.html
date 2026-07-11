@@ -72,6 +72,7 @@
 <ul><li><p><code><a href="../reference/create_consort_data.html">create_consort_data()</a></code> no longer errors on a diagram with no arrows or no lines (<a href="https://github.com/tgerke/ggconsort/issues/21" class="external-link">#21</a>, <a href="https://github.com/tgerke/ggconsort/issues/22" class="external-link">#22</a>, thanks <a href="https://github.com/jrealgatius" class="external-link">@jrealgatius</a>).</p></li>
 <li><p>Arrows and lines use <code>linewidth</code> instead of the <code>size</code> aesthetic deprecated in ggplot2 3.4.0; ggconsort now requires ggplot2 &gt;= 3.4.0 (<a href="https://github.com/tgerke/ggconsort/issues/28" class="external-link">#28</a>).</p></li>
 <li><p><code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> on a <code>ggconsort</code> object now passes its <code>margin_h</code> and <code>margin_v</code> arguments through to <code><a href="../reference/theme_consort.html">theme_consort()</a></code>.</p></li>
+<li><p>A box with several incoming arrows is no longer drawn once per arrow; its text justification is inferred across all entry sides. <code><a href="../reference/create_consort_data.html">create_consort_data()</a></code> also gives an informative error when called on anything other than a ggconsort object.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-0-2-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-2-0"></a></h3>
