@@ -24,8 +24,10 @@ ggplot.ggconsort <- function(
 
 #' Minimal theme for CONSORT diagrams
 #'
-#' A wrapper around [ggplot2::theme_void()] that adds plot margins, so diagram
-#' boxes near the edges are not clipped.
+#' A wrapper around [ggplot2::theme_void()] that adds plot margins. Margins
+#' give diagrams with explicit `x`/`y` coordinates breathing room so boxes
+#' near the edges are not clipped; row/column layouts size themselves to the
+#' device and rarely need them.
 #'
 #' @param margin_h,margin_v Horizontal and vertical plot margins.
 #' @param margin_unit Unit of the margins, passed to [ggplot2::margin()].
@@ -33,11 +35,22 @@ ggplot.ggconsort <- function(
 #' @return A ggplot2 theme object.
 #'
 #' @examples
-#' # see ?geom_consort for a complete diagram example
+#' cohorts <- trial_data %>%
+#'   cohort_start("Assessed for eligibility") %>%
+#'   cohort_define(
+#'     randomized = .full %>% dplyr::filter(declined != 1)
+#'   ) %>%
+#'   cohort_label(randomized = "Randomized")
+#'
+#' consort <- cohorts %>%
+#'   consort_box_add("full", row = 1, label = cohort_count_adorn(cohorts, .full)) %>%
+#'   consort_box_add("randomized", row = 2, label = cohort_count_adorn(cohorts, randomized)) %>%
+#'   consort_arrow_add(start = "full", end = "randomized")
+#'
 #' library(ggplot2)
-#' ggplot(mtcars, aes(wt, mpg)) +
-#'   geom_point() +
-#'   theme_consort(margin_h = 8, margin_v = 1)
+#' ggplot(consort) +
+#'   geom_consort() +
+#'   theme_consort()
 #' @export
 theme_consort <- function(margin_h = 0, margin_v = 0, margin_unit = "line") {
   ggplot2::theme_void() +

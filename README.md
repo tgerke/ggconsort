@@ -195,7 +195,7 @@ study_consort %>%
   theme_consort()
 ```
 
-<img src="man/figures/README-example-consort-1.png" width="100%" />
+<img src="man/figures/README-example-consort-1.png" alt="CONSORT diagram: 1,200 patients assessed for eligibility, 262 excluded (declined, prior chemotherapy, or bone metastasis), 938 randomized and allocated 469 each to arms A and B" width="100%" />
 
 Prefer to place things by hand? `consort_box_add()` and
 `consort_arrow_add()` also accept explicit coordinates — see
