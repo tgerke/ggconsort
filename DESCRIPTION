@@ -1,8 +1,8 @@
 Package: ggconsort
 Type: Package
 Title: Create CONSORT Diagrams
-Version: 0.1.0
-Authors@R: 
+Version: 0.2.0
+Authors@R:
     c(person(given = "Travis",
              family = "Gerke",
              role = c("aut", "cre"),
@@ -18,18 +18,24 @@ Description: This package provides convenience functions for constructing CONSOR
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: 
+Imports:
     dplyr,
-    ggplot2,
+    ggplot2 (>= 3.4.0),
     ggtext,
     glue,
+    grid,
     magrittr,
     purrr,
     rlang,
     tidyselect
-RoxygenNote: 7.1.1
-Suggests: 
-    palmerpenguins
-Depends: 
+Roxygen: list(markdown = TRUE)
+Suggests:
+    palmerpenguins,
+    testthat (>= 3.0.0),
+    vdiffr
+Config/testthat/edition: 3
+Depends:
     R (>= 2.10)
-URL: https://tgerke.github.io/ggconsort
+URL: https://tgerke.github.io/ggconsort, https://github.com/tgerke/ggconsort
+BugReports: https://github.com/tgerke/ggconsort/issues
+Config/roxygen2/version: 8.0.0

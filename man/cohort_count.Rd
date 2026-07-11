@@ -17,9 +17,11 @@ cohort_count_adorn(.data, ..., .label_fn = NULL)
 
 \item{...}{Cohorts to include in the output, can be quoted or unquoted
 cohort names, or \pkg{tidyselect} helpers such as
-[tidyselect::starts_with()].}
+\code{\link[tidyselect:starts_with]{tidyselect::starts_with()}}.}
 
-\item{.label_fn}{An optional custom function for formatting cohort counts}
+\item{.label_fn}{An optional custom function for formatting cohort counts.
+It is called once per cohort with the arguments \code{label},
+\code{count}, and \code{cohort}, and should return a single string.}
 }
 \value{
 A \code{tibble} with cohort name, row number total, and label.
@@ -29,15 +31,16 @@ Count the number of rows in each ggconsort cohort
 }
 \section{Functions}{
 \itemize{
-\item \code{cohort_count}: Returns a tibble with cohort name, row number total
+\item \code{cohort_count()}: Returns a tibble with cohort name, row number total
 and label.
 
-\item \code{cohort_count_int}: Returns a named vector with cohort counts.
+\item \code{cohort_count_int()}: Returns a named vector with cohort counts.
 
-\item \code{cohort_count_adorn}: Returns a cohort count in "(n = )" or
-other custom format
+\item \code{cohort_count_adorn()}: Returns a cohort count in "(n = )" or
+other custom format. By default, counts are formatted with comma
+separators, e.g. "Randomized (n = 5,932,291)".
+
 }}
-
 \examples{
 cohorts <- trial_data \%>\%
   cohort_start("Assessed for eligibility") \%>\%

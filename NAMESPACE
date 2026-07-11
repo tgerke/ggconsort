@@ -2,6 +2,7 @@
 
 S3method(ggplot,ggconsort)
 S3method(ggplot,ggconsort_cohort)
+S3method(grid::grid.draw,ggconsort)
 S3method(plot,ggconsort)
 S3method(print,ggconsort)
 S3method(print,ggconsort_cohort)
