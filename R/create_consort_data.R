@@ -18,7 +18,7 @@ create_consort_data <- function(.data, ...) {
   # FIXME: need to assert that we've got a cohort with consort data
 
   consort_boxes <- .data$consort %>%
-    dplyr::filter(type == "box")
+    dplyr::filter(.data$type == "box")
   # consorts built without boxes never gain hjust/vjust columns
   if (!"hjust" %in% names(consort_boxes)) consort_boxes$hjust <- NA_real_
   if (!"vjust" %in% names(consort_boxes)) consort_boxes$vjust <- NA_real_
@@ -33,10 +33,10 @@ create_consort_data <- function(.data, ...) {
     dplyr::select("name", "box_x", "box_y")
 
   consort_arrows <- .data$consort %>%
-    dplyr::filter(type == "arrow") %>%
+    dplyr::filter(.data$type == "arrow") %>%
     dplyr::select(
-      start, start_side, end, end_side,
-      start_x, start_y, end_x, end_y
+      "start", "start_side", "end", "end_side",
+      "start_x", "start_y", "end_x", "end_y"
     )
   # if no arrows are set up, allow the joins so the box prints
   if (nrow(consort_arrows) == 0) {
@@ -50,10 +50,10 @@ create_consort_data <- function(.data, ...) {
   }
 
   consort_lines <- .data$consort %>%
-    dplyr::filter(type == "line") %>%
+    dplyr::filter(.data$type == "line") %>%
     dplyr::select(
-      start, start_side, end, end_side,
-      start_x, start_y, end_x, end_y
+      "start", "start_side", "end", "end_side",
+      "start_x", "start_y", "end_x", "end_y"
     )
   # if no lines are set up, allow the joins so the box prints
   if (nrow(consort_lines) == 0) {
@@ -68,22 +68,22 @@ create_consort_data <- function(.data, ...) {
 
   boxes <- dplyr::left_join(
     consort_boxes,
-    consort_arrows %>% dplyr::select(end, end_side),
+    consort_arrows %>% dplyr::select("end", "end_side"),
     by = c("name" = "end")
   ) %>%
     dplyr::mutate(
       # user-supplied justification wins over arrow-based inference (#24)
       vjust = dplyr::coalesce(
-        vjust_user,
+        .data$vjust_user,
         dplyr::if_else(
-          end_side == "top", 1, .5, missing = .5
+          .data$end_side == "top", 1, .5, missing = .5
         )
       ),
       hjust = dplyr::coalesce(
-        hjust_user,
+        .data$hjust_user,
         dplyr::case_when(
-          end_side == "left" ~ 0,
-          end_side == "right" ~ 1,
+          .data$end_side == "left" ~ 0,
+          .data$end_side == "right" ~ 1,
           TRUE ~ .5
         )
       ),
@@ -91,25 +91,25 @@ create_consort_data <- function(.data, ...) {
     ) %>%
     dplyr::select(-"hjust_user", -"vjust_user") %>%
     dplyr::rename(
-      arrow_in = end_side
+      arrow_in = "end_side"
     )
 
   arrows <- dplyr::left_join(
     consort_arrows,
     box_anchors %>%
-      dplyr::rename(x = box_x, y = box_y),
+      dplyr::rename(x = "box_x", y = "box_y"),
     by = c("start" = "name")
   ) %>%
     dplyr::left_join(
       box_anchors %>%
-        dplyr::rename(xend = box_x, yend = box_y),
+        dplyr::rename(xend = "box_x", yend = "box_y"),
       by = c("end" = "name")
     ) %>%
     dplyr::mutate(
-      x = dplyr::if_else(!is.na(start_x), as.numeric(start_x), x),
-      y = dplyr::if_else(!is.na(start_y), as.numeric(start_y), y),
-      xend = dplyr::if_else(!is.na(end_x), as.numeric(end_x), xend),
-      yend = dplyr::if_else(!is.na(end_y), as.numeric(end_y), yend),
+      x = dplyr::if_else(!is.na(.data$start_x), as.numeric(.data$start_x), .data$x),
+      y = dplyr::if_else(!is.na(.data$start_y), as.numeric(.data$start_y), .data$y),
+      xend = dplyr::if_else(!is.na(.data$end_x), as.numeric(.data$end_x), .data$xend),
+      yend = dplyr::if_else(!is.na(.data$end_y), as.numeric(.data$end_y), .data$yend),
       type = "arrow"
     ) %>%
     dplyr::select(-dplyr::starts_with("start_"), -dplyr::starts_with("end_"))
@@ -117,29 +117,32 @@ create_consort_data <- function(.data, ...) {
   lines <- dplyr::left_join(
     consort_lines,
     box_anchors %>%
-      dplyr::rename(x = box_x, y = box_y),
+      dplyr::rename(x = "box_x", y = "box_y"),
     by = c("start" = "name")
   ) %>%
     dplyr::left_join(
       box_anchors %>%
-        dplyr::rename(xend = box_x, yend = box_y),
+        dplyr::rename(xend = "box_x", yend = "box_y"),
       by = c("end" = "name")
     ) %>%
     dplyr::mutate(
-      x = dplyr::if_else(is.na(start_x), x, as.numeric(start_x)),
-      y = dplyr::if_else(is.na(start_y), y, as.numeric(start_y)),
-      xend = dplyr::if_else(is.na(end_x), xend, as.numeric(end_x)),
-      yend = dplyr::if_else(is.na(end_y), yend, as.numeric(end_y)),
+      x = dplyr::if_else(is.na(.data$start_x), .data$x, as.numeric(.data$start_x)),
+      y = dplyr::if_else(is.na(.data$start_y), .data$y, as.numeric(.data$start_y)),
+      xend = dplyr::if_else(is.na(.data$end_x), .data$xend, as.numeric(.data$end_x)),
+      yend = dplyr::if_else(is.na(.data$end_y), .data$yend, as.numeric(.data$end_y)),
       type = "line"
     ) %>%
     dplyr::select(-dplyr::starts_with("start_"), -dplyr::starts_with("end_"))
 
-  dplyr::full_join(
+  out <- dplyr::full_join(
     boxes,
     dplyr::bind_rows(arrows, lines),
     by = "type"
-  ) %>%
+  )
+
+  # drop rows that are all-NA apart from their type
+  out %>%
     dplyr::filter(
-      rowSums(is.na(.)) != (ncol(.) - 1)
+      rowSums(is.na(out)) != (ncol(out) - 1)
     )
 }
