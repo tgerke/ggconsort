@@ -22,16 +22,16 @@
 #' @return A ggplot2 layer or list of layers that can be added to a plot.
 #'
 #' @examples
-#' cohorts <- trial_data %>%
-#'   cohort_start("Assessed for eligibility") %>%
+#' cohorts <- trial_data |>
+#'   cohort_start("Assessed for eligibility") |>
 #'   cohort_define(
-#'     randomized = .full %>% dplyr::filter(declined != 1)
-#'   ) %>%
+#'     randomized = .full |> dplyr::filter(declined != 1)
+#'   ) |>
 #'   cohort_label(randomized = "Randomized")
 #'
-#' consort <- cohorts %>%
-#'   consort_box_add("full", 0, 10, cohort_count_adorn(cohorts, .full)) %>%
-#'   consort_box_add("randomized", 0, 0, cohort_count_adorn(cohorts, randomized)) %>%
+#' consort <- cohorts |>
+#'   consort_box_add("full", 0, 10, cohort_count_adorn(cohorts, .full)) |>
+#'   consort_box_add("randomized", 0, 0, cohort_count_adorn(cohorts, randomized)) |>
 #'   consort_arrow_add("full", "bottom", "randomized", "top")
 #'
 #' library(ggplot2)

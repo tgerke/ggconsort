@@ -42,24 +42,24 @@ separators, e.g. "Randomized (n = 5,932,291)".
 
 }}
 \examples{
-cohorts <- trial_data \%>\%
-  cohort_start("Assessed for eligibility") \%>\%
+cohorts <- trial_data |>
+  cohort_start("Assessed for eligibility") |>
     cohort_define(
-      consented = .full \%>\% dplyr::filter(declined != 1),
-      consented_chemonaive = consented \%>\% dplyr::filter(prior_chemo != 1)
-    ) \%>\%
+      consented = .full |> dplyr::filter(declined != 1),
+      consented_chemonaive = consented |> dplyr::filter(prior_chemo != 1)
+    ) |>
     cohort_label(
       consented = "Consented",
       consented_chemonaive = "Chemotherapy naive"
     )
 
-cohorts \%>\%
+cohorts |>
   cohort_count()
 
-cohorts \%>\%
+cohorts |>
   cohort_count_adorn()
 
-cohorts \%>\%
+cohorts |>
   cohort_count_adorn(
     starts_with("consented"),
     .label_fn = function(cohort, label, count, ...) {

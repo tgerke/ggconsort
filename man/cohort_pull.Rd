@@ -19,12 +19,12 @@ Pull a single tibble from a \code{ggconsort_cohort} object,
 often for downstream analysis or deeper inspection.
 }
 \examples{
-cohorts <- trial_data \%>\%
-  cohort_start("Assessed for eligibility") \%>\%
+cohorts <- trial_data |>
+  cohort_start("Assessed for eligibility") |>
     cohort_define(
-      consented = .full \%>\% dplyr::filter(declined != 1),
-      consented_chemonaive = consented \%>\% dplyr::filter(prior_chemo != 1)
+      consented = .full |> dplyr::filter(declined != 1),
+      consented_chemonaive = consented |> dplyr::filter(prior_chemo != 1)
     )
 
-cohorts \%>\% cohort_pull(consented_chemonaive)
+cohorts |> cohort_pull(consented_chemonaive)
 }

@@ -5,12 +5,12 @@ test_cohort <- function() {
     declined = c(rep(1, 3), rep(0, 7))
   )
 
-  df %>%
-    cohort_start("Assessed for eligibility") %>%
+  df |>
+    cohort_start("Assessed for eligibility") |>
     cohort_define(
-      consented = .full %>% dplyr::filter(declined == 0),
+      consented = .full |> dplyr::filter(declined == 0),
       excluded = dplyr::anti_join(.full, consented, by = "id")
-    ) %>%
+    ) |>
     cohort_label(
       consented = "Consented",
       excluded = "Declined to participate"

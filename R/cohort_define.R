@@ -21,19 +21,19 @@ cohort_define <- function(.data, ...) {
   for (cohort_name in names(exprs)) {
     cohort <- rlang::eval_tidy(exprs[[cohort_name]], data = .data$data)
 
-    .data$data[[cohort_name]] <- cohort %>% dplyr::ungroup()
+    .data$data[[cohort_name]] <- cohort |> dplyr::ungroup()
 
     if (dplyr::is.grouped_df(cohort)) {
       # if the cohort is grouped, we add new cohorts for each group level,
       # separated by `.` and prefixed with the `cohort_name`
-      groups <- cohort %>% dplyr::group_keys()
+      groups <- cohort |> dplyr::group_keys()
       groups$.key <- apply(groups, 1, function(x) paste(to_snake_case(x), collapse = "."))
       groups$.key <- paste0(groups$cohort_name, ".", groups$.key)
 
       cohort <-
-        cohort %>%
-        dplyr::left_join(groups, by = names(groups)[-length(groups)]) %>%
-        dplyr::group_by(.data$.key) %>%
+        cohort |>
+        dplyr::left_join(groups, by = names(groups)[-length(groups)]) |>
+        dplyr::group_by(.data$.key) |>
         dplyr::group_nest()
 
       for (i in seq_len(nrow(cohort))) {

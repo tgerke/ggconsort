@@ -24,16 +24,16 @@ cohort_count <- function(.data, ...) {
     list(
       cohort = names(.data$labels),
       label = unname(unlist(.data$labels))
-    ) %>%
+    ) |>
       dplyr::as_tibble()
   }
 
   counts <-
-    lapply(.data$data, function(x) dplyr::tibble(count = nrow(x))) %>%
+    lapply(.data$data, function(x) dplyr::tibble(count = nrow(x))) |>
     dplyr::bind_rows(.id = "cohort")
 
   if (rlang::has_length(cohort)) {
-    counts <- counts %>%
+    counts <- counts |>
       dplyr::slice(!!cohort)
   }
 
@@ -68,24 +68,24 @@ default_label_count <- function(label, count, ...) {
 #'
 #' @export
 #' @examples
-#' cohorts <- trial_data %>%
-#'   cohort_start("Assessed for eligibility") %>%
+#' cohorts <- trial_data |>
+#'   cohort_start("Assessed for eligibility") |>
 #'     cohort_define(
-#'       consented = .full %>% dplyr::filter(declined != 1),
-#'       consented_chemonaive = consented %>% dplyr::filter(prior_chemo != 1)
-#'     ) %>%
+#'       consented = .full |> dplyr::filter(declined != 1),
+#'       consented_chemonaive = consented |> dplyr::filter(prior_chemo != 1)
+#'     ) |>
 #'     cohort_label(
 #'       consented = "Consented",
 #'       consented_chemonaive = "Chemotherapy naive"
 #'     )
 #'
-#' cohorts %>%
+#' cohorts |>
 #'   cohort_count()
 #'
-#' cohorts %>%
+#' cohorts |>
 #'   cohort_count_adorn()
 #'
-#' cohorts %>%
+#' cohorts |>
 #'   cohort_count_adorn(
 #'     starts_with("consented"),
 #'     .label_fn = function(cohort, label, count, ...) {
@@ -96,7 +96,7 @@ cohort_count_adorn <- function(.data, ..., .label_fn = NULL) {
   counts <- cohort_count(.data, ...)
   counts$label <- counts$label %||% ""
   # reorder so that `.x` is label and `.y` is count
-  counts <- counts %>%
+  counts <- counts |>
     dplyr::select("label", "count", dplyr::everything())
 
   .label_fn <- .label_fn %||% default_label_count

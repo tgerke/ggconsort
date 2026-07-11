@@ -11,14 +11,14 @@
 #'
 #' @export
 #' @examples
-#' cohorts <- trial_data %>%
-#'   cohort_start("Assessed for eligibility") %>%
+#' cohorts <- trial_data |>
+#'   cohort_start("Assessed for eligibility") |>
 #'     cohort_define(
-#'       consented = .full %>% dplyr::filter(declined != 1),
-#'       consented_chemonaive = consented %>% dplyr::filter(prior_chemo != 1)
+#'       consented = .full |> dplyr::filter(declined != 1),
+#'       consented_chemonaive = consented |> dplyr::filter(prior_chemo != 1)
 #'     )
 #'
-#' cohorts %>% cohort_pull(consented_chemonaive)
+#' cohorts |> cohort_pull(consented_chemonaive)
 
 cohort_pull <- function(.data, ...) {
   cohort <- tidyselect::eval_select(

@@ -68,26 +68,26 @@
 #' @return A \code{ggconsort} object.
 #'
 #' @examples
-#' cohorts <- trial_data %>%
-#'   cohort_start("Assessed for eligibility") %>%
+#' cohorts <- trial_data |>
+#'   cohort_start("Assessed for eligibility") |>
 #'   cohort_define(
-#'     randomized = .full %>% dplyr::filter(declined != 1),
+#'     randomized = .full |> dplyr::filter(declined != 1),
 #'     excluded = dplyr::anti_join(.full, randomized, by = "id")
-#'   ) %>%
+#'   ) |>
 #'   cohort_label(
 #'     randomized = "Randomized",
 #'     excluded = "Declined to participate"
 #'   )
 #'
 #' # row/column layout: no coordinates, spacing computed at draw time
-#' consort <- cohorts %>%
+#' consort <- cohorts |>
 #'   consort_box_add("full", row = 1, col = "main",
-#'     label = cohort_count_adorn(cohorts, .full)) %>%
+#'     label = cohort_count_adorn(cohorts, .full)) |>
 #'   consort_box_add("exclusions", row = 2, col = "side",
-#'     label = cohort_count_adorn(cohorts, excluded)) %>%
+#'     label = cohort_count_adorn(cohorts, excluded)) |>
 #'   consort_box_add("randomized", row = 3, col = "main",
-#'     label = cohort_count_adorn(cohorts, randomized)) %>%
-#'   consort_arrow_add(start = "full", end = "randomized") %>%
+#'     label = cohort_count_adorn(cohorts, randomized)) |>
+#'   consort_arrow_add(start = "full", end = "randomized") |>
 #'   consort_arrow_add(start = "full", end = "exclusions")
 #'
 #' library(ggplot2)

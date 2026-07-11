@@ -60,19 +60,19 @@ create_consort_data <- function(.data, ...) {
     )
   }
 
-  consort_boxes <- elements %>%
-    dplyr::filter(.data$type == "box") %>%
+  consort_boxes <- elements |>
+    dplyr::filter(.data$type == "box") |>
     dplyr::select(
       "name", "box_x", "box_y", "label", "row", "col",
       hjust_user = "hjust", vjust_user = "vjust"
     )
 
   # box coordinates for connecting arrows and lines by box name
-  box_anchors <- consort_boxes %>%
+  box_anchors <- consort_boxes |>
     dplyr::select("name", "box_x", "box_y")
 
-  consort_arrows <- elements %>%
-    dplyr::filter(.data$type == "arrow") %>%
+  consort_arrows <- elements |>
+    dplyr::filter(.data$type == "arrow") |>
     dplyr::select(
       "start", "start_side", "end", "end_side",
       "start_x", "start_y", "end_x", "end_y", "tee_group"
@@ -89,8 +89,8 @@ create_consort_data <- function(.data, ...) {
     )
   }
 
-  consort_lines <- elements %>%
-    dplyr::filter(.data$type == "line") %>%
+  consort_lines <- elements |>
+    dplyr::filter(.data$type == "line") |>
     dplyr::select(
       "start", "start_side", "end", "end_side",
       "start_x", "start_y", "end_x", "end_y"
@@ -109,12 +109,12 @@ create_consort_data <- function(.data, ...) {
   # one row per box regardless of how many arrows come in; justification is
   # inferred across all entry sides (top beats center vertically, left beats
   # right horizontally)
-  arrow_entries <- consort_arrows %>%
-    dplyr::filter(!is.na(.data$end), !is.na(.data$end_side)) %>%
+  arrow_entries <- consort_arrows |>
+    dplyr::filter(!is.na(.data$end), !is.na(.data$end_side)) |>
     # with no named-end arrows, `end` is logical NA and can't join on `name`
-    dplyr::mutate(end = as.character(.data$end)) %>%
-    dplyr::distinct(.data$end, .data$end_side) %>%
-    dplyr::group_by(.data$end) %>%
+    dplyr::mutate(end = as.character(.data$end)) |>
+    dplyr::distinct(.data$end, .data$end_side) |>
+    dplyr::group_by(.data$end) |>
     dplyr::summarise(
       arrow_in = paste(.data$end_side, collapse = ","),
       vjust_arrow = dplyr::if_else(any(.data$end_side == "top"), 1, .5),
@@ -130,7 +130,7 @@ create_consort_data <- function(.data, ...) {
     consort_boxes,
     arrow_entries,
     by = c("name" = "end")
-  ) %>%
+  ) |>
     dplyr::mutate(
       # blended hjust/vjust (user beats arrow-based inference, #24) feed the
       # legacy geom_consort_box(); geom_consort() reads only hjust/vjust_user
@@ -140,51 +140,51 @@ create_consort_data <- function(.data, ...) {
       x = .data$box_x,
       y = .data$box_y,
       type = "box"
-    ) %>%
+    ) |>
     dplyr::select(-"hjust_arrow", -"vjust_arrow")
 
   arrows <- dplyr::left_join(
     consort_arrows,
-    box_anchors %>%
+    box_anchors |>
       dplyr::rename(x = "box_x", y = "box_y"),
     by = c("start" = "name")
-  ) %>%
+  ) |>
     dplyr::left_join(
-      box_anchors %>%
+      box_anchors |>
         dplyr::rename(xend = "box_x", yend = "box_y"),
       by = c("end" = "name")
-    ) %>%
+    ) |>
     dplyr::mutate(
       x = dplyr::if_else(!is.na(.data$start_x), as.numeric(.data$start_x), .data$x),
       y = dplyr::if_else(!is.na(.data$start_y), as.numeric(.data$start_y), .data$y),
       xend = dplyr::if_else(!is.na(.data$end_x), as.numeric(.data$end_x), .data$xend),
       yend = dplyr::if_else(!is.na(.data$end_y), as.numeric(.data$end_y), .data$yend),
       type = "arrow"
-    ) %>%
+    ) |>
     dplyr::select(-"start_x", -"start_y", -"end_x", -"end_y")
 
   lines <- dplyr::left_join(
     consort_lines,
-    box_anchors %>%
+    box_anchors |>
       dplyr::rename(x = "box_x", y = "box_y"),
     by = c("start" = "name")
-  ) %>%
+  ) |>
     dplyr::left_join(
-      box_anchors %>%
+      box_anchors |>
         dplyr::rename(xend = "box_x", yend = "box_y"),
       by = c("end" = "name")
-    ) %>%
+    ) |>
     dplyr::mutate(
       x = dplyr::if_else(is.na(.data$start_x), .data$x, as.numeric(.data$start_x)),
       y = dplyr::if_else(is.na(.data$start_y), .data$y, as.numeric(.data$start_y)),
       xend = dplyr::if_else(is.na(.data$end_x), .data$xend, as.numeric(.data$end_x)),
       yend = dplyr::if_else(is.na(.data$end_y), .data$yend, as.numeric(.data$end_y)),
       type = "line"
-    ) %>%
+    ) |>
     dplyr::select(-"start_x", -"start_y", -"end_x", -"end_y")
 
-  stages <- elements %>%
-    dplyr::filter(.data$type == "stage") %>%
+  stages <- elements |>
+    dplyr::filter(.data$type == "stage") |>
     dplyr::transmute(
       .data$label,
       x = .data$box_x, y = .data$box_y,
@@ -193,7 +193,7 @@ create_consort_data <- function(.data, ...) {
       type = "stage"
     )
 
-  out <- dplyr::bind_rows(boxes, arrows, lines, stages) %>%
+  out <- dplyr::bind_rows(boxes, arrows, lines, stages) |>
     dplyr::mutate(
       dplyr::across(
         c("start", "end", "start_side", "end_side"),
@@ -202,7 +202,7 @@ create_consort_data <- function(.data, ...) {
     )
 
   # drop rows that are all-NA apart from their type
-  out %>%
+  out |>
     dplyr::filter(
       rowSums(is.na(out)) != (ncol(out) - 1)
     )

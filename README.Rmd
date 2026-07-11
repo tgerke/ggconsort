@@ -61,22 +61,22 @@ We first define the `ggconsort_cohort` object (`study_cohorts`) in the following
 library(dplyr)
 
 study_cohorts <- 
-  trial_data %>%
-  cohort_start("Assessed for eligibility") %>%
+  trial_data |>
+  cohort_start("Assessed for eligibility") |>
   # Define cohorts using named expressions --------------------
   # Notice that you can use previously defined cohorts in subsequent steps
   cohort_define(
-    consented = .full %>% filter(declined != 1),
-    consented_chemonaive = consented %>% filter(prior_chemo != 1),
-    randomized = consented_chemonaive %>% filter(bone_mets != 1),
-    treatment_a = randomized %>% filter(treatment == "Drug A"),
-    treatment_b = randomized %>% filter(treatment == "Drug B"),
+    consented = .full |> filter(declined != 1),
+    consented_chemonaive = consented |> filter(prior_chemo != 1),
+    randomized = consented_chemonaive |> filter(bone_mets != 1),
+    treatment_a = randomized |> filter(treatment == "Drug A"),
+    treatment_b = randomized |> filter(treatment == "Drug B"),
     # anti_join is useful for counting exclusions -------------
     excluded = anti_join(.full, randomized, by = "id"),
     excluded_declined = anti_join(.full, consented, by = "id"),
     excluded_chemo = anti_join(consented, consented_chemonaive, by = "id"),
     excluded_mets = anti_join(consented_chemonaive, randomized, by = "id")
-  ) %>%
+  ) |>
   # Provide text labels for cohorts ---------------------------
   cohort_label(
     consented = "Consented",
@@ -104,10 +104,10 @@ Next, we lay out the diagram. Boxes declare a `row` and `col` grid position inst
 ```{r example-consort, fig.alt = "CONSORT diagram: 1,200 patients assessed for eligibility, 262 excluded (declined, prior chemotherapy, or bone metastasis), 938 randomized and allocated 469 each to arms A and B"}
 library(ggplot2)
 
-study_consort <- study_cohorts %>%
+study_consort <- study_cohorts |>
   consort_box_add(
     "full", row = 1, label = cohort_count_adorn(study_cohorts, .full)
-  ) %>%
+  ) |>
   consort_box_add(
     "exclusions", row = 2, col = "side", label = glue::glue(
       '{cohort_count_adorn(study_cohorts, excluded)}<br>
@@ -115,24 +115,24 @@ study_consort <- study_cohorts %>%
       • {cohort_count_adorn(study_cohorts, excluded_chemo)}<br>
       • {cohort_count_adorn(study_cohorts, excluded_mets)}
       ')
-  ) %>%
+  ) |>
   consort_box_add(
     "randomized", row = 3, label = cohort_count_adorn(study_cohorts, randomized)
-  ) %>%
+  ) |>
   consort_box_add(
     "arm_a", row = 4, col = -1,
     label = cohort_count_adorn(study_cohorts, treatment_a)
-  ) %>%
+  ) |>
   consort_box_add(
     "arm_b", row = 4, col = 1,
     label = cohort_count_adorn(study_cohorts, treatment_b)
-  ) %>%
-  consort_arrow_add(start = "full", end = "randomized") %>%
-  consort_arrow_add(start = "full", end = "exclusions") %>%
-  consort_arrow_add(start = "randomized", end = c("arm_a", "arm_b")) %>%
+  ) |>
+  consort_arrow_add(start = "full", end = "randomized") |>
+  consort_arrow_add(start = "full", end = "exclusions") |>
+  consort_arrow_add(start = "randomized", end = c("arm_a", "arm_b")) |>
   consort_stage_add("Allocation", row = 4, col = "main")
 
-study_consort %>%
+study_consort |>
   ggplot() +
   geom_consort() +
   theme_consort()
@@ -143,6 +143,6 @@ Prefer to place things by hand? `consort_box_add()` and `consort_arrow_add()` al
 At this point, we are ready for analysis. The following retrieves the desired data frame of randomized subjects:
 
 ```{r pull-data}
-study_cohorts %>%
+study_cohorts |>
   cohort_pull(randomized)
 ```

@@ -1,17 +1,17 @@
 consort_for_plotting <- function() {
   cohorts <- test_cohort()
 
-  cohorts %>%
-    consort_box_add("full", 0, 20, cohort_count_adorn(cohorts, .full)) %>%
+  cohorts |>
+    consort_box_add("full", 0, 20, cohort_count_adorn(cohorts, .full)) |>
     consort_box_add(
       "exclusions", 10, 10, cohort_count_adorn(cohorts, excluded),
       hjust = 0
-    ) %>%
-    consort_box_add("consented", 0, 0, cohort_count_adorn(cohorts, consented)) %>%
+    ) |>
+    consort_box_add("consented", 0, 0, cohort_count_adorn(cohorts, consented)) |>
     consort_arrow_add(
       start = "full", start_side = "bottom",
       end = "consented", end_side = "top"
-    ) %>%
+    ) |>
     consort_arrow_add(
       start_x = 0, start_y = 10,
       end = "exclusions", end_side = "left"
@@ -105,22 +105,22 @@ test_that("geom_consort() anchors arrows at measured box edges", {
 grid_consort_for_plotting <- function() {
   cohorts <- test_cohort()
 
-  cohorts %>%
+  cohorts |>
     consort_box_add(
       "full", row = 1, label = cohort_count_adorn(cohorts, .full)
-    ) %>%
+    ) |>
     consort_box_add(
       "exclusions", row = 2, col = "side",
       label = cohort_count_adorn(cohorts, excluded)
-    ) %>%
+    ) |>
     consort_box_add(
       "consented", row = 3, label = cohort_count_adorn(cohorts, consented)
-    ) %>%
-    consort_box_add("arm_a", row = 4, col = -1, label = "Arm A (n = 3)") %>%
-    consort_box_add("arm_b", row = 4, col = 1, label = "Arm B (n = 4)") %>%
-    consort_arrow_add(start = "full", end = "consented") %>%
-    consort_arrow_add(start = "full", end = "exclusions") %>%
-    consort_arrow_add(start = "consented", end = c("arm_a", "arm_b")) %>%
+    ) |>
+    consort_box_add("arm_a", row = 4, col = -1, label = "Arm A (n = 3)") |>
+    consort_box_add("arm_b", row = 4, col = 1, label = "Arm B (n = 4)") |>
+    consort_arrow_add(start = "full", end = "consented") |>
+    consort_arrow_add(start = "full", end = "exclusions") |>
+    consort_arrow_add(start = "consented", end = c("arm_a", "arm_b")) |>
     consort_stage_add("Allocation", row = 4, col = "main")
 }
 

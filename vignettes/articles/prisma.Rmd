@@ -32,7 +32,7 @@ that track each record's fate. Here we simulate one.
 library(ggconsort)
 library(dplyr)
 
-citations <- tibble(id = 1:500) %>%
+citations <- tibble(id = 1:500) |>
   mutate(
     source = if_else(id <= 412, "Databases", "Registers"),
     duplicate = id <= 102,
@@ -58,22 +58,22 @@ out at each step.
 
 ```{r cohorts}
 review_cohorts <-
-  citations %>%
-  cohort_start("Records identified") %>%
+  citations |>
+  cohort_start("Records identified") |>
   cohort_define(
-    from_databases = .full %>% filter(source == "Databases"),
-    from_registers = .full %>% filter(source == "Registers"),
-    screened = .full %>% filter(!duplicate),
+    from_databases = .full |> filter(source == "Databases"),
+    from_registers = .full |> filter(source == "Registers"),
+    screened = .full |> filter(!duplicate),
     duplicates = anti_join(.full, screened, by = "id"),
-    sought = screened %>% filter(passed_screen),
+    sought = screened |> filter(passed_screen),
     screened_out = anti_join(screened, sought, by = "id"),
-    assessed = sought %>% filter(retrieved),
+    assessed = sought |> filter(retrieved),
     not_retrieved = anti_join(sought, assessed, by = "id"),
-    included = assessed %>% filter(is.na(exclusion_reason)),
-    excluded_population = assessed %>% filter(exclusion_reason == "Wrong population"),
-    excluded_outcome = assessed %>% filter(exclusion_reason == "Wrong outcome"),
-    excluded_design = assessed %>% filter(exclusion_reason == "Wrong study design")
-  ) %>%
+    included = assessed |> filter(is.na(exclusion_reason)),
+    excluded_population = assessed |> filter(exclusion_reason == "Wrong population"),
+    excluded_outcome = assessed |> filter(exclusion_reason == "Wrong outcome"),
+    excluded_design = assessed |> filter(exclusion_reason == "Wrong study design")
+  ) |>
   cohort_label(
     from_databases = "Databases",
     from_registers = "Registers",
@@ -108,37 +108,37 @@ ggconsort measures every box when the plot is drawn and computes the spacing
 to fit the figure, so no coordinates are needed anywhere.
 
 ```{r prisma-consort}
-review_prisma <- review_cohorts %>%
+review_prisma <- review_cohorts |>
   consort_box_add(
     "identified", row = 1, label = glue::glue(
       "Records identified from:<br>
       {cohort_count_adorn(review_cohorts, from_databases)}<br>
       {cohort_count_adorn(review_cohorts, from_registers)}"
     )
-  ) %>%
+  ) |>
   consort_box_add(
     "duplicates", row = 1, col = "side", label = glue::glue(
       "Records removed before screening:<br>
       {cohort_count_adorn(review_cohorts, duplicates)}"
     )
-  ) %>%
+  ) |>
   consort_box_add(
     "screened", row = 2, label = cohort_count_adorn(review_cohorts, screened)
-  ) %>%
+  ) |>
   consort_box_add(
     "screened_out", row = 2, col = "side",
     label = cohort_count_adorn(review_cohorts, screened_out)
-  ) %>%
+  ) |>
   consort_box_add(
     "sought", row = 3, label = cohort_count_adorn(review_cohorts, sought)
-  ) %>%
+  ) |>
   consort_box_add(
     "not_retrieved", row = 3, col = "side",
     label = cohort_count_adorn(review_cohorts, not_retrieved)
-  ) %>%
+  ) |>
   consort_box_add(
     "assessed", row = 4, label = cohort_count_adorn(review_cohorts, assessed)
-  ) %>%
+  ) |>
   consort_box_add(
     "excluded", row = 4, col = "side", label = glue::glue(
       "Reports excluded:<br>
@@ -146,27 +146,27 @@ review_prisma <- review_cohorts %>%
       • {cohort_count_adorn(review_cohorts, excluded_outcome)}<br>
       • {cohort_count_adorn(review_cohorts, excluded_design)}"
     )
-  ) %>%
+  ) |>
   consort_box_add(
     "included", row = 5, label = cohort_count_adorn(review_cohorts, included)
-  ) %>%
-  consort_arrow_add(start = "identified", end = "screened") %>%
-  consort_arrow_add(start = "screened", end = "sought") %>%
-  consort_arrow_add(start = "sought", end = "assessed") %>%
-  consort_arrow_add(start = "assessed", end = "included") %>%
-  consort_arrow_add(start = "identified", end = "duplicates") %>%
-  consort_arrow_add(start = "screened", end = "screened_out") %>%
-  consort_arrow_add(start = "sought", end = "not_retrieved") %>%
-  consort_arrow_add(start = "assessed", end = "excluded") %>%
-  consort_stage_add("Identification", row = 1, angle = 90) %>%
-  consort_stage_add("Screening", row = c(2, 4), angle = 90) %>%
+  ) |>
+  consort_arrow_add(start = "identified", end = "screened") |>
+  consort_arrow_add(start = "screened", end = "sought") |>
+  consort_arrow_add(start = "sought", end = "assessed") |>
+  consort_arrow_add(start = "assessed", end = "included") |>
+  consort_arrow_add(start = "identified", end = "duplicates") |>
+  consort_arrow_add(start = "screened", end = "screened_out") |>
+  consort_arrow_add(start = "sought", end = "not_retrieved") |>
+  consort_arrow_add(start = "assessed", end = "excluded") |>
+  consort_stage_add("Identification", row = 1, angle = 90) |>
+  consort_stage_add("Screening", row = c(2, 4), angle = 90) |>
   consort_stage_add("Included", row = 5, angle = 90)
 ```
 
 ```{r prisma-plot, fig.alt = "PRISMA 2020 flow diagram: 500 records identified from databases and registers, 398 screened after removing 102 duplicates, 147 reports sought, 138 assessed for eligibility, and 31 studies included in the review"}
 library(ggplot2)
 
-review_prisma %>%
+review_prisma |>
   ggplot() +
   geom_consort() +
   theme_consort()
@@ -175,6 +175,6 @@ review_prisma %>%
 At analysis time, the included studies are one `cohort_pull()` away:
 
 ```{r pull}
-review_cohorts %>%
+review_cohorts |>
   cohort_pull(included)
 ```

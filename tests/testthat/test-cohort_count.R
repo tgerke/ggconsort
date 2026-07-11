@@ -36,7 +36,7 @@ test_that("cohort_count_adorn() glues labels and counts", {
 })
 
 test_that("cohort_count_adorn() formats counts with commas (#23)", {
-  big_cohort <- dplyr::tibble(id = seq_len(5234)) %>%
+  big_cohort <- dplyr::tibble(id = seq_len(5234)) |>
     cohort_start("Records")
 
   expect_equal(
