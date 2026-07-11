@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggconsort</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,6 +35,17 @@
       <small>Source: <a href="https://github.com/tgerke/ggconsort/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="ggconsort-030">ggconsort 0.3.0<a class="anchor" aria-label="anchor" href="#ggconsort-030"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0"></a></h3>
+<ul><li><p><code><a href="../reference/consort_box_add.html">consort_box_add()</a></code> gains a row/column layout: declare <code>row</code> and <code>col</code> (<code>"main"</code>, <code>"side"</code>, <code>"left"</code>, or a number) instead of <code>x</code>/<code>y</code> coordinates, and the diagram is laid out at draw time from the measured box sizes — row gaps are equalized, columns are spread so nothing overlaps or clips, and the layout adapts to the device size. Explicit coordinates remain fully supported.</p></li>
+<li><p>In a row/column layout, <code><a href="../reference/consort_box_add.html">consort_arrow_add()</a></code> needs only <code>start</code> and <code>end</code> box names: boxes in the same column connect vertically, boxes in the same row horizontally, boxes elsewhere by a branch off the start box’s column. A vector <code>end</code> (e.g. <code>end = c("arm_a", "arm_b")</code>) draws the classic T-split into study arms in one call.</p></li>
+<li><p>New <code><a href="../reference/consort_box_add.html">consort_stage_add()</a></code> adds stage badges (“Allocation”, “Identification”, …) to a row/column layout, vertically centered on a row or a span of rows, with optional rotation (<code>angle = 90</code>) for PRISMA-style margin labels.</p></li>
+<li><p><code><a href="../reference/geom_consort.html">geom_consort()</a></code> is now a single layer that measures each box on the open graphics device at draw time. Boxes are placed exactly at their (<code>x</code>, <code>y</code>) coordinates (centered by default, or per user-supplied <code>hjust</code>/<code>vjust</code>), and arrows start and end precisely at the measured box edges instead of being anchored at box centers. Diagrams no longer depend on justification tricks to fake edge attachment, and connections stay correct at any device size. The previous layers remain available as <code><a href="../reference/geom_consort.html">geom_consort_box()</a></code> and <code><a href="../reference/geom_consort.html">geom_consort_arrow()</a></code>.</p></li>
+<li><p>Boxes that receive an arrow are no longer shifted by inferred justification; a box entered from the left keeps its position and only left-aligns if you ask for <code>hjust = 0</code>. Set <code>hjust</code>/<code>vjust</code> explicitly where the old inference was load-bearing.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="ggconsort-020">ggconsort 0.2.0<a class="anchor" aria-label="anchor" href="#ggconsort-020"></a></h2>
 <div class="section level3">

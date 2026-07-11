@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggconsort</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -169,113 +169,79 @@ drop out at each step.</p>
 <div class="section level2">
 <h2 id="stage-2-lay-out-the-diagram">Stage 2: lay out the diagram<a class="anchor" aria-label="anchor" href="#stage-2-lay-out-the-diagram"></a>
 </h2>
-<p>The main flow runs down the left at <code>x = 0</code>, with reasons
-for attrition in boxes to the right. Multi-line labels are built with
-<code>&lt;br&gt;</code> (labels are rendered by <a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a>, so markdown and HTML
-formatting work), and <code>hjust = 0</code> left-aligns the boxes that
-list several items so their text hangs together — this is the same
-<code>hjust</code>/<code>vjust</code> override available for any
-box.</p>
+<p>Each PRISMA box declares a <code>row</code> and <code>col</code> grid
+position: the main flow runs down the <code>"main"</code> column, with
+the reasons for attrition beside it in the <code>"side"</code> column.
+Arrows connect boxes by name — boxes in the same column are joined
+vertically and boxes in the same row horizontally, PRISMA-style, from
+box edge to box edge. The stage labels on the left are
+<code><a href="../reference/consort_box_add.html">consort_stage_add()</a></code> badges; <code>row = c(2, 4)</code>
+centers “Screening” across those rows. Multi-line labels are built with
+<code>&lt;br&gt;</code> (labels are rendered by <a href="https://wilkelab.org/gridtext/" class="external-link">gridtext</a>, so markdown and HTML
+formatting work).</p>
+<p>ggconsort measures every box when the plot is drawn and computes the
+spacing to fit the figure, so no coordinates are needed anywhere.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">review_prisma</span> <span class="op">&lt;-</span> <span class="va">review_cohorts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"identified"</span>, <span class="fl">0</span>, <span class="fl">50</span>,</span>
-<span>    <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
+<span>    <span class="st">"identified"</span>, row <span class="op">=</span> <span class="fl">1</span>, label <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
 <span>      <span class="st">"Records identified from:&lt;br&gt;</span></span>
 <span><span class="st">      {cohort_count_adorn(review_cohorts, from_databases)}&lt;br&gt;</span></span>
 <span><span class="st">      {cohort_count_adorn(review_cohorts, from_registers)}"</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"duplicates"</span>, <span class="fl">30</span>, <span class="fl">50</span>,</span>
-<span>    <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
+<span>    <span class="st">"duplicates"</span>, row <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"side"</span>, label <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
 <span>      <span class="st">"Records removed before screening:&lt;br&gt;</span></span>
 <span><span class="st">      {cohort_count_adorn(review_cohorts, duplicates)}"</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    hjust <span class="op">=</span> <span class="fl">0</span></span>
+<span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"screened"</span>, <span class="fl">0</span>, <span class="fl">40</span>, <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">screened</span><span class="op">)</span></span>
+<span>    <span class="st">"screened"</span>, row <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">screened</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"screened_out"</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">screened_out</span><span class="op">)</span>,</span>
-<span>    hjust <span class="op">=</span> <span class="fl">0</span></span>
+<span>    <span class="st">"screened_out"</span>, row <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"side"</span>,</span>
+<span>    label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">screened_out</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"sought"</span>, <span class="fl">0</span>, <span class="fl">30</span>, <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">sought</span><span class="op">)</span></span>
+<span>    <span class="st">"sought"</span>, row <span class="op">=</span> <span class="fl">3</span>, label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">sought</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"not_retrieved"</span>, <span class="fl">30</span>, <span class="fl">30</span>, <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">not_retrieved</span><span class="op">)</span>,</span>
-<span>    hjust <span class="op">=</span> <span class="fl">0</span></span>
+<span>    <span class="st">"not_retrieved"</span>, row <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"side"</span>,</span>
+<span>    label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">not_retrieved</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"assessed"</span>, <span class="fl">0</span>, <span class="fl">20</span>, <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">assessed</span><span class="op">)</span></span>
+<span>    <span class="st">"assessed"</span>, row <span class="op">=</span> <span class="fl">4</span>, label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">assessed</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"excluded"</span>, <span class="fl">30</span>, <span class="fl">20</span>,</span>
-<span>    <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
+<span>    <span class="st">"excluded"</span>, row <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"side"</span>, label <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
 <span>      <span class="st">"Reports excluded:&lt;br&gt;</span></span>
 <span><span class="st">      • {cohort_count_adorn(review_cohorts, excluded_population)}&lt;br&gt;</span></span>
 <span><span class="st">      • {cohort_count_adorn(review_cohorts, excluded_outcome)}&lt;br&gt;</span></span>
 <span><span class="st">      • {cohort_count_adorn(review_cohorts, excluded_design)}"</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    hjust <span class="op">=</span> <span class="fl">0</span></span>
+<span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"included"</span>, <span class="fl">0</span>, <span class="fl">10</span>, <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">included</span><span class="op">)</span></span>
+<span>    <span class="st">"included"</span>, row <span class="op">=</span> <span class="fl">5</span>, label <span class="op">=</span> <span class="fu"><a href="../reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">review_cohorts</span>, <span class="va">included</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start <span class="op">=</span> <span class="st">"identified"</span>, start_side <span class="op">=</span> <span class="st">"bottom"</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"screened"</span>, end_side <span class="op">=</span> <span class="st">"top"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start <span class="op">=</span> <span class="st">"screened"</span>, start_side <span class="op">=</span> <span class="st">"bottom"</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"sought"</span>, end_side <span class="op">=</span> <span class="st">"top"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start <span class="op">=</span> <span class="st">"sought"</span>, start_side <span class="op">=</span> <span class="st">"bottom"</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"assessed"</span>, end_side <span class="op">=</span> <span class="st">"top"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start <span class="op">=</span> <span class="st">"assessed"</span>, start_side <span class="op">=</span> <span class="st">"bottom"</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"included"</span>, end_side <span class="op">=</span> <span class="st">"top"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start_x <span class="op">=</span> <span class="fl">0</span>, start_y <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"duplicates"</span>, end_side <span class="op">=</span> <span class="st">"left"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start_x <span class="op">=</span> <span class="fl">0</span>, start_y <span class="op">=</span> <span class="fl">40</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"screened_out"</span>, end_side <span class="op">=</span> <span class="st">"left"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start_x <span class="op">=</span> <span class="fl">0</span>, start_y <span class="op">=</span> <span class="fl">30</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"not_retrieved"</span>, end_side <span class="op">=</span> <span class="st">"left"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start_x <span class="op">=</span> <span class="fl">0</span>, start_y <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"excluded"</span>, end_side <span class="op">=</span> <span class="st">"left"</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
-<p>As with CONSORT diagrams, the PRISMA stage labels are ordinary ggplot
-layers added on top of <code><a href="../reference/geom_consort.html">geom_consort()</a></code>. Because the
-left-aligned boxes extend to the right of their anchor points, we widen
-the x range with <code><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim()</a></code> to give them room.</p>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"identified"</span>, end <span class="op">=</span> <span class="st">"screened"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"screened"</span>, end <span class="op">=</span> <span class="st">"sought"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"sought"</span>, end <span class="op">=</span> <span class="st">"assessed"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"assessed"</span>, end <span class="op">=</span> <span class="st">"included"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"identified"</span>, end <span class="op">=</span> <span class="st">"duplicates"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"screened"</span>, end <span class="op">=</span> <span class="st">"screened_out"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"sought"</span>, end <span class="op">=</span> <span class="st">"not_retrieved"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"assessed"</span>, end <span class="op">=</span> <span class="st">"excluded"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_stage_add</a></span><span class="op">(</span><span class="st">"Identification"</span>, row <span class="op">=</span> <span class="fl">1</span>, angle <span class="op">=</span> <span class="fl">90</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_stage_add</a></span><span class="op">(</span><span class="st">"Screening"</span>, row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>, angle <span class="op">=</span> <span class="fl">90</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/consort_box_add.html">consort_stage_add</a></span><span class="op">(</span><span class="st">"Included"</span>, row <span class="op">=</span> <span class="fl">5</span>, angle <span class="op">=</span> <span class="fl">90</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">review_prisma</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_consort.html">geom_consort</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_consort.html">theme_consort</a></span><span class="op">(</span>margin_h <span class="op">=</span> <span class="fl">2</span>, margin_v <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">32</span>, <span class="fl">62</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggtext</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/ggtext/reference/geom_richtext.html" class="external-link">geom_richtext</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">28</span>, y <span class="op">=</span> <span class="va">y</span>, label <span class="op">=</span> <span class="va">label</span><span class="op">)</span>,</span>
-<span>    data <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>      y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">35</span>, <span class="fl">10</span><span class="op">)</span>,</span>
-<span>      label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Identification"</span>, <span class="st">"Screening"</span>, <span class="st">"Included"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    fill <span class="op">=</span> <span class="st">"#9bc0fc"</span>, angle <span class="op">=</span> <span class="fl">90</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/theme_consort.html">theme_consort</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="prisma_files/figure-html/prisma-plot-1.png" class="r-plt" alt="PRISMA 2020 flow diagram: 500 records identified from databases and registers, 398 screened after removing 102 duplicates, 147 reports sought, 138 assessed for eligibility, and 31 studies included in the review" width="100%"></p>
 <p>At analysis time, the included studies are one
 <code><a href="../reference/cohort_pull.html">cohort_pull()</a></code> away:</p>

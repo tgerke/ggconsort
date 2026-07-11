@@ -105,103 +105,77 @@ review_cohorts
 
 ## Stage 2: lay out the diagram
 
-The main flow runs down the left at `x = 0`, with reasons for attrition
-in boxes to the right. Multi-line labels are built with `<br>` (labels
-are rendered by [ggtext](https://wilkelab.org/ggtext/), so markdown and
-HTML formatting work), and `hjust = 0` left-aligns the boxes that list
-several items so their text hangs together — this is the same
-`hjust`/`vjust` override available for any box.
+Each PRISMA box declares a `row` and `col` grid position: the main flow
+runs down the `"main"` column, with the reasons for attrition beside it
+in the `"side"` column. Arrows connect boxes by name — boxes in the same
+column are joined vertically and boxes in the same row horizontally,
+PRISMA-style, from box edge to box edge. The stage labels on the left
+are
+[`consort_stage_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md)
+badges; `row = c(2, 4)` centers “Screening” across those rows.
+Multi-line labels are built with `<br>` (labels are rendered by
+[gridtext](https://wilkelab.org/gridtext/), so markdown and HTML
+formatting work).
+
+ggconsort measures every box when the plot is drawn and computes the
+spacing to fit the figure, so no coordinates are needed anywhere.
 
 ``` r
 
 review_prisma <- review_cohorts %>%
   consort_box_add(
-    "identified", 0, 50,
-    glue::glue(
+    "identified", row = 1, label = glue::glue(
       "Records identified from:<br>
       {cohort_count_adorn(review_cohorts, from_databases)}<br>
       {cohort_count_adorn(review_cohorts, from_registers)}"
     )
   ) %>%
   consort_box_add(
-    "duplicates", 30, 50,
-    glue::glue(
+    "duplicates", row = 1, col = "side", label = glue::glue(
       "Records removed before screening:<br>
       {cohort_count_adorn(review_cohorts, duplicates)}"
-    ),
-    hjust = 0
+    )
   ) %>%
   consort_box_add(
-    "screened", 0, 40, cohort_count_adorn(review_cohorts, screened)
+    "screened", row = 2, label = cohort_count_adorn(review_cohorts, screened)
   ) %>%
   consort_box_add(
-    "screened_out", 30, 40, cohort_count_adorn(review_cohorts, screened_out),
-    hjust = 0
+    "screened_out", row = 2, col = "side",
+    label = cohort_count_adorn(review_cohorts, screened_out)
   ) %>%
   consort_box_add(
-    "sought", 0, 30, cohort_count_adorn(review_cohorts, sought)
+    "sought", row = 3, label = cohort_count_adorn(review_cohorts, sought)
   ) %>%
   consort_box_add(
-    "not_retrieved", 30, 30, cohort_count_adorn(review_cohorts, not_retrieved),
-    hjust = 0
+    "not_retrieved", row = 3, col = "side",
+    label = cohort_count_adorn(review_cohorts, not_retrieved)
   ) %>%
   consort_box_add(
-    "assessed", 0, 20, cohort_count_adorn(review_cohorts, assessed)
+    "assessed", row = 4, label = cohort_count_adorn(review_cohorts, assessed)
   ) %>%
   consort_box_add(
-    "excluded", 30, 20,
-    glue::glue(
+    "excluded", row = 4, col = "side", label = glue::glue(
       "Reports excluded:<br>
       • {cohort_count_adorn(review_cohorts, excluded_population)}<br>
       • {cohort_count_adorn(review_cohorts, excluded_outcome)}<br>
       • {cohort_count_adorn(review_cohorts, excluded_design)}"
-    ),
-    hjust = 0
+    )
   ) %>%
   consort_box_add(
-    "included", 0, 10, cohort_count_adorn(review_cohorts, included)
+    "included", row = 5, label = cohort_count_adorn(review_cohorts, included)
   ) %>%
-  consort_arrow_add(
-    start = "identified", start_side = "bottom",
-    end = "screened", end_side = "top"
-  ) %>%
-  consort_arrow_add(
-    start = "screened", start_side = "bottom",
-    end = "sought", end_side = "top"
-  ) %>%
-  consort_arrow_add(
-    start = "sought", start_side = "bottom",
-    end = "assessed", end_side = "top"
-  ) %>%
-  consort_arrow_add(
-    start = "assessed", start_side = "bottom",
-    end = "included", end_side = "top"
-  ) %>%
-  consort_arrow_add(
-    start_x = 0, start_y = 50,
-    end = "duplicates", end_side = "left"
-  ) %>%
-  consort_arrow_add(
-    start_x = 0, start_y = 40,
-    end = "screened_out", end_side = "left"
-  ) %>%
-  consort_arrow_add(
-    start_x = 0, start_y = 30,
-    end = "not_retrieved", end_side = "left"
-  ) %>%
-  consort_arrow_add(
-    start_x = 0, start_y = 20,
-    end = "excluded", end_side = "left"
-  )
+  consort_arrow_add(start = "identified", end = "screened") %>%
+  consort_arrow_add(start = "screened", end = "sought") %>%
+  consort_arrow_add(start = "sought", end = "assessed") %>%
+  consort_arrow_add(start = "assessed", end = "included") %>%
+  consort_arrow_add(start = "identified", end = "duplicates") %>%
+  consort_arrow_add(start = "screened", end = "screened_out") %>%
+  consort_arrow_add(start = "sought", end = "not_retrieved") %>%
+  consort_arrow_add(start = "assessed", end = "excluded") %>%
+  consort_stage_add("Identification", row = 1, angle = 90) %>%
+  consort_stage_add("Screening", row = c(2, 4), angle = 90) %>%
+  consort_stage_add("Included", row = 5, angle = 90)
 ```
-
-As with CONSORT diagrams, the PRISMA stage labels are ordinary ggplot
-layers added on top of
-[`geom_consort()`](https://tgerke.github.io/ggconsort/reference/geom_consort.md).
-Because the left-aligned boxes extend to the right of their anchor
-points, we widen the x range with
-[`xlim()`](https://ggplot2.tidyverse.org/reference/lims.html) to give
-them room.
 
 ``` r
 
@@ -210,16 +184,7 @@ library(ggplot2)
 review_prisma %>%
   ggplot() +
   geom_consort() +
-  theme_consort(margin_h = 2, margin_v = 1) +
-  xlim(-32, 62) +
-  ggtext::geom_richtext(
-    aes(x = -28, y = y, label = label),
-    data = tibble(
-      y = c(50, 35, 10),
-      label = c("Identification", "Screening", "Included")
-    ),
-    fill = "#9bc0fc", angle = 90
-  )
+  theme_consort()
 ```
 
 ![PRISMA 2020 flow diagram: 500 records identified from databases and

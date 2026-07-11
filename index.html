@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ggconsort</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,11 +81,13 @@
 <p>Stage 2 makes use of three ggconsort <code>consort_</code> verbs which equip the <code>ggconsort_cohort</code> object with <code>ggconsort</code> properties. The <code>ggconsort</code> object can be viewed with ggplot via <code>geom_consort() + theme_consort()</code>. <code>plot</code> and <code>print</code> methods are also available for the <code>ggconsort</code> object for visually iterative development.</p>
 <ul>
 <li>
-<code><a href="reference/consort_box_add.html">consort_box_add()</a></code> adds a text box to the CONSORT diagram</li>
+<code><a href="reference/consort_box_add.html">consort_box_add()</a></code> adds a text box to the CONSORT diagram, at a <code>row</code>/<code>col</code> grid position (laid out automatically at draw time) or at explicit coordinates</li>
 <li>
 <code><a href="reference/consort_box_add.html">consort_arrow_add()</a></code> adds an arrow to the CONSORT diagram</li>
 <li>
 <code><a href="reference/consort_box_add.html">consort_line_add()</a></code> adds a line (without an arrow head) the CONSORT diagram</li>
+<li>
+<code><a href="reference/consort_box_add.html">consort_stage_add()</a></code> adds a stage badge (e.g. “Allocation”) to a row/column layout</li>
 </ul>
 </div>
 <div class="section level2">
@@ -175,16 +177,16 @@
 <span><span class="co">#&gt;  8 excluded_declined       59 Declined to participate </span></span>
 <span><span class="co">#&gt;  9 excluded_chemo         113 Prior chemotherapy      </span></span>
 <span><span class="co">#&gt; 10 excluded_mets           90 Bone metastasis</span></span></code></pre></div>
-<p>Next, we add CONSORT “boxes” and “arrows” with appropriate ggconsort verbs, and plot with the CONSORT diagram <code>ggplot</code>. Note the use of <code><a href="reference/cohort_count.html">cohort_count_adorn()</a></code>, which is a convenience function that glues cohort counts to their labels.</p>
+<p>Next, we lay out the diagram. Boxes declare a <code>row</code> and <code>col</code> grid position instead of coordinates: <code>col = "main"</code> (the default) is the central spine, <code>"side"</code> puts a box to the right, and numbers give finer control (the arms below sit at columns -1 and 1). Arrows just connect boxes by name — vertically within a column, horizontally within a row, and <code>end = c("arm_a", "arm_b")</code> draws the T-split into the study arms. ggconsort measures every box when the plot is drawn and spaces the grid to fit the device, so there are no coordinates to fiddle with and nothing gets clipped. Note also <code><a href="reference/cohort_count.html">cohort_count_adorn()</a></code>, a convenience function that glues cohort counts to their labels.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">study_consort</span> <span class="op">&lt;-</span> <span class="va">study_cohorts</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"full"</span>, <span class="fl">0</span>, <span class="fl">50</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">.full</span><span class="op">)</span></span>
+<span>    <span class="st">"full"</span>, row <span class="op">=</span> <span class="fl">1</span>, label <span class="op">=</span> <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">.full</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"exclusions"</span>, <span class="fl">20</span>, <span class="fl">40</span>, <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
+<span>    <span class="st">"exclusions"</span>, row <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"side"</span>, label <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span></span>
 <span>      <span class="st">'{cohort_count_adorn(study_cohorts, excluded)}&lt;br&gt;</span></span>
 <span><span class="st">      • {cohort_count_adorn(study_cohorts, excluded_declined)}&lt;br&gt;</span></span>
 <span><span class="st">      • {cohort_count_adorn(study_cohorts, excluded_chemo)}&lt;br&gt;</span></span>
@@ -192,52 +194,27 @@
 <span><span class="st">      '</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"randomized"</span>, <span class="fl">0</span>, <span class="fl">30</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">randomized</span><span class="op">)</span></span>
+<span>    <span class="st">"randomized"</span>, row <span class="op">=</span> <span class="fl">3</span>, label <span class="op">=</span> <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">randomized</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"arm_a"</span>, <span class="op">-</span><span class="fl">30</span>, <span class="fl">10</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">treatment_a</span><span class="op">)</span></span>
+<span>    <span class="st">"arm_a"</span>, row <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
+<span>    label <span class="op">=</span> <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">treatment_a</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/consort_box_add.html">consort_box_add</a></span><span class="op">(</span></span>
-<span>    <span class="st">"arm_b"</span>, <span class="fl">30</span>, <span class="fl">10</span>, <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">treatment_b</span><span class="op">)</span></span>
+<span>    <span class="st">"arm_b"</span>, row <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    label <span class="op">=</span> <span class="fu"><a href="reference/cohort_count.html">cohort_count_adorn</a></span><span class="op">(</span><span class="va">study_cohorts</span>, <span class="va">treatment_b</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start_x <span class="op">=</span> <span class="fl">0</span>, start_y <span class="op">=</span> <span class="fl">40</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"exclusions"</span>, end_side <span class="op">=</span> <span class="st">"left"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start <span class="op">=</span> <span class="st">"full"</span>, start_side <span class="op">=</span> <span class="st">"bottom"</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"randomized"</span>, end_side <span class="op">=</span> <span class="st">"top"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start_x <span class="op">=</span> <span class="fl">0</span>, start_y <span class="op">=</span> <span class="fl">30</span>,</span>
-<span>    end_x <span class="op">=</span> <span class="fl">0</span>, end_y <span class="op">=</span> <span class="fl">20</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_line_add</a></span><span class="op">(</span></span>
-<span>    start_x <span class="op">=</span> <span class="op">-</span><span class="fl">30</span>, start_y <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>    end_x <span class="op">=</span> <span class="fl">30</span>, end_y <span class="op">=</span> <span class="fl">20</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start_x <span class="op">=</span> <span class="op">-</span><span class="fl">30</span>, start_y <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"arm_a"</span>, end_side <span class="op">=</span> <span class="st">"top"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span></span>
-<span>    start_x <span class="op">=</span> <span class="fl">30</span>, start_y <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>    end <span class="op">=</span> <span class="st">"arm_b"</span>, end_side <span class="op">=</span> <span class="st">"top"</span></span>
-<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"full"</span>, end <span class="op">=</span> <span class="st">"randomized"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"full"</span>, end <span class="op">=</span> <span class="st">"exclusions"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_arrow_add</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"randomized"</span>, end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm_a"</span>, <span class="st">"arm_b"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/consort_box_add.html">consort_stage_add</a></span><span class="op">(</span><span class="st">"Allocation"</span>, row <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"main"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">study_consort</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="reference/geom_consort.html">geom_consort</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/theme_consort.html">theme_consort</a></span><span class="op">(</span>margin_h <span class="op">=</span> <span class="fl">8</span>, margin_v <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># you can include other ggplot geoms, as needed -------------</span></span>
-<span>  <span class="fu">ggtext</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/ggtext/reference/geom_richtext.html" class="external-link">geom_richtext</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">10</span>, label <span class="op">=</span> <span class="st">"Allocation"</span><span class="op">)</span>,</span>
-<span>    fill <span class="op">=</span> <span class="st">"#9bc0fc"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in ggtext::geom_richtext(aes(x = 0, y = 10, label = "Allocation"), : All aesthetics have length 1, but the data has 11 rows.</span></span>
-<span><span class="co">#&gt; ℹ Please consider using `annotate()` or provide this layer with data containing</span></span>
-<span><span class="co">#&gt;   a single row.</span></span></code></pre></div>
-<p><img src="reference/figures/README-example-consort-1.png" width="100%"></p>
+<span>  <span class="fu"><a href="reference/theme_consort.html">theme_consort</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-example-consort-1.png" alt="CONSORT diagram: 1,200 patients assessed for eligibility, 262 excluded (declined, prior chemotherapy, or bone metastasis), 938 randomized and allocated 469 each to arms A and B" width="100%"></p>
+<p>Prefer to place things by hand? <code><a href="reference/consort_box_add.html">consort_box_add()</a></code> and <code><a href="reference/consort_box_add.html">consort_arrow_add()</a></code> also accept explicit coordinates — see <code><a href="reference/consort_box_add.html">?consort_box_add</a></code>.</p>
 <p>At this point, we are ready for analysis. The following retrieves the desired data frame of randomized subjects:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">study_cohorts</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>

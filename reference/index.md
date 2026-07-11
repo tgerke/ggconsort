@@ -18,8 +18,9 @@
   : Initialize a new ggconsort cohort
 - [`consort_arrow_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md)
   [`consort_box_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md)
+  [`consort_stage_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md)
   [`consort_line_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md)
-  : Add boxes, arrows, and lines to a CONSORT diagram
+  : Add boxes, arrows, lines, and stage badges to a CONSORT diagram
 - [`consort_start()`](https://tgerke.github.io/ggconsort/reference/consort_start.md)
   : Initialize a ggconsort object for plotting. Used internally.
 - [`geom_consort()`](https://tgerke.github.io/ggconsort/reference/geom_consort.md)

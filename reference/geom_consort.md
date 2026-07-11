@@ -6,15 +6,25 @@ object created with
 [`consort_arrow_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md),
 and
 [`consort_line_add()`](https://tgerke.github.io/ggconsort/reference/consort_box_add.md).
-It is the layer you will typically add to `ggplot(<ggconsort object>)`,
-and it combines `geom_consort_arrow()` and `geom_consort_box()`, which
-can also be used individually. `geom_consort_line()` draws a standalone
-line segment with the same styling as the diagram lines.
+It measures the rendered size of each box at draw time, so boxes are
+centered on their (`x`, `y`) coordinates and arrows start and end
+exactly at box edges, whatever the device size. `geom_consort_arrow()`
+and `geom_consort_box()` are the legacy component layers, which anchor
+arrows at box centers and shift box text by its justification; they
+remain available for diagrams that depend on that behavior.
+`geom_consort_line()` draws a standalone line segment with the same
+styling as the diagram lines.
 
 ## Usage
 
 ``` r
-geom_consort(...)
+geom_consort(
+  label_color = "black",
+  label_size = 11,
+  label_height = 1,
+  fill = "white",
+  box_color = "black"
+)
 
 geom_consort_arrow(...)
 
@@ -24,13 +34,6 @@ geom_consort_line(x, xend, y, yend, ...)
 ```
 
 ## Arguments
-
-- ...:
-
-  Additional arguments passed to
-  [`ggtext::geom_richtext()`](https://wilkelab.org/ggtext/reference/geom_richtext.html)
-  by `geom_consort_box()`, e.g. `fill`. Ignored by
-  `geom_consort_arrow()`.
 
 - label_color:
 
@@ -43,6 +46,20 @@ geom_consort_line(x, xend, y, yend, ...)
 - label_height:
 
   Line height of the box label text.
+
+- fill:
+
+  Fill color of the boxes.
+
+- box_color:
+
+  Color of the box borders.
+
+- ...:
+
+  For `geom_consort_box()`, additional arguments passed to
+  [`ggtext::geom_richtext()`](https://wilkelab.org/ggtext/reference/geom_richtext.html).
+  Ignored by `geom_consort_arrow()`.
 
 - x, xend, y, yend:
 
@@ -70,5 +87,5 @@ consort <- cohorts %>%
 library(ggplot2)
 ggplot(consort) +
   geom_consort() +
-  theme_consort()
+  theme_consort(margin_h = 12, margin_v = 5)
 ```
