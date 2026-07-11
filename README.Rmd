@@ -101,7 +101,7 @@ summary(study_cohorts)
 
 Next, we lay out the diagram. Boxes declare a `row` and `col` grid position instead of coordinates: `col = "main"` (the default) is the central spine, `"side"` puts a box to the right, and numbers give finer control (the arms below sit at columns -1 and 1). A box named after a cohort labels itself with that cohort's label and count, so most boxes need nothing but a name and a position, and `cohort_count_bullets()` builds the bulleted exclusion box in one call. Arrows just connect boxes by name — vertically within a column, horizontally within a row, and `end = c("treatment_a", "treatment_b")` draws the T-split into the study arms. Stage badges land in the left margin, as in the official CONSORT template. ggconsort measures every box when the plot is drawn and spaces the grid to fit the device, so there are no coordinates to fiddle with and nothing gets clipped.
 
-```{r example-consort, fig.alt = "CONSORT diagram: 1,200 patients assessed for eligibility, 262 excluded (declined, prior chemotherapy, or bone metastasis), 938 randomized and allocated 469 each to arms A and B, with Enrollment and Allocation stage labels in the left margin"}
+```{r example-consort, fig.width = 9, fig.height = 4.25, fig.alt = "CONSORT diagram: 1,200 patients assessed for eligibility, 262 excluded (declined, prior chemotherapy, or bone metastasis), 938 randomized and allocated 469 each to arms A and B, with Enrollment and Allocation stage labels in the left margin"}
 library(ggplot2)
 
 study_consort <- study_cohorts |>
