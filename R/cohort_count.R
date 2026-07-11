@@ -53,14 +53,18 @@ cohort_count_int <- function(.data, ...) {
   rlang::set_names(counts$count, counts$cohort)
 }
 
-default_label_count <- function(...) {
-  glue::glue("{label} (n = {count})", ..., .envir = parent.frame())
+default_label_count <- function(label, count, ...) {
+  count <- format(count, big.mark = ",", scientific = FALSE, trim = TRUE)
+  glue::glue("{label} (n = {count})")
 }
 
 #' @describeIn cohort_count Returns a cohort count in "(n = )" or
-#'   other custom format
+#'   other custom format. By default, counts are formatted with comma
+#'   separators, e.g. "Randomized (n = 5,932,291)".
 #'
-#' @param .label_fn An optional custom function for formatting cohort counts
+#' @param .label_fn An optional custom function for formatting cohort counts.
+#'   It is called once per cohort with the arguments \code{label},
+#'   \code{count}, and \code{cohort}, and should return a single string.
 #'
 #' @export
 #' @examples
@@ -93,7 +97,7 @@ cohort_count_adorn <- function(.data, ..., .label_fn = NULL) {
   counts$label <- counts$label %||% ""
   # reorder so that `.x` is label and `.y` is count
   counts <- counts %>%
-    dplyr::select(.data$label, .data$count, dplyr::everything())
+    dplyr::select("label", "count", dplyr::everything())
 
   .label_fn <- .label_fn %||% default_label_count
   purrr::pmap_chr(counts, .label_fn)
