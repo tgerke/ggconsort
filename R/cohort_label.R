@@ -22,7 +22,21 @@ cohort_label <- function(.data, ...) {
 
   labels <- list(...)
   assert_named(labels, "...")
-  # FIXME: check that all labels are length-1 strings, too
+
+  # check that all labels are length-1 strings
+  bad <- !vapply(
+    labels,
+    function(x) is.character(x) && length(x) == 1 && !is.na(x),
+    logical(1)
+  )
+  if (any(bad)) {
+    msg <- sprintf(
+      "%s must be a single string, not NA: %s",
+      ngettext(sum(bad), "Label", "Labels"),
+      d_quote(names(labels)[bad], collapse = ", ")
+    )
+    stop(msg)
+  }
 
   # check that label names match cohort names
   unexpected <- setdiff(names(labels), names(.data$data))
