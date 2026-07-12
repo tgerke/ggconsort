@@ -54,6 +54,11 @@
 <li><p><code>trial_data</code> gains follow-up and analysis indicators (<code>lost_to_followup</code>, <code>discontinued</code>, <code>not_analyzed</code>) so a complete four-stage CONSORT diagram can be built from the bundled data.</p></li>
 </ul></div>
 <div class="section level3">
+<h3 id="bug-fixes-0-4-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-0"></a></h3>
+<ul><li>
+<code><a href="../reference/cohort_label.html">cohort_label()</a></code> now errors informatively when a label is not a single (non-NA) string, instead of accepting values that fail later at plot time.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="documentation-0-4-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-4-0"></a></h3>
 <ul><li><p>New pkgdown article building a complete four-stage CONSORT diagram (Enrollment, Allocation, Follow-up, Analysis) with margin stage labels.</p></li>
 <li><p>The PRISMA article now includes the official template’s spanning header bar and uniform column widths; README and reference examples use the automatic box labels and <code><a href="../reference/cohort_count.html">cohort_count_bullets()</a></code>.</p></li>

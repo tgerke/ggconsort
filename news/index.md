@@ -54,6 +54,12 @@
   (`lost_to_followup`, `discontinued`, `not_analyzed`) so a complete
   four-stage CONSORT diagram can be built from the bundled data.
 
+### Bug fixes
+
+- [`cohort_label()`](https://tgerke.github.io/ggconsort/reference/cohort_label.md)
+  now errors informatively when a label is not a single (non-NA) string,
+  instead of accepting values that fail later at plot time.
+
 ### Documentation
 
 - New pkgdown article building a complete four-stage CONSORT diagram
