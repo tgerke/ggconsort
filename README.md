@@ -10,8 +10,7 @@
 ## Overview
 
 The goal of ggconsort is to provide convenience functions for creating
-[CONSORT
-diagrams](http://www.consort-statement.org/consort-statement/flow-diagram)
+[CONSORT diagrams](https://www.consort-spirit.org/)
 with ggplot2. ggconsort segments CONSORT creation into two stages: (1)
 counting and annotation at the time of data wrangling, and (2) diagram
 layout and aesthetic design. With the introduction of a

@@ -14,7 +14,15 @@ Authors@R:
              email = "garrick@adenbuie.com",
              comment = c(ORCID = "0000-0002-7111-0077")))
 Maintainer: Travis Gerke <tgerke@mail.harvard.edu>
-Description: This package provides convenience functions for constructing CONSORT diagrams with ggplot2.
+Description: Constructs CONSORT (Consolidated Standards of Reporting
+    Trials) diagrams and other participant flow charts, such as PRISMA
+    (Preferred Reporting Items for Systematic Reviews and Meta-Analyses)
+    diagrams, as 'ggplot2' plots. Cohorts are defined with 'dplyr'-style
+    expressions and counted automatically, so box labels stay consistent
+    with the underlying data; boxes are declared on a grid of rows and
+    columns, and the layout is computed on the graphics device at draw
+    time. For the CONSORT statement, see Schulz, Altman, and Moher (2010)
+    <doi:10.1136/bmj.c332>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -36,7 +44,7 @@ Suggests:
 Config/testthat/edition: 3
 Depends:
     R (>= 4.1)
-URL: https://tgerke.github.io/ggconsort, https://github.com/tgerke/ggconsort
+URL: https://tgerke.github.io/ggconsort/, https://github.com/tgerke/ggconsort
 BugReports: https://github.com/tgerke/ggconsort/issues
 Config/roxygen2/version: 8.0.0
 Config/Needs/website: rmarkdown
