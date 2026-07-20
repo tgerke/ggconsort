@@ -1,3 +1,9 @@
+# ggconsort 0.4.1
+
+* CRAN submission: polished `Description` field, fixed a dead CONSORT
+  statement URL, and minor `DESCRIPTION`/documentation cleanup. No user-facing
+  changes.
+
 # ggconsort 0.4.0
 
 ## Breaking changes

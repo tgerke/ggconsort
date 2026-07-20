@@ -1,7 +1,7 @@
 Package: ggconsort
 Type: Package
 Title: Create CONSORT Diagrams
-Version: 0.4.0
+Version: 0.4.1
 Authors@R:
     c(person(given = "Travis",
              family = "Gerke",
