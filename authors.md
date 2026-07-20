@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/tgerke/ggconsort/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/tgerke/ggconsort/blob/v0.4.1/DESCRIPTION)
 
 Gerke T, Aden-Buie G (2026). *ggconsort: Create CONSORT Diagrams*. R
 package version 0.4.1, <https://tgerke.github.io/ggconsort/>.
