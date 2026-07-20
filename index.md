@@ -3,14 +3,13 @@
 ## Overview
 
 The goal of ggconsort is to provide convenience functions for creating
-[CONSORT
-diagrams](http://www.consort-statement.org/consort-statement/flow-diagram)
-with ggplot2. ggconsort segments CONSORT creation into two stages: (1)
-counting and annotation at the time of data wrangling, and (2) diagram
-layout and aesthetic design. With the introduction of a
-`ggconsort_cohort` class, stage (1) can be accomplished within dplyr
-chains. Specifically, the following functions are implemented inside a
-dplyr chain to define a `ggconsort_cohort`:
+[CONSORT diagrams](https://www.consort-spirit.org/) with ggplot2.
+ggconsort segments CONSORT creation into two stages: (1) counting and
+annotation at the time of data wrangling, and (2) diagram layout and
+aesthetic design. With the introduction of a `ggconsort_cohort` class,
+stage (1) can be accomplished within dplyr chains. Specifically, the
+following functions are implemented inside a dplyr chain to define a
+`ggconsort_cohort`:
 
 - [`cohort_start()`](https://tgerke.github.io/ggconsort/reference/cohort_start.md)
   initializes a `ggconsort_cohort` object which contains a labeled copy
